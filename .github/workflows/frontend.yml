@@ -1,0 +1,33 @@
+name: CI/CD Frontend
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout du code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Installer les dépendances
+      run: npm install
+
+    - name: Exécuter les tests
+      run: npm run test -- --watch=false --browsers=ChromeHeadless
+
+    - name: Build project
+      run: npm run build -- --configuration=production
+
+  # Optionnel : déploiement (ex. vers Firebase, GitHub Pages, etc.)
+  # - name: Deploy
+  #   run: your-deployment-command
