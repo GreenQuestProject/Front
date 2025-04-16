@@ -1,0 +1,35 @@
+.container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px 10px;
+  padding-top: 10px;
+}
+
+.content{
+  background-color: aliceblue;
+  padding: 5px 0 5px 0;
+}
+
+.filters,  .content{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px 10px;
+  border-radius: 30px;
+}
+
+button{
+  height: 70px;
+  width: 200px;
+  border-radius: 30px;
+  font-size: 16pt;
+}
+
+
+.fromFieldMealQuantity{
+  width: 50px;
+}

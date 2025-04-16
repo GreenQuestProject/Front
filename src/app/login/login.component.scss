@@ -1,0 +1,41 @@
+div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px 10px;
+}
+
+mat-card{
+  flex-basis: 500px;
+}
+
+.container{
+  //background-color: beige;
+  border-radius: 30px 30px 30px 30px;
+  padding: 10px 10px 10px 10px;
+  margin : 10px 10px 10px 10px;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+
+.loading{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  text-align: center;
+}

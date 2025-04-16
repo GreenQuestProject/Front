@@ -1,0 +1,36 @@
+a{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 30px 30px;
+  font-size: 25pt;
+}
+
+.container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 10px;
+  background-color: white;
+  padding: 10px 0 10px 10px;
+}
+
+.content{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px 50px;
+  background-color: inherit;
+  padding-right: 10px;
+}
+
+.custom-divider {
+  border-color: black !important;
+  height: 50px;
+  opacity: 1;
+}
