@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="content">
+    <a mat-button color="warn" title="Accueil" [routerLink]="['/accueil']">
+        GreenQuest
+    </a>
+    <mat-divider class="custom-divider" vertical></mat-divider>
+    <!--<a mat-button title="Explorer la liste de recettes" [routerLink]="['/explorer']">
+        Explorer
+    </a>-->
+  </div>
+  <div class="content">
+    <button mat-raised-button color="warn" title="Se déconnecter" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </div>
+</div>
