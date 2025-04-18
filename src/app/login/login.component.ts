@@ -4,10 +4,11 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {Router, RouterLink} from "@angular/router";
 import { AuthService } from "../services/auth.service";
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatButton} from '@angular/material/button';
+import {MatAnchor, MatButton} from '@angular/material/button';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatInput} from '@angular/material/input';
 import {NgIf} from '@angular/common';
+import {MatDivider} from '@angular/material/list';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,9 @@ import {NgIf} from '@angular/common';
     MatProgressSpinner,
     MatError,
     MatLabel,
-    NgIf
+    NgIf,
+    MatAnchor,
+    MatDivider
   ],
   standalone: true,
   templateUrl: './login.component.html',
@@ -55,15 +58,16 @@ export class LoginComponent {
       this.authService.login(user.username, user.password)
         .subscribe({
             next: (response) => {
+
               this.isLoading = false;
               this.router.navigateByUrl('/accueil');
             },
             error: (error) => {
               this.isLoading = false;
               if(error.status == 401){
-                this.errorMessage = 'Invalid username or password.';
+                this.errorMessage = 'Identifiants invalides.';
               }else {
-                this.errorMessage = 'An unexpected error occurred. Please try again later.';
+                this.errorMessage = 'Une erreur inattendue s\'est produite. Veuillez réessayer ultérieurement.';
                 console.error('Error while login', error);
               }
             }
@@ -71,7 +75,7 @@ export class LoginComponent {
         );
     }else {
       this.isLoading = false;
-      this.errorMessage = 'Please fill out the form correctly before submitting.';
+      this.errorMessage = 'Veuillez remplir correctement le formulaire avant de le soumettre.';
       console.log('Invalid form');
     }
   }

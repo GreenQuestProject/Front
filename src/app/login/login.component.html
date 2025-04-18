@@ -1,7 +1,15 @@
+<div class="nav-container">
+  <div class="nav-content">
+    <a mat-button color="warn" title="Accueil" [routerLink]="['']">
+      GreenQuest
+    </a>
+    <mat-divider class="custom-divider" vertical></mat-divider>
 
+  </div>
+</div>
 <div class="container">
-  <h1>Connexion</h1>
   <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <h1>Connexion</h1>
     <div>
       <mat-form-field appearance="fill">
         <mat-label>Pseudo</mat-label>
@@ -26,9 +34,7 @@
     <div>
       <button mat-raised-button color="success" type="submit" [disabled]="loginForm.invalid">Connexion</button>
     </div>
-    <div>
-      <p>Utilisez johndoe et password123 pour vous connecter (ou passez a l'inscription)</p>
-    </div>
+
     <div>
       <p>Pas encore inscrit ?
         <a routerLink="/register">

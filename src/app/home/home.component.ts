@@ -12,8 +12,4 @@ import {NavBarComponent} from '../nav-bar/nav-bar.component';
 })
 export class HomeComponent {
 
-  constructor(private router: Router) {
-
-  }
-
 }

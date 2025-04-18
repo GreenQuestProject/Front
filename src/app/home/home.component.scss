@@ -4,7 +4,12 @@
   align-items: center;
   justify-content: space-evenly;
   gap: 10px 10px;
-  padding-top: 10px;
+  color: white;
+  background-color: rgba(49, 87, 44, 0.75);
+  padding: 10px 10px 10px 10px;
+  margin : 10px 10px 10px 10px;
+  height: calc(100vh - 130px);
+  border-radius: 50px;
 }
 
 .content{

@@ -5,7 +5,8 @@ a{
   align-items: center;
   justify-content: space-evenly;
   gap: 30px 30px;
-  font-size: 25pt;
+  font-size: 22pt;
+  color: white!important;
 }
 
 .container{
@@ -14,8 +15,10 @@ a{
   align-items: center;
   justify-content: space-between;
   gap: 10px 10px;
-  background-color: white;
+  background-color: rgba(49, 87, 44, 0.75);
   padding: 10px 0 10px 10px;
+  margin : 10px 10px 10px 10px;
+  border-radius: 50px;
 }
 
 .content{
@@ -25,12 +28,12 @@ a{
   align-items: center;
   justify-content: space-evenly;
   gap: 10px 50px;
-  background-color: inherit;
+  //background-color: inherit;
   padding-right: 10px;
 }
 
 .custom-divider {
   border-color: black !important;
   height: 50px;
-  opacity: 1;
+  opacity: 0;
 }

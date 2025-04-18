@@ -11,13 +11,16 @@ export class AuthService {
   private accessToken: string | null = null;
   private apiUrl: string = "http://localhost:8000"
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {
+    this.accessToken = this.getAccessToken();
+  }
 
   login(username: string, password: string): Observable<User> {
     const user = {username:username, password: password};
     return this.http.post<{ token: string; refresh_token: string; user: User }>(this.apiUrl+'/api/login', user).pipe(
       tap(res => {
         this.accessToken = res.token;
+        localStorage.setItem('accessToken', res.token);
         localStorage.setItem('refreshToken', res.refresh_token); // store refresh token
         const user: User | null = this.decodeToken(this.accessToken);
         this.currentUserSubject.next(user);
@@ -28,12 +31,16 @@ export class AuthService {
 
   logout(): void {
     this.accessToken = null;
+    localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
 
   getAccessToken(): string | null {
+    if(this.accessToken == null){
+      this.accessToken = localStorage.getItem('accessToken') ?? null;
+    }
     return this.accessToken;
   }
 

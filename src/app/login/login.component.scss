@@ -11,15 +11,16 @@ mat-card{
 }
 
 .container{
-  //background-color: beige;
-  border-radius: 30px 30px 30px 30px;
+  background-color: rgba(49, 87, 44, 0.75);
   padding: 10px 10px 10px 10px;
   margin : 10px 10px 10px 10px;
+  height: calc(100vh - 130px);
+  border-radius: 50px;
 }
 
 .error-message {
-  color: red;
-  margin-top: 10px;
+  color: #8e1515;
+  margin : 10px 10px 10px 10px;
   font-size: 14px;
 }
 
@@ -39,3 +40,46 @@ mat-card{
   font-size: 24px;
   text-align: center;
 }
+
+
+
+a, h1, p{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 30px 30px;
+  font-size: 22px;
+  color: white!important;
+}
+
+.nav-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 10px;
+  background-color: rgba(49, 87, 44, 0.75);
+  padding: 10px 0 10px 10px;
+  margin : 10px 10px 10px 10px;
+  border-radius: 50px;
+}
+
+.nav-content{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px 50px;
+  //background-color: inherit;
+  padding-right: 10px;
+}
+
+.custom-divider {
+  border-color: inherit !important;
+  height: 50px;
+  opacity: 0;
+}
+

@@ -1,17 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
-import { adminAuthGuard } from './admin-auth.guard';
-import { AuthService } from '../services/auth.service';
-import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { CanActivateChildFn } from '@angular/router';
 
-describe('adminAuthGuard (Angular 19)', () => {
+import { childAuthGuard } from './child-auth.guard';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+
+describe('childAuthGuard', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let routerSpy: jasmine.SpyObj<Router>;
   let route: ActivatedRouteSnapshot;
   let state: RouterStateSnapshot;
 
   beforeEach(() => {
-    authServiceSpy = jasmine.createSpyObj<AuthService>('AuthService', ['isAdmin']);
+    authServiceSpy = jasmine.createSpyObj<AuthService>('AuthService', ['isLoggedIn']);
     routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
 
     TestBed.configureTestingModule({
@@ -21,27 +22,26 @@ describe('adminAuthGuard (Angular 19)', () => {
       ],
     });
 
-    // mocks simples, tu peux les enrichir selon tes besoins
     route = {} as ActivatedRouteSnapshot;
-    state = { url: '/admin' } as RouterStateSnapshot;
+    state = { url: '/protected-child-route' } as RouterStateSnapshot;
   });
 
-  it('should allow access if user is admin', () => {
-    authServiceSpy.isAdmin.and.returnValue(true);
+  it('should allow access when user is logged in', () => {
+    authServiceSpy.isLoggedIn.and.returnValue(true);
 
     const result = TestBed.runInInjectionContext(() =>
-      adminAuthGuard(route, state)
+      childAuthGuard(route, state)
     );
 
     expect(result).toBeTrue();
     expect(routerSpy.navigate).not.toHaveBeenCalled();
   });
 
-  it('should deny access and redirect to login if user is not admin', () => {
-    authServiceSpy.isAdmin.and.returnValue(false);
+  it('should deny access and redirect to login when user is not logged in', () => {
+    authServiceSpy.isLoggedIn.and.returnValue(false);
 
     const result = TestBed.runInInjectionContext(() =>
-      adminAuthGuard(route, state)
+      childAuthGuard(route, state)
     );
 
     expect(result).toBeFalse();
@@ -49,10 +49,9 @@ describe('adminAuthGuard (Angular 19)', () => {
   });
 });
 
-
-describe('adminAuthGuard2', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) =>
-      TestBed.runInInjectionContext(() => adminAuthGuard(...guardParameters));
+describe('childAuthGuard', () => {
+  const executeGuard: CanActivateChildFn = (...guardParameters) =>
+      TestBed.runInInjectionContext(() => childAuthGuard(...guardParameters));
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
