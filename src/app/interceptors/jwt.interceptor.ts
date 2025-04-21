@@ -1,37 +1,22 @@
 import { inject } from '@angular/core';
 import { HttpInterceptorFn } from '@angular/common/http';
-import { AuthService } from '../services/auth.service';
-import { catchError, switchMap } from 'rxjs/operators';
-import { throwError, of } from 'rxjs';
+import { TokenService } from '../services/token.service';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const auth = inject(AuthService);
-  const accessToken = auth.getAccessToken();
+  const tokenService = inject(TokenService);
+  const accessToken = tokenService.getAccessToken();
+
+  // Ignore token for refresh route to avoid infinite loop
+  if (req.url.includes('/refresh')) {
+    return next(req);
+  }
 
   if (accessToken) {
-    const cloned = req.clone({
-      setHeaders: { Authorization: `Bearer ${accessToken}` }
+    req = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${accessToken}`
+      }
     });
-
-    return next(cloned).pipe(
-      catchError(err => {
-        if (err.status === 401) {
-          return auth.refreshToken().pipe(
-            switchMap(newToken => {
-              const retryReq = req.clone({
-                setHeaders: { Authorization: `Bearer ${newToken}` }
-              });
-              return next(retryReq);
-            }),
-            catchError(refreshErr => {
-              auth.logout();
-              return throwError(() => refreshErr);
-            })
-          );
-        }
-        return throwError(() => err);
-      })
-    );
   }
 
   return next(req);
