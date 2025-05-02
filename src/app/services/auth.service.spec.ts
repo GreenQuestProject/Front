@@ -1,21 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AuthService } from './auth.service';
-import {provideRouter} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 
-const mockAuthService = {
-  isLoggedIn: () => true,
-  isAdmin: () => false,
-};
 describe('AuthService', () => {
   let service: AuthService;
+  let authServiceSpy: jasmine.SpyObj<AuthService>;
 
   beforeEach(() => {
+    // Création d'un mock d'AuthService
+    authServiceSpy = jasmine.createSpyObj<AuthService>('AuthService', ['getCurrentUser']);
+
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
-        { provide: AuthService, useValue: mockAuthService },
-      ],
+        { provide: AuthService, useValue: authServiceSpy },
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: {} } } }  // Mock d'ActivatedRoute
+      ]
     });
     service = TestBed.inject(AuthService);
   });
@@ -24,4 +24,3 @@ describe('AuthService', () => {
     expect(service).toBeTruthy();
   });
 });
-
