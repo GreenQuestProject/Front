@@ -4,63 +4,71 @@ import {BehaviorSubject, catchError, map, Observable, of, switchMap, throwError}
 import {tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {User} from '../interfaces/user';
+import {TokenService} from './token.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
-  private accessToken: string | null = null;
   private apiUrl: string = "http://localhost:8000"
 
-  constructor(private http: HttpClient, private router: Router) {
-    this.accessToken = this.getAccessToken();
-  }
+  constructor(private http: HttpClient, private router: Router, private tokenService: TokenService) {}
 
   login(username: string, password: string): Observable<User> {
     const user = {username:username, password: password};
     return this.http.post<{ token: string; refresh_token: string; user: User }>(this.apiUrl+'/api/login', user).pipe(
       tap(res => {
-        this.accessToken = res.token;
-        localStorage.setItem('accessToken', res.token);
-        localStorage.setItem('refreshToken', res.refresh_token); // store refresh token
-        const user: User | null = this.decodeToken(this.accessToken);
-        this.currentUserSubject.next(user);
+        this.tokenService.setAccessToken(res.token);
+        this.tokenService.setRefreshToken(res.refresh_token);
+        this.loadUserFromToken().subscribe(user => {
+          this.currentUserSubject.next(user);
+        });
       }),
-     map(res => user)
+      map(() => this.currentUserSubject.value as User)
     );
   }
 
   logout(): void {
-    this.accessToken = null;
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    this.tokenService.clearTokens();
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
 
-  getAccessToken(): string | null {
-    if(this.accessToken == null){
-      this.accessToken = localStorage.getItem('accessToken') ?? null;
+  public initializeAuth(): Observable<User | null> {
+    const token = this.tokenService.getAccessToken();
+    if (token) {
+      return this.loadUserFromToken().pipe(
+        tap(user => {
+          this.currentUserSubject.next(user);
+        }),
+        catchError(() => {
+          this.currentUserSubject.next(null);
+          return of(null);
+        })
+      );
+    } else {
+      this.currentUserSubject.next(null);
+      return of(null);
     }
-    return this.accessToken;
   }
 
   refreshToken(): Observable<{ accessToken: string }> {
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = this.tokenService.getRefreshToken();
     if (!refreshToken) return throwError(() => new Error('No refresh token'));
 
-    return this.http.post<{ accessToken: string }>(this.apiUrl+'/api/refresh', { refreshToken }).pipe(
-      tap(res => this.accessToken = res.accessToken)
+    return this.http.post<{ accessToken: string }>(`${this.apiUrl}/api/refresh`, { refreshToken }).pipe(
+      tap(res => {
+        this.tokenService.setAccessToken(res.accessToken);
+      })
     );
   }
 
   loadUserFromToken(): Observable<User | null> {
-    const access = this.accessToken;
-    const refresh = localStorage.getItem('refreshToken');
+    const accessToken = this.tokenService.getAccessToken();
+    const refreshToken = this.tokenService.getRefreshToken();
 
-    if (!access && refresh) {
+    if (!accessToken && refreshToken) {
       return this.refreshToken().pipe(
-        switchMap(() => this.http.get<User>(this.apiUrl+'/api/me')),
-        tap(user => this.currentUserSubject.next(user)),
+        switchMap(() => this.loadUserFromToken()),
         catchError(() => {
           this.logout();
           return of(null);
@@ -68,8 +76,12 @@ export class AuthService {
       );
     }
 
-    if (access) {
-      return this.http.get<User>(this.apiUrl+'/api/me').pipe(
+    if (accessToken) {
+      return this.http.get<User>(`${this.apiUrl}/api/user/me`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }).pipe(
         tap(user => this.currentUserSubject.next(user)),
         catchError(() => {
           this.logout();
@@ -81,27 +93,24 @@ export class AuthService {
     return of(null);
   }
 
-  isLoggedIn(): boolean {
-    return !!this.accessToken;
+  isLoggedIn(): Observable<boolean> {
+    return this.getCurrentUser().pipe(
+      map(user => !!user)
+    );
   }
 
-  isAdmin(): boolean {
-    return this.currentUserSubject.value?.role?.includes('admin') ?? false;
+  isAdmin(): Observable<boolean> {
+    return this.getCurrentUser().pipe(
+      map(user => user?.role?.includes('admin') ?? false)
+    );
   }
 
   getCurrentUser(): Observable<User | null> {
     return this.currentUserSubject.asObservable();
   }
-  decodeToken(token: string): User | null {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return {
-        username: payload.username || '',
-        password: "",
-        role: payload.roles || []
-      };
-    } catch {
-      return null;
-    }
+
+  register(user: User): Observable<User> {
+    return this.http.post<User>(this.apiUrl+'/api/register', user);
   }
+
 }

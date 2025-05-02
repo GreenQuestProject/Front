@@ -43,14 +43,6 @@ export class LoginComponent {
     });
   }
 
-  ngOnInit(): void {
-    this.loginForm = this.fb.group({
-      username: ['', ],
-      password: ['', ]
-    });
-
-  }
-
   onSubmit() {
     this.isLoading = true;
     if (this.loginForm.valid) {

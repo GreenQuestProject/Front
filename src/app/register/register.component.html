@@ -1,0 +1,61 @@
+<div class="nav-container">
+  <div class="nav-content">
+    <a mat-button color="warn" title="Accueil" [routerLink]="['']">
+      GreenQuest
+    </a>
+    <mat-divider class="custom-divider" vertical></mat-divider>
+  </div>
+</div>
+<div class="container">
+  <div>
+    <h1>Inscription</h1>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" required />
+          <mat-error *ngIf="registerForm.controls['email'].hasError('email')">
+            Format invalide.
+          </mat-error>
+          <mat-error *ngIf="registerForm.controls['email'].hasError('required')">
+            L'email est requis.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Pseudo</mat-label>
+          <input matInput formControlName="username" required />
+          <mat-error *ngIf="registerForm.controls['username'].hasError('required')">
+            Le pseudo est requis.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput type="password" formControlName="password" required />
+          <mat-error *ngIf="registerForm.controls['password'].hasError('required')">
+            Le pot de passe est requis.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+      <div>
+        <button mat-raised-button color="success" type="submit" [disabled]="registerForm.invalid">Inscription</button>
+      </div>
+      <div>
+        <p>Déjà inscrit ?
+          <a routerLink="/login">
+            Se connecter
+          </a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>
+<div *ngIf="isLoading" class="loading">
+  <mat-spinner></mat-spinner>
+</div>
