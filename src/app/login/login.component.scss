@@ -1,0 +1,81 @@
+div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px 10px;
+}
+
+.container{
+  background-color: rgba(49, 87, 44, 0.75);
+  padding: 10px 10px 10px 10px;
+  margin : 10px 10px 10px 10px;
+  height: calc(100vh - 130px);
+  border-radius: 50px;
+}
+
+.error-message {
+  color: #8e1515;
+  margin : 10px 10px 10px 10px;
+  font-size: 14px;
+}
+
+
+.loading{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  text-align: center;
+}
+
+
+
+a, h1, p{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 30px 30px;
+  font-size: 22px;
+  color: white!important;
+}
+
+.nav-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 10px;
+  background-color: rgba(49, 87, 44, 0.75);
+  padding: 10px 0 10px 10px;
+  margin : 10px 10px 10px 10px;
+  border-radius: 50px;
+}
+
+.nav-content{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px 50px;
+  //background-color: inherit;
+  padding-right: 10px;
+}
+
+.custom-divider {
+  border-color: inherit !important;
+  height: 50px;
+  opacity: 0;
+}
+
