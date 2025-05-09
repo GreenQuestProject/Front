@@ -82,7 +82,8 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_PRIVATE_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest
-            docker stop $IMAGE_NAME || true
-            docker rm $IMAGE_NAME || true
-            docker run -d --name $IMAGE_NAME -p 80:80 ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+            cd /var/www/frontend
+            docker pull kteyssere/greenquest-frontend:latest
+            docker compose down
+            docker compose up -d --build --remove-orphans
