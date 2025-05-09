@@ -63,7 +63,7 @@ jobs:
       - name: Télécharger les fichiers construits
         uses: actions/download-artifact@v4
         with:
-          name: dist
+          name: front
           path: dist/
 
       - name: Connexion a Docker Hub
