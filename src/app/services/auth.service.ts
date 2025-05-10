@@ -5,17 +5,17 @@ import {tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {User} from '../interfaces/user';
 import {TokenService} from './token.service';
-
+import { environment } from '../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
-  private apiUrl: string = "http://localhost:8000"
+  private apiUrl: string = environment.apiUrl
 
   constructor(private http: HttpClient, private router: Router, private tokenService: TokenService) {}
 
   login(username: string, password: string): Observable<User> {
     const user = {username:username, password: password};
-    return this.http.post<{ token: string; refresh_token: string; user: User }>(this.apiUrl+'/api/login', user).pipe(
+    return this.http.post<{ token: string; refresh_token: string; user: User }>(this.apiUrl+'/login', user).pipe(
       tap(res => {
         this.tokenService.setAccessToken(res.token);
         this.tokenService.setRefreshToken(res.refresh_token);
@@ -55,7 +55,7 @@ export class AuthService {
     const refreshToken = this.tokenService.getRefreshToken();
     if (!refreshToken) return throwError(() => new Error('No refresh token'));
 
-    return this.http.post<{ accessToken: string }>(`${this.apiUrl}/api/refresh`, { refreshToken }).pipe(
+    return this.http.post<{ accessToken: string }>(`${this.apiUrl}/refresh`, { refreshToken }).pipe(
       tap(res => {
         this.tokenService.setAccessToken(res.accessToken);
       })
@@ -77,7 +77,7 @@ export class AuthService {
     }
 
     if (accessToken) {
-      return this.http.get<User>(`${this.apiUrl}/api/user/me`, {
+      return this.http.get<User>(`${this.apiUrl}/user/me`, {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
@@ -110,7 +110,7 @@ export class AuthService {
   }
 
   register(user: User): Observable<User> {
-    return this.http.post<User>(this.apiUrl+'/api/register', user);
+    return this.http.post<User>(this.apiUrl+'/register', user);
   }
 
 }
