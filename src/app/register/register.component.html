@@ -9,11 +9,11 @@
 <div class="container">
   <div>
     <h1>Inscription</h1>
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
       <div>
         <mat-form-field appearance="fill">
           <mat-label>Email</mat-label>
-          <input matInput formControlName="email" type="email" required />
+          <input matInput formControlName="email" type="email" required autocomplete="off" />
           <mat-error *ngIf="registerForm.controls['email'].hasError('email')">
             Format invalide.
           </mat-error>
@@ -25,7 +25,7 @@
       <div>
         <mat-form-field appearance="fill">
           <mat-label>Pseudo</mat-label>
-          <input matInput formControlName="username" required />
+          <input matInput formControlName="username" required autocomplete="off" />
           <mat-error *ngIf="registerForm.controls['username'].hasError('required')">
             Le pseudo est requis.
           </mat-error>
@@ -34,7 +34,7 @@
       <div>
         <mat-form-field appearance="fill">
           <mat-label>Mot de passe</mat-label>
-          <input matInput type="password" formControlName="password" required />
+          <input matInput type="password" formControlName="password" required autocomplete="off" />
           <mat-error *ngIf="registerForm.controls['password'].hasError('required')">
             Le pot de passe est requis.
           </mat-error>
