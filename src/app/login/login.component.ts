@@ -4,11 +4,10 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {Router, RouterLink} from "@angular/router";
 import { AuthService } from "../services/auth.service";
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatAnchor, MatButton} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatInput} from '@angular/material/input';
 import {NgIf} from '@angular/common';
-import {MatDivider} from '@angular/material/list';
 
 @Component({
   selector: 'app-login',
@@ -21,9 +20,7 @@ import {MatDivider} from '@angular/material/list';
     MatProgressSpinner,
     MatError,
     MatLabel,
-    NgIf,
-    MatAnchor,
-    MatDivider
+    NgIf
   ],
   standalone: true,
   templateUrl: './login.component.html',
