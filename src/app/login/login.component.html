@@ -4,7 +4,7 @@
   </div>
   <div class="form">
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <h1>Connexion</h1>
+      <h1 tabindex="0">Connexion</h1>
       <div>
         <mat-form-field appearance="fill">
           <mat-label>Pseudo</mat-label>
@@ -29,13 +29,11 @@
       <div>
         <button mat-raised-button color="success" type="submit" [disabled]="loginForm.invalid">Connexion</button>
       </div>
-
-      <div>
-        <p>Pas encore inscrit ?
-          <a routerLink="/register">
-            S'inscrire
-          </a>
-        </p>
+      <p tabindex="0">Pas encore inscrit ?</p>
+      <div tabindex="0">
+        <a title="S'inscrire" [routerLink]="['/register']">
+          S'inscrire
+        </a>
       </div>
     </form>
   </div>

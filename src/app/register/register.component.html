@@ -4,7 +4,7 @@
   </div>
   <div class="form">
     <div>
-      <h1>Inscription</h1>
+      <h1 tabindex="0">Inscription</h1>
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
         <div>
           <mat-form-field appearance="fill">
@@ -42,12 +42,11 @@
         <div>
           <button mat-raised-button color="success" type="submit" [disabled]="registerForm.invalid">Inscription</button>
         </div>
-        <div>
-          <p>Déjà inscrit ?
-            <a routerLink="/login">
+        <p tabindex="0">Déjà inscrit ?</p>
+        <div tabindex="0">
+            <a title="S'inscrire" [routerLink]="['/login']">
               Se connecter
             </a>
-          </p>
         </div>
       </form>
     </div>
