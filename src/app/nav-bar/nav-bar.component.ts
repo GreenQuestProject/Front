@@ -3,7 +3,7 @@ import {Router, RouterLink} from "@angular/router";
 import {AuthService} from "../services/auth.service";
 import {MatAnchor, MatButton} from '@angular/material/button';
 import {MatDivider} from '@angular/material/list';
-import {MatIcon} from '@angular/material/icon';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-nav-bar',
@@ -12,7 +12,7 @@ import {MatIcon} from '@angular/material/icon';
     MatButton,
     RouterLink,
     MatAnchor,
-    MatIcon
+    MatIconModule
   ],
   standalone: true,
   templateUrl: './nav-bar.component.html',
