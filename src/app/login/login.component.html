@@ -1,49 +1,43 @@
-<div class="nav-container">
-  <div class="nav-content">
-    <a mat-button color="warn" title="Accueil" [routerLink]="['']">
-      GreenQuest
-    </a>
-    <mat-divider class="custom-divider" vertical></mat-divider>
-
-  </div>
-</div>
 <div class="container">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <h1>Connexion</h1>
-    <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Pseudo</mat-label>
-        <input matInput formControlName="username" required />
-        <mat-error *ngIf="loginForm.controls['username'].hasError('required')">
-          Le pseudo est requis.
-        </mat-error>
-      </mat-form-field>
-    </div>
-    <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Mot de passe</mat-label>
-        <input matInput type="password" formControlName="password" required />
-        <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
-          Le mot de passe est requis.
-        </mat-error>
-      </mat-form-field>
-    </div>
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </div>
-    <div>
-      <button mat-raised-button color="success" type="submit" [disabled]="loginForm.invalid">Connexion</button>
-    </div>
-
-    <div>
-      <p>Pas encore inscrit ?
-        <a routerLink="/register">
+  <div class="icon">
+    <img src="favicon.ico" alt="green quest icon">
+  </div>
+  <div class="form">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <h1 tabindex="0">Connexion</h1>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Pseudo</mat-label>
+          <input matInput formControlName="username" required />
+          <mat-error *ngIf="loginForm.controls['username'].hasError('required')">
+            Le pseudo est requis.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput type="password" formControlName="password" required />
+          <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
+            Le mot de passe est requis.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+      <div>
+        <button mat-raised-button color="success" type="submit" [disabled]="loginForm.invalid">Connexion</button>
+      </div>
+      <p tabindex="0">Pas encore inscrit ?</p>
+      <div tabindex="0">
+        <a title="S'inscrire" [routerLink]="['/register']">
           S'inscrire
         </a>
-      </p>
-    </div>
-  </form>
-</div>
-<div *ngIf="isLoading" class="loading">
-  <mat-spinner></mat-spinner>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="isLoading" class="loading">
+    <mat-spinner></mat-spinner>
+  </div>
 </div>

@@ -13,27 +13,126 @@ a{
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10px 10px;
-  background-color: rgba(49, 87, 44, 0.75);
   padding: 10px 0 10px 10px;
   margin : 10px 10px 10px 10px;
   border-radius: 50px;
 }
 
-.content{
+.logo-content{
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-evenly;
   gap: 10px 50px;
-  //background-color: inherit;
   padding-right: 10px;
+}
+
+.content{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(49, 87, 44, 0.75);
+  gap: 10px 10px;
+  padding: 10px 10px 10px 10px;
+  margin : 10px 10px 10px 10px;
+  border-radius: 50px;
 }
 
 .custom-divider {
   border-color: black !important;
   height: 50px;
   opacity: 0;
+}
+.btn-content {
+  display: flex;
+  gap: 1rem; /* espacement entre les boutons */
+  justify-content: center; /* centre horizontalement */
+  align-items: center; /* centre verticalement */
+}
+
+button {
+  aspect-ratio: 1 / 1;
+  min-width: 45px;
+  height: 45px;
+  padding: 0 0 0 15px;
+}
+
+button > mat-icon {
+  font-size: 25px; /* agrandit l'icône */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.icon{
+  width: 104px;
+  height: 104px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icon img {
+  width: 100%;
+  display: block;
+}
+
+.link-home{
+  width: 104px;
+  height: 104px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 10px;
+  }
+
+  .content {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    border-radius: 20px;
+  }
+
+  .btn-content {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  button {
+    min-width: 56px;
+    height: 56px;
+    padding: 0 0 0 15px;
+  }
+
+  button > mat-icon {
+    font-size: 28px;
+  }
+
+  .icon, .link-home {
+    width: 80px;
+    height: 80px;
+  }
+
+  .icon img {
+    width: 100%;
+    height: auto;
+  }
+
+  .custom-divider {
+    display: none;
+  }
 }

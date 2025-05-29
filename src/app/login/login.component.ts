@@ -8,7 +8,6 @@ import {MatAnchor, MatButton} from '@angular/material/button';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatInput} from '@angular/material/input';
 import {NgIf} from '@angular/common';
-import {MatDivider} from '@angular/material/list';
 
 @Component({
   selector: 'app-login',
@@ -21,9 +20,7 @@ import {MatDivider} from '@angular/material/list';
     MatProgressSpinner,
     MatError,
     MatLabel,
-    NgIf,
-    MatAnchor,
-    MatDivider
+    NgIf
   ],
   standalone: true,
   templateUrl: './login.component.html',

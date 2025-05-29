@@ -3,12 +3,11 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/
 import {AuthService} from "../services/auth.service";
 import {Router, RouterLink} from "@angular/router";
 import {User} from "../interfaces/user";
-import {MatAnchor, MatButton} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {NgIf} from '@angular/common';
-import {MatDivider} from '@angular/material/list';
 
 @Component({
   selector: 'app-register',
@@ -21,9 +20,7 @@ import {MatDivider} from '@angular/material/list';
     MatInput,
     NgIf,
     MatError,
-    MatLabel,
-    MatAnchor,
-    MatDivider,
+    MatLabel
   ],
   standalone: true,
   templateUrl: './register.component.html',
