@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ChallengeListComponent } from './challenge-list.component';
+import {provideHttpClient} from '@angular/common/http';
+import {ActivatedRoute} from '@angular/router';
 
 describe('ChallengeListComponent', () => {
   let component: ChallengeListComponent;
@@ -8,7 +10,8 @@ describe('ChallengeListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChallengeListComponent]
+      imports: [ChallengeListComponent],
+      providers: [provideHttpClient(), { provide: ActivatedRoute, useValue: { snapshot: { paramMap: {} } } }]
     })
     .compileComponents();
 
