@@ -13,11 +13,6 @@
 }
 
 .content{
-  background-color: aliceblue;
-  padding: 5px 0 5px 0;
-}
-
-.content{
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -25,6 +20,7 @@
   justify-content: space-evenly;
   gap: 10px 10px;
   border-radius: 30px;
+  padding: 5px 0 5px 0;
 }
 
 button{
