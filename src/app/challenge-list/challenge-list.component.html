@@ -1,0 +1,26 @@
+<app-nav-bar></app-nav-bar>
+<div class="container">
+
+  <h1>Liste de défis</h1>
+
+  <div *ngIf="challenges.length > 0; else noChallenges" class="content">
+    <mat-card *ngFor="let challenge of challenges" appearance="raised">
+      <mat-card-header>
+        <h1>{{challenge.name}}</h1>
+      </mat-card-header>
+      <mat-card-content>
+        {{challenge.description}} - {{challenge.category}}
+      </mat-card-content>
+     <mat-card-actions>
+        <button mat-icon-button color="warn" aria-label="Commencer le défi" (click)="start(challenge.id)">
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <div>
+    <ng-template #noChallenges>
+      <p>Aucun défi trouvé.</p>
+    </ng-template>
+  </div>
+</div>
