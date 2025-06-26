@@ -10,7 +10,6 @@ import {TranslateCategoryPipe} from '../pipes/translate-category.pipe';
 import {MatButton} from '@angular/material/button';
 import {TranslateStatusPipe} from '../pipes/translate-status.pipe';
 import {FormsModule} from '@angular/forms';
-import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
 import {MatIcon} from '@angular/material/icon';
 
 @Component({
@@ -55,7 +54,6 @@ export class ProgressionListComponent implements OnInit {
         this.status = [...new Set(data.map(ch => ch.status))];
         this.selectedStatus = [...this.status];
         this.progressions = data;
-        //this.applyFilters();
         this.notFoundMessage = "Aucun défi trouvé.";
       },
       error: (error) => {
@@ -63,46 +61,6 @@ export class ProgressionListComponent implements OnInit {
         if (error.status === 401) {
           this.router.navigateByUrl('/login');
         }
-      }
-    });
-  }
-
-  onCategorySelectionChange() {
-    if (this.selectedCategories.length === 0) {
-      this.progressions = [];
-      return;
-    }
-    const selected = this.selectedCategories;
-    this.isLoading = true;
-    this.progressionService.getProgressions(selected).subscribe({
-      next: (data) => {
-        this.progressions = data;
-        this.isLoading = false;
-        this.notFoundMessage = "Aucun défi trouvé. Essayez de modifier vos filtres.";
-      },
-      error: (error) => {
-        console.error(error);
-        this.isLoading = false;
-      }
-    });
-  }
-
-  onStatusSelectionChange() {
-    if (this.selectedStatus.length === 0) {
-      this.progressions = [];
-      return;
-    }
-    const selected = this.selectedStatus;
-    this.isLoading = true;
-    this.progressionService.getProgressions(selected).subscribe({
-      next: (data) => {
-        this.progressions = data;
-        this.isLoading = false;
-        this.notFoundMessage = "Aucun défi trouvé. Essayez de modifier vos filtres.";
-      },
-      error: (error) => {
-        console.error(error);
-        this.isLoading = false;
       }
     });
   }
