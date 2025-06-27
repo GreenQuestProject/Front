@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProgressionListComponent } from './progression-list.component';
+import {provideHttpClient} from '@angular/common/http';
+import {ActivatedRoute} from '@angular/router';
 
 describe('ProgressionListComponent', () => {
   let component: ProgressionListComponent;
@@ -8,7 +10,8 @@ describe('ProgressionListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProgressionListComponent]
+      imports: [ProgressionListComponent],
+      providers: [provideHttpClient(), { provide: ActivatedRoute, useValue: { snapshot: { paramMap: {} } } }]
     })
     .compileComponents();
 
