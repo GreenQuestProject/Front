@@ -3,4 +3,5 @@ export interface Challenge {
   name: string;
   description?: string;
   category: string;
+  isInUserProgression: boolean;
 }
