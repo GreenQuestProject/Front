@@ -40,7 +40,7 @@
         </div>
         <div>
           <h4>Status :
-          <span [style.color]="getStatusColor(progression.status)">
+            <span [style.color]="getStatusColor(progression.status)">
       {{progression.status | translateStatus}}
     </span>
           </h4>
@@ -49,12 +49,13 @@
           {{progression.description}}
         </div>
       </mat-card-content>
-      <mat-card-actions  *ngIf="progression.status !== 'completed' && progression.status !== 'failed'">
-       <!-- <button mat-raised-button color="warn" title="Commencer le défi" (click)="start(challenge.id)">
-          <mat-icon>add</mat-icon>
-        </button>-->
-<button mat-raised-button color="primary" (click)="valider(progression)"><mat-icon>check</mat-icon></button>
-  <button mat-raised-button color="warn" (click)="abandonner(progression)"><mat-icon>close</mat-icon></button>
+      <mat-card-actions *ngIf="progression.status !== 'completed' && progression.status !== 'failed'">
+        <button mat-raised-button color="primary" (click)="validate(progression.id)">
+          <mat-icon>check</mat-icon>
+        </button>
+        <button mat-raised-button color="warn" (click)="remove(progression.id)">
+          <mat-icon>close</mat-icon>
+        </button>
       </mat-card-actions>
     </mat-card>
   </div>

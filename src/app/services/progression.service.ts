@@ -8,7 +8,7 @@ import {Progression} from '../interfaces/progression';
   providedIn: 'root'
 })
 export class ProgressionService {
-  private apiUrl: string = environment.apiUrl
+  private apiUrl: string = environment.apiUrl+'/progression';
   constructor(private http: HttpClient) { }
 
   getProgressions(categories?: string[], status?: string[]): Observable<Progression[]> {
@@ -19,6 +19,23 @@ export class ProgressionService {
     if (status && status.length > 0) {
       params = params.set('status', status.join(','));
     }
-    return this.http.get<Progression[]>(this.apiUrl+'/progression', { params });
+    return this.http.get<Progression[]>(this.apiUrl, { params });
   }
+
+  startChallenge(challengeId: number) {
+    return this.http.post(this.apiUrl+`/start/${challengeId}`, {});
+  }
+
+  removeChallenge(challengeId: number) {
+    return this.http.delete(this.apiUrl+`/remove/${challengeId}`, {});
+  }
+
+  validateChallenge(challengeId: number) {
+    return this.http.post(this.apiUrl+`/validate/${challengeId}`, {});
+  }
+
+  updateStatus(progressionId: number, status: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/status/${progressionId}`, { status });
+  }
+
 }
