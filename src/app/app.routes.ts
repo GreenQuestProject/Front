@@ -6,6 +6,7 @@ import {childAuthGuard} from './guards/child-auth.guard';
 import {RegisterComponent} from './register/register.component';
 import {loginRedirectGuard} from './guards/login-redirect.guard';
 import {ChallengeListComponent} from './challenge-list/challenge-list.component';
+import {ProgressionListComponent} from './progression-list/progression-list.component';
 
 export const routes: Routes = [
   {
@@ -27,6 +28,11 @@ export const routes: Routes = [
   {
     path: 'défis',
     component: ChallengeListComponent,
+    canActivate: [childAuthGuard]
+  },
+  {
+    path: 'progression',
+    component: ProgressionListComponent,
     canActivate: [childAuthGuard]
   },
   {

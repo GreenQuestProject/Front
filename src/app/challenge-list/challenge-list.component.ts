@@ -12,7 +12,9 @@ import {
   MatChipOption,MatChipsModule
 } from '@angular/material/chips';
 import {FormsModule} from '@angular/forms';
-import {TranslateCategoryPipe} from '../translate-category.pipe';
+import {TranslateCategoryPipe} from '../pipes/translate-category.pipe';
+import {MatTooltip} from '@angular/material/tooltip';
+import {ProgressionService} from '../services/progression.service';
 
 @Component({
   selector: 'app-challenge-list',
@@ -30,7 +32,8 @@ import {TranslateCategoryPipe} from '../translate-category.pipe';
     MatChipOption,
     FormsModule,
     MatChipsModule,
-    TranslateCategoryPipe
+    TranslateCategoryPipe,
+    MatTooltip
   ],
   templateUrl: './challenge-list.component.html',
   styleUrl: './challenge-list.component.scss',
@@ -42,17 +45,16 @@ export class ChallengeListComponent implements OnInit {
   categories: any = ["ecology","health","community","education","personal_development","none"];
   selectedCategories: string[] = [];
   notFoundMessage: string = "";
-  constructor(private challengeService: ChallengeService, private router: Router) {
+  constructor(private challengeService: ChallengeService, private router: Router, private progressionService: ProgressionService) {
 
   }
 
   ngOnInit(): void {
     this.challengeService.getChallenges().subscribe({
       next: (data) => {
-        this.challenges = data;
         this.categories = [...new Set(data.map(ch => ch.category))];
         this.selectedCategories = [...this.categories];
-        this.onCategorySelectionChange();
+        this.challenges = data;
         this.notFoundMessage = "Aucun défi trouvé.";
       },
       error: (error) => {
@@ -65,17 +67,29 @@ export class ChallengeListComponent implements OnInit {
   }
 
   start(id: number | undefined) {
+    if (!id) return;
 
+    this.progressionService.startChallenge(id).subscribe({
+      next: (response) => {
+        this.challenges = this.challenges.map(c =>
+          c.id === id ? {...c, isInUserProgression: true} : c
+        );
+      },
+      error: (error) => {
+        console.error('Erreur lors du démarrage du défi :', error);
+      }
+    });
   }
+
 
     onCategorySelectionChange() {
-     if (this.selectedCategories.length === 0) {
-    this.challenges = [];
-    return;
-  }
-    const selected = this.selectedCategories;
+      if (this.selectedCategories.length === 0) {
+        this.challenges = [];
+        return;
+      }
+
     this.isLoading = true;
-    this.challengeService.getChallenges(selected).subscribe({
+    this.challengeService.getChallenges(this.selectedCategories).subscribe({
       next: (data) => {
         this.challenges = data;
         this.isLoading = false;
