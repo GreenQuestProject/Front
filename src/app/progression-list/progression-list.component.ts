@@ -43,6 +43,7 @@ export class ProgressionListComponent implements OnInit {
   selectedStatus: string[] = [];
   notFoundMessage: string = "";
 
+
   constructor(private progressionService: ProgressionService, private router: Router) {
   }
 
@@ -52,9 +53,10 @@ export class ProgressionListComponent implements OnInit {
         this.categories = [...new Set(data.map(ch => ch.category))];
         this.selectedCategories = [...this.categories];
         this.status = [...new Set(data.map(ch => ch.status))];
-        this.selectedStatus = [...this.status];
+        this.selectedStatus = this.status.filter((s: string) => s !== 'failed');
         this.progressions = data;
         this.notFoundMessage = "Aucun défi trouvé.";
+        this.applyFilters();
       },
       error: (error) => {
         console.error(error);
@@ -66,26 +68,13 @@ export class ProgressionListComponent implements OnInit {
   }
 
   applyFilters() {
-    let categories = this.selectedCategories;
-    let status = this.selectedStatus;
+    const categories = this.selectedCategories;
+    const status = this.selectedStatus;
 
-    const allCategoriesSelected = categories.length === this.categories.length;
-    const allStatusSelected = status.length === this.status.length;
-
-    if (allCategoriesSelected) {
-      categories = [];
-    }
-
-    if (allStatusSelected) {
-      status = [];
-    }
-
-    const noCategorySelected = categories.length === 0 && !allCategoriesSelected;
-    const noStatusSelected = status.length === 0 && !allStatusSelected;
-
-    if (noCategorySelected && noStatusSelected) {
+    // Si aucun filtre sélectionné, on affiche rien
+    if (categories.length === 0 || status.length === 0) {
       this.progressions = [];
-      this.notFoundMessage = "Aucun filtre sélectionné.";
+      this.notFoundMessage = "Aucune progression trouvée. Essayez de modifier vos filtres.";
       return;
     }
 
@@ -94,7 +83,7 @@ export class ProgressionListComponent implements OnInit {
       next: (data) => {
         this.progressions = data;
         this.isLoading = false;
-        this.notFoundMessage = "Aucune progression trouvée. Essayez de modifier vos filtres.";
+        this.notFoundMessage = "Aucune progression trouvée. Essayez de modifier vos filtres."
       },
       error: (error) => {
         console.error(error);
@@ -102,7 +91,6 @@ export class ProgressionListComponent implements OnInit {
       }
     });
   }
-
 
   getStatusColor(status: string): string {
     switch (status) {
@@ -120,15 +108,45 @@ export class ProgressionListComponent implements OnInit {
   }
 
 
-  valider(progression: Progression) {
-    console.log('Valider progression', progression);
-    // changer le status en "completed"
+  validate(id: number | undefined) {
+    if (!id) return;
+
+    this.progressionService.updateStatus(id, 'completed').subscribe({
+      next: (response) => {
+        this.progressions = this.progressions.map(p =>
+          p.id === id ? {...p, status: "completed"} : p
+        );
+        this.refreshFilters();
+      },
+      error: (error) => {
+        console.error('Erreur lors du démarrage du défi :', error);
+      }
+    });
   }
 
-  abandonner(progression: Progression) {
-    console.log('Abandonner progression', progression);
-    // changer le status en "failed" ou autre logique
+  remove(id: number | undefined) {
+    if (!id) return;
+
+    this.progressionService.updateStatus(id, 'failed').subscribe({
+      next: (response) => {
+        this.progressions = this.progressions.map(p =>
+          p.id === id ? {...p, status: "failed"} : p
+        );
+        this.refreshFilters();
+      },
+      error: (error) => {
+        console.error('Erreur lors du démarrage du défi :', error);
+      }
+    });
   }
 
+  private refreshFilters() {
+    this.categories = [...new Set(this.progressions.map(ch => ch.category))];
+    this.status = [...new Set(this.progressions.map(ch => ch.status))];
 
+    this.selectedCategories = this.selectedCategories.filter(cat => this.categories.includes(cat));
+    this.selectedStatus = this.selectedStatus.filter(stat => this.status.includes(stat));
+
+    this.applyFilters();
+  }
 }

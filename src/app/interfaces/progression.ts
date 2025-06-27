@@ -1,6 +1,7 @@
 
 export interface Progression {
   id?: number;
+  idChallenge?: number;
   description: string;
   name: string;
   category: string;
