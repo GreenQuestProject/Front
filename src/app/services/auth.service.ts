@@ -51,22 +51,23 @@ export class AuthService {
     }
   }
 
-  refreshToken(): Observable<{ accessToken: string }> {
+  refreshToken(): Observable<{ token: string, refresh_token: string  }> {
     const refreshToken = this.tokenService.getRefreshToken();
     if (!refreshToken) return throwError(() => new Error('No refresh token'));
 
-    return this.http.post<{ accessToken: string }>(`${this.apiUrl}/refresh`, { refreshToken }).pipe(
+    return this.http.post<{ token: string, refresh_token: string }>(`${this.apiUrl}/token/refresh`, { "refresh_token":refreshToken }).pipe(
       tap(res => {
-        this.tokenService.setAccessToken(res.accessToken);
+        this.tokenService.setAccessToken(res.token);
+        this.tokenService.setRefreshToken(res.refresh_token);
       })
     );
   }
 
   loadUserFromToken(): Observable<User | null> {
     const accessToken = this.tokenService.getAccessToken();
-    const refreshToken = this.tokenService.getRefreshToken();
+    //const refreshToken = this.tokenService.getRefreshToken();
 
-    if (!accessToken && refreshToken) {
+    /*if (!accessToken && refreshToken) {
       return this.refreshToken().pipe(
         switchMap(() => this.loadUserFromToken()),
         catchError(() => {
@@ -74,7 +75,8 @@ export class AuthService {
           return of(null);
         })
       );
-    }
+    }*/
+
 
     if (accessToken) {
       return this.http.get<User>(`${this.apiUrl}/user/me`, {
