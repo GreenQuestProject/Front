@@ -53,8 +53,31 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Unit tests (ChromeHeadless)
-        run: npm run test -- --watch=false --browsers=ChromeHeadless
+      # --- TESTS + COUVERTURE (lcov) ---
+      - name: Unit tests (ChromeHeadless + coverage)
+        run: |
+          # Active la couverture; Angular écrit coverage/<appName>/lcov.info
+          npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage
+          # Normalise le chemin: copie le premier lcov trouvé vers coverage/lcov.info
+          mkdir -p coverage
+          LCOV_PATH="$(find coverage -name lcov.info -print -quit)"
+          if [ -n "$LCOV_PATH" ]; then cp "$LCOV_PATH" coverage/lcov.info; else echo "lcov.info introuvable" && exit 1; fi
+
+      # --- SONARQUBE SCAN ---
+      - name: SonarQube Scan (frontend)
+        uses: SonarSource/sonarqube-scan-action@v5
+        with:
+          args: >
+            -Dsonar.projectKey=greenquest-frontend
+            -Dsonar.projectName=GreenQuest Frontend
+            -Dsonar.sources=src
+            -Dsonar.tests=src
+            -Dsonar.test.inclusions=**/*.spec.ts
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.projectBaseDir=.
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # Déploiement STAGING sur develop
   deploy_staging:
@@ -79,7 +102,6 @@ jobs:
           if npm run | grep -q "configuration=staging"; then
             npm run build -- --configuration=staging
           else
-            # fallback si pas de config "staging": on utilise production
             npm run build -- --configuration=production
           fi
 
