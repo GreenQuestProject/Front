@@ -3,80 +3,99 @@ name: CI/CD Frontend
 on:
   push:
     branches: [ main, develop ]
+    push:
+      tags:
+        - 'v*'
   pull_request:
     branches: [ main, develop ]
 
 env:
-  IMAGE_NAME: greenquest-frontend
+  IMAGE: kteyssere/greenquest-frontend
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout du code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
 
-      - name: Installer les dépendances
+      - name: Install deps
         run: npm ci
 
-      - name: Build Angular en production
+      - name: Build (production config par défaut)
         run: npm run build -- --configuration=production
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: front
+          name: front-dist
           path: dist/
 
   test:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Checkout du code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
 
-      - name: Installer les dépendances
+      - name: Install deps
         run: npm ci
 
-      - name: Lancer les tests unitaires
+      - name: Unit tests (ChromeHeadless)
         run: npm run test -- --watch=false --browsers=ChromeHeadless
 
-  deploy:
+  # Déploiement STAGING sur develop
+  deploy_staging:
     runs-on: ubuntu-latest
     needs: [build, test]
-    if: github.ref == 'refs/heads/main'
-
+    if: github.ref == 'refs/heads/develop'
     steps:
-      - name: Checkout du code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Télécharger les fichiers construits
-        uses: actions/download-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: front
-          path: dist/
+          node-version: '18'
+          cache: 'npm'
 
-      - name: Connexion a Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Install deps
+        run: npm ci
 
-      - name: Construire l'image Docker
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest .
+      - name: Build (staging)
+        run: |
+          if npm run | grep -q "configuration=staging"; then
+            npm run build -- --configuration=staging
+          else
+            # fallback si pas de config "staging": on utilise production
+            npm run build -- --configuration=production
+          fi
 
-      - name: Pousser l'image Docker
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE_NAME:latest
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Déployer sur le VPS via SSH
-        uses: appleboy/ssh-action@v0.1.10
+      - name: Build & Push image (:staging)
+        run: |
+          docker build -t $IMAGE:staging .
+          docker push $IMAGE:staging
+
+      - name: Deploy to VPS (staging)
+        uses: appleboy/ssh-action@v0.1.0
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
@@ -84,6 +103,51 @@ jobs:
           script: |
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
             cd /var/www
-            docker pull kteyssere/greenquest-frontend:latest
-            docker compose down
+            docker pull $IMAGE:staging
+            docker compose -f docker-compose.staging.yml up -d --build --remove-orphans
+
+  # Déploiement PROD sur tag vX.Y.Z
+  deploy_prod:
+    runs-on: ubuntu-latest
+    needs: [build, test]
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build (production)
+        run: npm run build -- --configuration=production
+
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push images (:v* + :latest)
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          docker build -t $IMAGE:$VERSION -t $IMAGE:latest .
+          docker push $IMAGE:$VERSION
+          docker push $IMAGE:latest
+
+      - name: Deploy to VPS (prod)
+        uses: appleboy/ssh-action@v0.1.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          script: |
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+            cd /var/www
+            docker pull $IMAGE:latest
             docker compose up -d --build --remove-orphans
