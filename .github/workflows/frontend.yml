@@ -56,7 +56,7 @@ jobs:
       - name: Unit tests (ChromeHeadless + coverage)
         run: |
           # Active la couverture; Angular écrit coverage/<appName>/lcov.info
-          npm run test -- --watch=false --browsers=ChromeHeadless --no-sandbox --code-coverage
+          npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage
           # Normalise le chemin: copie le premier lcov trouvé vers coverage/lcov.info
           mkdir -p coverage
           LCOV_PATH="$(find coverage -name lcov.info -print -quit)"
