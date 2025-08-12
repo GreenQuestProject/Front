@@ -63,12 +63,29 @@ jobs:
           if [ -n "$LCOV_PATH" ]; then cp "$LCOV_PATH" coverage/lcov.info; else echo "lcov.info introuvable" && exit 1; fi
 
       # --- SONARQUBE SCAN ---
-      - name: SonarQube Scan (frontend)
+      - name: SonarQube Scan for dev
+        if: github.ref == 'refs/heads/develop'
         uses: SonarSource/sonarqube-scan-action@v5
         with:
           args: >
-            -Dsonar.projectKey=greenquest-frontend
-            -Dsonar.projectName=GreenQuest Frontend
+            -Dsonar.projectKey=front-dev
+            -Dsonar.projectName=front-dev
+            -Dsonar.sources=src
+            -Dsonar.tests=src
+            -Dsonar.test.inclusions=**/*.spec.ts
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.projectBaseDir=.
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_DEV }}
+
+      - name: SonarQube Scan for main
+        if: github.ref == 'refs/heads/main'
+        uses: SonarSource/sonarqube-scan-action@v5
+        with:
+          args: >
+            -Dsonar.projectKey=front
+            -Dsonar.projectName=front
             -Dsonar.sources=src
             -Dsonar.tests=src
             -Dsonar.test.inclusions=**/*.spec.ts
