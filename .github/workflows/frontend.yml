@@ -60,7 +60,14 @@ jobs:
           # Normalise le chemin: copie le premier lcov trouvé vers coverage/lcov.info
           mkdir -p coverage
           LCOV_PATH="$(find coverage -name lcov.info -print -quit)"
-          if [ -n "$LCOV_PATH" ]; then cp "$LCOV_PATH" coverage/lcov.info; else echo "lcov.info introuvable" && exit 1; fi
+
+          if [ -n "$LCOV_PATH" ]; then
+            if [ "$LCOV_PATH" != "coverage/lcov.info" ]; then
+              cp "$LCOV_PATH" coverage/lcov.info
+            fi
+          else
+            echo "lcov.info introuvable" && exit 1
+          fi
 
       # --- SONARQUBE SCAN ---
       - name: SonarQube Scan for dev
