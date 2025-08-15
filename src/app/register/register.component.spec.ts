@@ -1,149 +1,142 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../services/auth.service';
 import { User } from '../interfaces/user';
-import { provideRouter, Router } from '@angular/router';
 import { Subject, throwError } from 'rxjs';
+import { renderStandalone } from '../../testing/test-helpers';
+import { TEXTS } from '../../testing/progression-helpers';
 
 describe('RegisterComponent (DOM)', () => {
-  let fixture: ComponentFixture<RegisterComponent>;
-  let component: RegisterComponent;
-  let element: HTMLElement;
   let authServiceSpy: jasmine.SpyObj<AuthService>;
-  let router: Router;
-  let consoleErrorSpy: jasmine.Spy;
 
-  beforeEach(async () => {
+  const getSubmitButton = (el: HTMLElement) =>
+    el.querySelector('button[type="submit"]') as HTMLButtonElement;
+  const getSpinner = (el: HTMLElement) => el.querySelector('mat-spinner');
+  const getGlobalError = (el: HTMLElement) =>
+    el.querySelector('.error-message') as HTMLElement | null;
+
+  beforeEach(() => {
     authServiceSpy = jasmine.createSpyObj<AuthService>('AuthService', ['register']);
-
-    await TestBed.configureTestingModule({
-      imports: [RegisterComponent], // standalone, le composant importe déjà Material & ReactiveForms
-      providers: [
-        { provide: AuthService, useValue: authServiceSpy },
-        provideRouter([]),
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(RegisterComponent);
-    component = fixture.componentInstance;
-    element = fixture.nativeElement as HTMLElement;
-
-    router = TestBed.inject(Router);
-    spyOn(router, 'navigateByUrl').and.returnValue(Promise.resolve(true));
-
-    // éviter le bruit console dans les tests
-    consoleErrorSpy = spyOn(console, 'error').and.stub();
-
-    fixture.detectChanges();
   });
 
-  function getSubmitButton(): HTMLButtonElement {
-    return element.querySelector('button[type="submit"]') as HTMLButtonElement;
-  }
-  function getSpinner(): Element | null {
-    return element.querySelector('mat-spinner');
-  }
-  function getGlobalError(): HTMLElement | null {
-    return element.querySelector('.error-message');
-  }
-
-  it('devrait créer le composant', () => {
-    expect(component).toBeTruthy();
+  it('devrait créer le composant', async () => {
+    const { instance } = await renderStandalone(RegisterComponent, {
+      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+    });
+    expect(instance).toBeTruthy();
   });
 
-  it('état initial: bouton disabled, pas de message d’erreur global, pas de spinner', () => {
-    const submitBtn = getSubmitButton();
-    expect(submitBtn).toBeTruthy();
+  it('état initial: bouton disabled, pas de message global, pas de spinner', async () => {
+    const { instance, element } = await renderStandalone(RegisterComponent, {
+      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+    });
+    const submitBtn = getSubmitButton(element);
+    expect(instance.registerForm.valid).toBeFalse();
     expect(submitBtn.disabled).toBeTrue();
-
-    expect(getGlobalError()).toBeNull();
-    expect(getSpinner()).toBeNull();
+    expect(getGlobalError(element)).toBeNull();
+    expect(getSpinner(element)).toBeNull();
   });
 
-  it('affiche les erreurs quand les champs sont touchés/invalides (Material MDC)', () => {
-    const host = element;
+  it('affiche les erreurs quand les champs sont touchés/invalides (Material MDC)', async () => {
+    const { instance, fixture, element } = await renderStandalone(RegisterComponent, {
+      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+    });
 
-    // 1) Champs vides -> erreurs "required"
-    component.registerForm.markAllAsTouched();
-    component.registerForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    // 1) "required"
+    instance.registerForm.markAllAsTouched();
+    instance.registerForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
     fixture.detectChanges();
 
-    const getErrorTexts = () =>
-      Array.from(host.querySelectorAll('.mat-mdc-form-field-error'))
+    const errorTexts = () =>
+      Array.from(element.querySelectorAll('.mat-mdc-form-field-error'))
         .map(e => (e.textContent || '').trim());
 
-    let errors = getErrorTexts();
+    let errors = errorTexts();
     expect(errors.some(t => t.includes("L'email est requis."))).toBeTrue();
     expect(errors.some(t => t.includes('Le pseudo est requis.'))).toBeTrue();
     expect(errors.some(t => t.includes('Le pot de passe est requis.'))).toBeTrue();
 
-    // 2) Email au mauvais format -> "Format invalide."
-    const emailCtrl = component.registerForm.controls['email'];
+    // 2) email invalide
+    const emailCtrl = instance.registerForm.controls['email'];
     emailCtrl.setValue('not-an-email');
     emailCtrl.markAsDirty();
     emailCtrl.markAsTouched();
     emailCtrl.updateValueAndValidity();
     fixture.detectChanges();
 
-    errors = getErrorTexts();
+    errors = errorTexts();
     expect(errors.some(t => t.includes('Format invalide.'))).toBeTrue();
   });
 
-  it('rend le bouton submit activé quand le formulaire est valide', () => {
-    component.registerForm.setValue({
+  it('rend le bouton submit activé quand le formulaire est valide', async () => {
+    const { instance, fixture, element } = await renderStandalone(RegisterComponent, {
+      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+    });
+
+    instance.registerForm.setValue({
       email: 'karina@example.com',
       username: 'karina',
       password: 'password123',
     });
     fixture.detectChanges();
 
-    const submitBtn = getSubmitButton();
-    expect(component.registerForm.valid).toBeTrue();
+    const submitBtn = getSubmitButton(element);
+    expect(instance.registerForm.valid).toBeTrue();
     expect(submitBtn.disabled).toBeFalse();
   });
 
-  it('onSubmit avec formulaire invalide: message d’erreur global, pas d’appel API, pas de navigation', () => {
-    component.onSubmit();
+  it('onSubmit invalide: message global, pas d’appel API, pas de nav', async () => {
+    const { instance, fixture, element, navigateByUrlSpy } =
+      await renderStandalone(RegisterComponent, {
+        providers: [{ provide: AuthService, useValue: authServiceSpy }],
+      });
+
+    instance.onSubmit();
     fixture.detectChanges();
 
     expect(authServiceSpy.register).not.toHaveBeenCalled();
-    const globalErr = getGlobalError();
+    const globalErr = getGlobalError(element);
     expect(globalErr).not.toBeNull();
-    expect(globalErr!.textContent).toContain("Veuillez remplir correctement le formulaire avant de le soumettre.");
-    expect(getSpinner()).toBeNull();
-    expect(router.navigateByUrl).not.toHaveBeenCalled();
+    expect(globalErr!.textContent).toContain(TEXTS.formInvalid);
+    expect(getSpinner(element)).toBeNull();
+    expect(navigateByUrlSpy).not.toHaveBeenCalled();
   });
 
-  it('onSubmit succès: spinner visible pendant l’appel, puis navigation /login', async () => {
-    component.registerForm.setValue({
+  it('onSubmit succès: spinner pendant l’appel, puis navigation /login', async () => {
+    const { instance, fixture, element, navigateByUrlSpy, consoleErrorSpy } =
+      await renderStandalone(RegisterComponent, {
+        providers: [{ provide: AuthService, useValue: authServiceSpy }],
+      });
+
+    instance.registerForm.setValue({
       email: 'karina@example.com',
       username: 'karina',
       password: 'password123',
     });
 
-    // contrôle de l'asynchro avec Subject
     const pending$ = new Subject<User>();
     authServiceSpy.register.and.returnValue(pending$.asObservable());
 
-    component.onSubmit();
+    instance.onSubmit();
     fixture.detectChanges();
+    expect(getSpinner(element)).not.toBeNull();
 
-    // spinner visible pendant l'appel
-    expect(getSpinner()).not.toBeNull();
-
-    // Réponse API -> fin du loading
-    pending$.next({ id: 1, username: 'karina', email: 'karina@example.com' } as unknown as User);
+    pending$.next({ id: 1, username: 'karina', email: 'karina@example.com' } as any);
     pending$.complete();
     fixture.detectChanges();
 
-    expect(getSpinner()).toBeNull();
-    expect(router.navigateByUrl).toHaveBeenCalledOnceWith('/login');
-    expect(getGlobalError()).toBeNull();
+    expect(getSpinner(element)).toBeNull();
+    expect(navigateByUrlSpy).toHaveBeenCalledOnceWith('/login');
+    expect(getGlobalError(element)).toBeNull();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
-  it('onSubmit erreur API: affiche message d’erreur global, pas de navigation et log console', () => {
-    component.registerForm.setValue({
+  it('onSubmit erreur API: message global, pas de nav, log console', async () => {
+    const { instance, fixture, element, navigateByUrlSpy, consoleErrorSpy } =
+      await renderStandalone(RegisterComponent, {
+        providers: [{ provide: AuthService, useValue: authServiceSpy }],
+      });
+
+    instance.registerForm.setValue({
       email: 'karina@example.com',
       username: 'karina',
       password: 'password123',
@@ -151,32 +144,34 @@ describe('RegisterComponent (DOM)', () => {
 
     authServiceSpy.register.and.returnValue(throwError(() => new Error('backend down')));
 
-    component.onSubmit();
+    instance.onSubmit();
     fixture.detectChanges();
 
-    const globalErr = getGlobalError();
+    const globalErr = getGlobalError(element);
     expect(globalErr).not.toBeNull();
-    expect(globalErr!.textContent).toContain("Une erreur inattendue s'est produite. Veuillez réessayer ultérieurement.");
-    expect(getSpinner()).toBeNull();
-    expect(router.navigateByUrl).not.toHaveBeenCalled();
-
-    // Vérifie que l'erreur est bien loggée
+    expect(globalErr!.textContent).toContain(TEXTS.registerErr);
+    expect(getSpinner(element)).toBeNull();
+    expect(navigateByUrlSpy).not.toHaveBeenCalled();
     expect(consoleErrorSpy).toHaveBeenCalled();
-    const [firstArg] = consoleErrorSpy.calls.mostRecent().args;
-    expect(String(firstArg)).toContain('Error while registering');
+    expect(String(consoleErrorSpy.calls.mostRecent().args[0])).toContain('Error while registering');
   });
 
-  it('lien "Se connecter" pointe vers /login', () => {
+  it('lien "Se connecter" pointe vers /login', async () => {
+    const { element } = await renderStandalone(RegisterComponent, {
+      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+    });
     const link = element.querySelector('a[title="S\'inscrire"]') as HTMLAnchorElement;
     expect(link).toBeTruthy();
     expect(link.getAttribute('ng-reflect-router-link') || link.getAttribute('href') || '')
       .toContain('/login');
   });
 
-  it('le titre "Inscription" et les champs existent', () => {
+  it('le titre "Inscription" et les champs existent', async () => {
+    const { element } = await renderStandalone(RegisterComponent, {
+      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+    });
     const title = element.querySelector('h1');
     expect(title?.textContent?.trim()).toBe('Inscription');
-
     expect(element.querySelector('input[formControlName="email"]')).toBeTruthy();
     expect(element.querySelector('input[formControlName="username"]')).toBeTruthy();
     expect(element.querySelector('input[formControlName="password"]')).toBeTruthy();

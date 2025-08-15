@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import {adminAuthGuard} from './guards/admin-auth.guard';
 import {LoginComponent} from './login/login.component';
 import {HomeComponent} from './home/home.component';
 import {childAuthGuard} from './guards/child-auth.guard';
@@ -36,6 +35,6 @@ export const routes: Routes = [
     canActivate: [childAuthGuard]
   },
   {
-    path: '', redirectTo: '/accueil', pathMatch: 'full'
+    path: '', redirectTo: '/défis', pathMatch: 'full'
   },
 ];
