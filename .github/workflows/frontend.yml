@@ -131,7 +131,7 @@ jobs:
 
       - name: Build & Push image (:staging)
         run: |
-          docker build -t $IMAGE:staging .
+          docker build -t $IMAGE:staging --build-arg CONFIG=staging .
           docker push $IMAGE:staging
 
       - name: Deploy to VPS (staging)
