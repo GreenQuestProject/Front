@@ -111,18 +111,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install deps
-        run: npm ci
-
-      - name: Build (staging)
-        run: npm run build -- --configuration=staging
-
       - name: Login Docker Hub
         uses: docker/login-action@v3
         with:
@@ -131,7 +119,10 @@ jobs:
 
       - name: Build & Push image (:staging)
         run: |
-          docker build -t $IMAGE:staging --build-arg CONFIG=staging .
+          docker build \
+            --no-cache \
+            -t $IMAGE:staging \
+            --build-arg CONFIG=staging .
           docker push $IMAGE:staging
 
       - name: Deploy to VPS (staging)
