@@ -4,11 +4,11 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
-RUN npm run build -- --configuration=production
+
+ARG CONFIG=production
+RUN npm run build -- --configuration=$CONFIG
 
 # Étape 2 : Nginx pour servir l'app
 FROM nginx:alpine
-# Copie des fichiers de build (attention au sous-dossier browser)
 COPY --from=build /app/dist/front/browser /usr/share/nginx/html
-# Copie de la config Nginx personnalisée
 COPY ./docker/nginx/nginx.conf /etc/nginx/conf.d/default.conf
