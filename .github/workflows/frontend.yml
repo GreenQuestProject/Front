@@ -119,11 +119,18 @@ jobs:
 
       - name: Build & Push image (:staging)
         run: |
-          docker build \
-            --no-cache \
-            -t $IMAGE:staging \
-            --build-arg CONFIG=staging .
+          docker build -t $IMAGE:staging --build-arg CONFIG=staging .
           docker push $IMAGE:staging
+
+      - name: Fail if prod URL is present
+        run: |
+          if docker run --rm $IMAGE:staging \
+            sh -c "grep -q 'https://www.greenquest.cloud/api' /usr/share/nginx/html"; then
+            echo "❌ ERROR: Found prod API URL in staging build!"
+            exit 1
+          else
+            echo "✅ Staging build OK: no prod API URL found."
+          fi
 
       - name: Deploy to VPS (staging)
         uses: appleboy/ssh-action@v0.1.0
