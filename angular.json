@@ -79,7 +79,7 @@
                   "with": "src/environments/environment.staging.ts"
                 }
               ],
-              "serviceWorker": false,
+              "serviceWorker": "ngsw-config.json",
               "optimization": {
                 "scripts": true,
                 "styles": {
