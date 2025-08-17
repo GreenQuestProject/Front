@@ -132,7 +132,7 @@ jobs:
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
             cd /var/www
             docker pull $IMAGE:staging
-            docker compose up -d --build --no-deps frontend-staging
+            docker compose up -d --no-deps frontend-staging
 
   # Déploiement PROD sur tag vX.Y.Z
   deploy_prod:
@@ -166,4 +166,4 @@ jobs:
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
             cd /var/www
             docker pull $IMAGE:latest
-            docker compose up -d --build --no-deps frontend
+            docker compose up -d --no-deps frontend
