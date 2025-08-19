@@ -11,8 +11,8 @@
 
     <mat-chip-option
       *ngFor="let category of categories"
-      [value]="category">
-      {{ category | translateCategory}}
+      [value]="category.value">
+      {{ category.value | translateCategory}}
     </mat-chip-option>
   </mat-chip-listbox>
 
@@ -24,8 +24,8 @@
 
     <mat-chip-option
       *ngFor="let state of status"
-      [value]="state">
-      {{ state | translateStatus}}
+      [value]="state.value">
+      {{ state.value | translateStatus}}
     </mat-chip-option>
   </mat-chip-listbox>
 

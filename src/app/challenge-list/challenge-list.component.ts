@@ -9,12 +9,15 @@ import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {
   MatChipListbox,
-  MatChipOption,MatChipsModule
+  MatChipOption, MatChipsModule
 } from '@angular/material/chips';
 import {FormsModule} from '@angular/forms';
 import {TranslateCategoryPipe} from '../pipes/translate-category.pipe';
 import {MatTooltip} from '@angular/material/tooltip';
 import {ProgressionService} from '../services/progression.service';
+import {ChallengeCategory} from '../interfaces/challenge-category';
+import {switchMap} from 'rxjs';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-challenge-list',
@@ -42,26 +45,32 @@ import {ProgressionService} from '../services/progression.service';
 export class ChallengeListComponent implements OnInit {
   isLoading: boolean = false;
   challenges: Challenge[] = [];
-  categories: any = ["ecology","health","community","education","personal_development","none"];
+  categories: ChallengeCategory[] = [];
   selectedCategories: string[] = [];
   notFoundMessage: string = "";
+
   constructor(private challengeService: ChallengeService, private router: Router, private progressionService: ProgressionService) {
 
   }
 
   ngOnInit(): void {
-    this.challengeService.getChallenges().subscribe({
-      next: (data) => {
-        this.categories = [...new Set(data.map(ch => ch.category))];
-        this.selectedCategories = [...this.categories];
+    this.challengeService.getChallengeCategories().pipe(
+      tap(categories => {
+        this.categories = categories;
+        this.selectedCategories = categories.map(c => c.value);
+
+      }),
+      switchMap(() => this.challengeService.getChallenges(this.selectedCategories))
+    ).subscribe({
+      next: data => {
         this.challenges = data;
+        this.isLoading = false;
         this.notFoundMessage = "Aucun défi trouvé.";
       },
-      error: (error) => {
-        console.error(error);
-        if (error.status === 401) {
-          this.router.navigateByUrl('/login');
-        }
+      error: err => {
+        this.isLoading = false;
+        console.error(err);
+        if (err.status === 401) this.router.navigateByUrl('/login');
       }
     });
   }
@@ -82,11 +91,11 @@ export class ChallengeListComponent implements OnInit {
   }
 
 
-    onCategorySelectionChange() {
-      if (this.selectedCategories.length === 0) {
-        this.challenges = [];
-        return;
-      }
+  onCategorySelectionChange() {
+    if (this.selectedCategories.length === 0) {
+      this.challenges = [];
+      return;
+    }
 
     this.isLoading = true;
     this.challengeService.getChallenges(this.selectedCategories).subscribe({
@@ -100,6 +109,6 @@ export class ChallengeListComponent implements OnInit {
         this.isLoading = false;
       }
     });
-    }
+  }
 
 }
