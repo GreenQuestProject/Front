@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
 import {AuthService} from "../services/auth.service";
-import {MatAnchor, MatButton} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {MatDivider} from '@angular/material/list';
 import {MatIconModule} from '@angular/material/icon';
 
@@ -11,7 +11,6 @@ import {MatIconModule} from '@angular/material/icon';
     MatDivider,
     MatButton,
     RouterLink,
-    MatAnchor,
     MatIconModule
   ],
   standalone: true,

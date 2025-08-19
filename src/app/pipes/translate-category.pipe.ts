@@ -8,8 +8,6 @@ export class TranslateCategoryPipe implements PipeTransform {
 
   transform(category: string): string {
     switch (category) {
-      case 'health':
-        return 'Santé';
       case 'education':
         return 'Éducation';
       case 'ecology':
