@@ -58,7 +58,7 @@ export class ChallengeListComponent implements OnInit {
       tap(categories => {
         this.categories = categories;
         this.selectedCategories = categories.map(c => c.value);
-        console.log(categories);
+
       }),
       switchMap(() => this.challengeService.getChallenges(this.selectedCategories))
     ).subscribe({
