@@ -16,8 +16,10 @@ export const jwtInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: H
   const tokenService = inject(TokenService);
   const authService = inject(AuthService);
   const accessToken = tokenService.getAccessToken();
+  const bypass = ['/login', '/register', '/token/refresh'];
+  const isBypassed = bypass.some(path => req.url.endsWith(path));
 
-  if (req.url.includes('/refresh')) {
+  if (isBypassed) {
     return next(req);
   }
 
