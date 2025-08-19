@@ -11,6 +11,11 @@ import {MatButton} from '@angular/material/button';
 import {TranslateStatusPipe} from '../pipes/translate-status.pipe';
 import {FormsModule} from '@angular/forms';
 import {MatIcon} from '@angular/material/icon';
+import {ChallengeCategory} from '../interfaces/challenge-category';
+import {ChallengeStatus} from '../interfaces/challenge-status';
+import {forkJoin, switchMap} from 'rxjs';
+import {ChallengeService} from '../services/challenge.service';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-progression-list',
@@ -37,17 +42,50 @@ import {MatIcon} from '@angular/material/icon';
 export class ProgressionListComponent implements OnInit {
   isLoading: boolean = false;
   progressions: Progression[] = [];
-  categories: any = ["ecology", "health", "community", "education", "personal_development", "none"];
-  status: any = ["pending", "in_progress", "completed", "failed"];
+  categories: ChallengeCategory[] = [];
+  status: ChallengeStatus[] = [];
   selectedCategories: string[] = [];
   selectedStatus: string[] = [];
   notFoundMessage: string = "";
 
 
-  constructor(private progressionService: ProgressionService, private router: Router) {
+  constructor(private progressionService: ProgressionService, private router: Router, private challengeService: ChallengeService) {
   }
 
   ngOnInit(): void {
+    forkJoin([
+      this.challengeService.getChallengeCategories(),
+      this.challengeService.getChallengeStatus(),
+    ]).pipe(
+      tap(([categories, statuses]) => {
+        this.categories = categories;
+        this.status = statuses;
+
+        // sélection par défaut : toutes les catégories, tous les statuts sauf 'failed'
+        this.selectedCategories = categories.map(c => c.value);
+        this.selectedStatus = statuses.map(s => s.value).filter(s => s !== 'failed');
+      }),
+      switchMap(() => this.progressionService.getProgressions()),
+        tap(initial => {
+          this.progressions = initial;
+      }),
+      switchMap(() =>
+        this.progressionService.getProgressions(this.selectedCategories, this.selectedStatus)
+      )
+    ).subscribe({
+      next: data => {
+        this.progressions = data;
+        this.notFoundMessage = "Aucune progression trouvée. Essayez de modifier vos filtres.";
+        this.isLoading = false;
+      },
+      error: err => {
+        console.error(err);
+        this.isLoading = false;
+        if (err.status === 401) this.router.navigateByUrl('/login');
+      }
+    });
+
+    /*
     this.progressionService.getProgressions().subscribe({
       next: (data) => {
         this.categories = [...new Set(data.map(ch => ch.category))];
@@ -64,8 +102,10 @@ export class ProgressionListComponent implements OnInit {
           this.router.navigateByUrl('/login');
         }
       }
-    });
+    });*/
   }
+
+
 
   applyFilters() {
     const categories = this.selectedCategories;
@@ -141,11 +181,11 @@ export class ProgressionListComponent implements OnInit {
   }
 
   private refreshFilters() {
-    this.categories = [...new Set(this.progressions.map(ch => ch.category))];
-    this.status = [...new Set(this.progressions.map(ch => ch.status))];
+    const allowedCategories = this.categories.map(c => c.value);
+    const allowedStatuses   = this.status.map(s => s.value);
 
-    this.selectedCategories = this.selectedCategories.filter(cat => this.categories.includes(cat));
-    this.selectedStatus = this.selectedStatus.filter(stat => this.status.includes(stat));
+    this.selectedCategories = this.selectedCategories.filter(cat => allowedCategories.includes(cat));
+    this.selectedStatus     = this.selectedStatus.filter(st  => allowedStatuses.includes(st));
 
     this.applyFilters();
   }

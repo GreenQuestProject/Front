@@ -25,7 +25,7 @@ describe('ChallengeListComponent (DOM + logic)', () => {
   ];
 
   beforeEach(async () => {
-    challengeSpy = jasmine.createSpyObj<ChallengeService>('ChallengeService', ['getChallenges']);
+    challengeSpy = jasmine.createSpyObj<ChallengeService>('ChallengeService', ['getChallenges', 'getChallengeCategories']);
     progressionSpy = jasmine.createSpyObj<ProgressionService>('ProgressionService', ['startChallenge']);
     authSpy = jasmine.createSpyObj<AuthService>('AuthService', ['logout']);
 
@@ -55,17 +55,25 @@ describe('ChallengeListComponent (DOM + logic)', () => {
   const startButtons = () => element.querySelectorAll('button[title="Commencer le défi"]');
 
   it('devrait créer le composant', () => {
+    challengeSpy.getChallengeCategories.and.returnValue(of([
+      { name: 'ECOLOGY', value: 'ecology' },
+      { name: 'HEALTH',  value: 'health' }
+    ]));
     challengeSpy.getChallenges.and.returnValue(of([]));
     render();
     expect(component).toBeTruthy();
   });
 
   it('ngOnInit: charge défis, initialise catégories et message (DOM vérifié)', () => {
+    challengeSpy.getChallengeCategories.and.returnValue(of([
+      { name: 'ECOLOGY', value: 'ecology' },
+      { name: 'HEALTH',  value: 'health' }
+    ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     render();
 
     expect(component.challenges).toEqual(CHALLENGES_FIXTURE);
-    expect(component.categories.sort()).toEqual(['ecology', 'health'].sort());
+    expect(component.categories.map(c => c.value).sort()).toEqual(['ecology', 'health'].sort());
     expect(component.selectedCategories.sort()).toEqual(['ecology', 'health'].sort());
     expect(component.notFoundMessage).toBe('Aucun défi trouvé.');
 
@@ -76,7 +84,7 @@ describe('ChallengeListComponent (DOM + logic)', () => {
   });
 
   it('ngOnInit: 401 → redirige /login et log', () => {
-    challengeSpy.getChallenges.and.returnValue(throwError(() => ({ status: 401 })));
+    challengeSpy.getChallengeCategories.and.returnValue(throwError(() => ({ status: 401 })));
     render();
 
     expect(router.navigateByUrl).toHaveBeenCalledOnceWith('/login');
@@ -84,6 +92,10 @@ describe('ChallengeListComponent (DOM + logic)', () => {
   });
 
   it('DOM: bouton "Commencer" désactivé si isInUserProgression=true et tooltip différent', () => {
+    challengeSpy.getChallengeCategories.and.returnValue(of([
+      { name: 'ECOLOGY', value: 'ecology' },
+      { name: 'HEALTH',  value: 'health' }
+    ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     render();
 
@@ -103,6 +115,10 @@ describe('ChallengeListComponent (DOM + logic)', () => {
   });
 
   it('start(): succès → met à jour localement (DOM mis à jour)', () => {
+    challengeSpy.getChallengeCategories.and.returnValue(of([
+      { name: 'ECOLOGY', value: 'ecology' },
+      { name: 'HEALTH',  value: 'health' }
+    ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     progressionSpy.startChallenge.and.returnValue(of({ ok: true }));
     render();
@@ -119,6 +135,10 @@ describe('ChallengeListComponent (DOM + logic)', () => {
   });
 
   it('start(): erreur → log console, pas de MAJ locale', () => {
+    challengeSpy.getChallengeCategories.and.returnValue(of([
+      { name: 'ECOLOGY', value: 'ecology' },
+      { name: 'HEALTH',  value: 'health' }
+    ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     progressionSpy.startChallenge.and.returnValue(throwError(() => new Error('boom')));
     render();
@@ -131,6 +151,10 @@ describe('ChallengeListComponent (DOM + logic)', () => {
   });
 
   it('onCategorySelectionChange(): si aucune catégorie → challenges=[] (DOM: notFound)', () => {
+    challengeSpy.getChallengeCategories.and.returnValue(of([
+      { name: 'ECOLOGY', value: 'ecology' },
+      { name: 'HEALTH',  value: 'health' }
+    ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     render();
 
@@ -143,6 +167,10 @@ describe('ChallengeListComponent (DOM + logic)', () => {
   });
 
   it('onCategorySelectionChange(): filtre et remplit challenges, isLoading true → false', () => {
+    challengeSpy.getChallengeCategories.and.returnValue(of([
+      { name: 'ECOLOGY', value: 'ecology' },
+      { name: 'HEALTH',  value: 'health' }
+    ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     render();
 
@@ -163,6 +191,10 @@ describe('ChallengeListComponent (DOM + logic)', () => {
   });
 
   it('onCategorySelectionChange(): erreur → log console, isLoading repasse à false', () => {
+    challengeSpy.getChallengeCategories.and.returnValue(of([
+      { name: 'ECOLOGY', value: 'ecology' },
+      { name: 'HEALTH',  value: 'health' }
+    ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     render();
 

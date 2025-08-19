@@ -11,12 +11,35 @@ import {
 } from '../../testing/progression-helpers';
 import { renderStandalone } from '../../testing/test-helpers';
 import { Progression } from '../interfaces/progression';
+import {ChallengeService} from '../services/challenge.service';
+
+
 
 describe('ProgressionListComponent', () => {
+  const CATEGORIES_FIXTURE = [
+    { name: 'ECOLOGY', value: 'ecology' },
+    { name: 'HEALTH',  value: 'health'  },
+  ];
+
+  const STATUSES_FIXTURE = [
+    { name: 'PENDING',     value: 'pending'     },
+    { name: 'IN_PROGRESS', value: 'in_progress' },
+    { name: 'FAILED',      value: 'failed'      },
+  ];
+
   let progressionSpy: jasmine.SpyObj<ProgressionService>;
+  let challengeSpy: jasmine.SpyObj<ChallengeService>;
   let authSpy: jasmine.SpyObj<AuthService>;
 
   beforeEach(() => {
+    challengeSpy = jasmine.createSpyObj<ChallengeService>('ChallengeService', [
+      'getChallengeCategories',
+      'getChallengeStatus',
+    ]);
+
+    challengeSpy.getChallengeCategories.and.returnValue(of(CATEGORIES_FIXTURE));
+    challengeSpy.getChallengeStatus.and.returnValue(of(STATUSES_FIXTURE));
+
     progressionSpy = jasmine.createSpyObj<ProgressionService>('ProgressionService', [
       'getProgressions',
       'updateStatus',
@@ -45,6 +68,7 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy }
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(filtered));
@@ -62,15 +86,16 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy }
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(filtered));
       },
     });
 
-    expect(instance.categories.sort()).toEqual(['ecology', 'health'].sort());
+    expect(instance.categories.map(c => c.value).sort()).toEqual(['ecology', 'health'].sort());
     expect(instance.selectedCategories.sort()).toEqual(['ecology', 'health'].sort());
-    expect(instance.status.sort()).toEqual(['pending', 'in_progress', 'failed'].sort());
+    expect(instance.status.map(s => s.value).sort()).toEqual(['pending', 'in_progress', 'failed'].sort());
     expect(instance.selectedStatus.sort()).toEqual(['pending', 'in_progress'].sort());
     expect(instance.progressions).toEqual(filtered);
 
@@ -85,6 +110,7 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy }
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of([]), of([]));
@@ -109,6 +135,7 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy }
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of([]), of([]));
@@ -139,6 +166,7 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy }
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
@@ -165,6 +193,7 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy }
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
@@ -189,6 +218,7 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy }
       ],
       beforeDetectChanges: () => {
         (progressionSpy.getProgressions as any).calls.reset();
@@ -207,6 +237,7 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy }
       ],
       beforeDetectChanges: () => {/* rien: on ne déclenche pas de logique réseau ici */},
     });
@@ -223,6 +254,7 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy }
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of([]), of([]));
@@ -246,6 +278,7 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy }
       ],
       beforeDetectChanges: () => {
         // ngOnInit (1er fetch) + applyFilters initial (2e fetch) → on s'en fiche du contenu
@@ -276,6 +309,7 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy }
       ],
       beforeDetectChanges: () => {
         // ngOnInit + applyFilters initial pour avoir des données
@@ -300,6 +334,7 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy }
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
