@@ -3,52 +3,54 @@
     <img src="favicon.ico" alt="green quest icon">
   </div>
   <div class="form">
-    <div>
-      <h1 tabindex="0">Inscription</h1>
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
-        <div>
-          <mat-form-field appearance="fill">
-            <mat-label>Email</mat-label>
-            <input matInput formControlName="email" type="email" required autocomplete="off" />
-            <mat-error *ngIf="registerForm.controls['email'].hasError('email')">
-              Format invalide.
-            </mat-error>
-            <mat-error *ngIf="registerForm.controls['email'].hasError('required')">
-              L'email est requis.
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div>
-          <mat-form-field appearance="fill">
-            <mat-label>Pseudo</mat-label>
-            <input matInput formControlName="username" required autocomplete="off" />
-            <mat-error *ngIf="registerForm.controls['username'].hasError('required')">
-              Le pseudo est requis.
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div>
-          <mat-form-field appearance="fill">
-            <mat-label>Mot de passe</mat-label>
-            <input matInput type="password" formControlName="password" required autocomplete="off" />
-            <mat-error *ngIf="registerForm.controls['password'].hasError('required')">
-              Le pot de passe est requis.
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div *ngIf="errorMessage" class="error-message">
-          {{ errorMessage }}
-        </div>
-        <div>
-          <button mat-raised-button color="success" type="submit" [disabled]="registerForm.invalid">Inscription</button>
-        </div>
-        <p tabindex="0">Déjà inscrit ?</p>
-        <div tabindex="0">
-            <a title="S'inscrire" [routerLink]="['/login']">
-              Se connecter
-            </a>
-        </div>
-      </form>
+    <h1 tabindex="0">Inscription</h1>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" required autocomplete="off"/>
+          <mat-error *ngIf="registerForm.controls['email'].hasError('email')">
+            Format invalide.
+          </mat-error>
+          <mat-error *ngIf="registerForm.controls['email'].hasError('required')">
+            L'email est requis.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Pseudo</mat-label>
+          <input matInput formControlName="username" required autocomplete="off"/>
+          <mat-error *ngIf="registerForm.controls['username'].hasError('required')">
+            Le pseudo est requis.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput type="password" formControlName="password" required autocomplete="off"/>
+          <mat-error *ngIf="registerForm.controls['password'].hasError('required')">
+            Le pot de passe est requis.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <button mat-raised-button color="success" type="submit" [disabled]="registerForm.invalid">Inscription</button>
+      </div>
+    </form>
+    <div class="error-message-container">
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+    </div>
+    <div class="connexion-link">
+      <p tabindex="0">Déjà inscrit ?</p>
+      <div tabindex="0">
+        <a title="S'inscrire" [routerLink]="['/login']">
+          Se connecter
+        </a>
+      </div>
     </div>
   </div>
   <div *ngIf="isLoading" class="loading">

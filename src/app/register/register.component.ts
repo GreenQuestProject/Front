@@ -57,7 +57,7 @@ export class RegisterComponent {
 
           // Un seul message (le premier) :
           this.errorMessage = violations[0]?.title
-            || (error.error?.detail ?? 'Une erreur est survenue.');
+            || (error.error?.detail ?? 'Une erreur inattendue s\'est produite. Veuillez réessayer ultérieurement.');
 
         }
       });
