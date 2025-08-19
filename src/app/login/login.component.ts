@@ -49,7 +49,7 @@ export class LoginComponent {
             next: (response) => {
 
               this.isLoading = false;
-              this.router.navigateByUrl('/accueil');
+              this.router.navigateByUrl('/défis');
             },
             error: (error) => {
               this.isLoading = false;

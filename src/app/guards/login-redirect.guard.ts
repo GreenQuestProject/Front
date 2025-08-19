@@ -12,7 +12,7 @@ export const loginRedirectGuard: CanActivateFn = (route, state) => {
     take(1),
     map(isLogged => {
       if (isLogged) {
-        router.navigate(['/accueil']);
+        router.navigate(['/défis']);
         return false;
       }
       return true;

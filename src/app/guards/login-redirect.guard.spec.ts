@@ -29,7 +29,7 @@ describe('loginRedirectGuard', () => {
     state = { url: '/some-url' } as RouterStateSnapshot;
   });
 
-  it('should redirect to /accueil when user is logged in', (done) => {
+  it('should redirect to /défis when user is logged in', (done) => {
     // Simule que l'utilisateur est connecté
     authServiceSpy.isLoggedIn.and.returnValue(of(true));
     authServiceSpy.initializeAuth.and.returnValue(of(null));
@@ -41,13 +41,13 @@ describe('loginRedirectGuard', () => {
       if (result instanceof Observable) {
         result.subscribe(r => {
           expect(r).toBeFalse();
-          expect(routerSpy.navigate).toHaveBeenCalledWith(['/accueil']);
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['/défis']);
           done();
         });
       } else {
         // Si le résultat est un boolean directement
         expect(result).toBeFalse();
-        expect(routerSpy.navigate).toHaveBeenCalledWith(['/accueil']);
+        expect(routerSpy.navigate).toHaveBeenCalledWith(['/défis']);
         done();
       }
     });

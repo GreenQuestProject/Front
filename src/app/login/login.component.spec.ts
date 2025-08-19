@@ -83,7 +83,7 @@ describe('LoginComponent (DOM)', () => {
     expect(router.navigateByUrl).not.toHaveBeenCalled();
   });
 
-  it('onSubmit succès: spinner pendant l’appel, puis navigation /accueil', () => {
+  it('onSubmit succès: spinner pendant l’appel, puis navigation /défis', () => {
     component.loginForm.setValue({ username: 'k', password: 'p@ss' });
 
     const pending$ = new Subject<any>();
@@ -98,7 +98,7 @@ describe('LoginComponent (DOM)', () => {
     fixture.detectChanges();
 
     expect(getSpinner()).toBeNull();
-    expect(router.navigateByUrl).toHaveBeenCalledOnceWith('/accueil');
+    expect(router.navigateByUrl).toHaveBeenCalledOnceWith('/défis');
     expect(getGlobalError()).toBeNull();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
