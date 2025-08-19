@@ -50,8 +50,15 @@ export class RegisterComponent {
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = 'Une erreur inattendue s\'est produite. Veuillez réessayer ultérieurement.';
+
           console.error('Error while registering',error);
+
+          const violations = (error.error?.violations ?? []) as {propertyPath: string; title: string}[];
+
+          // Un seul message (le premier) :
+          this.errorMessage = violations[0]?.title
+            || (error.error?.detail ?? 'Une erreur est survenue.');
+
         }
       });
     } else {
