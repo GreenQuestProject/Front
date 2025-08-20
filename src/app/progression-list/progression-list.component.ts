@@ -16,6 +16,7 @@ import {ChallengeStatus} from '../interfaces/challenge-status';
 import {forkJoin, switchMap} from 'rxjs';
 import {ChallengeService} from '../services/challenge.service';
 import {tap} from 'rxjs/operators';
+import {MatTooltip} from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-progression-list',
@@ -34,6 +35,7 @@ import {tap} from 'rxjs/operators';
     FormsModule,
     MatButton,
     MatIcon,
+    MatTooltip
   ],
   templateUrl: './progression-list.component.html',
   styleUrl: './progression-list.component.scss',

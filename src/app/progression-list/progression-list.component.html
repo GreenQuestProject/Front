@@ -50,10 +50,14 @@
         </div>
       </mat-card-content>
       <mat-card-actions *ngIf="progression.status !== 'completed' && progression.status !== 'failed'">
-        <button mat-raised-button color="primary" (click)="validate(progression.id)">
+        <button mat-raised-button color="primary" (click)="validate(progression.id)"
+                matTooltip="Valider le défi"
+                matTooltipPosition="above">
           <mat-icon>check</mat-icon>
         </button>
-        <button mat-raised-button color="warn" (click)="remove(progression.id)">
+        <button mat-raised-button color="warn" (click)="remove(progression.id)"
+                matTooltip="Abandonner le défi"
+                matTooltipPosition="above">
           <mat-icon>close</mat-icon>
         </button>
       </mat-card-actions>
