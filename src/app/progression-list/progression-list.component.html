@@ -1,0 +1,71 @@
+<app-nav-bar></app-nav-bar>
+<div class="container">
+
+  <h1>Liste de progression de défis</h1>
+
+  <mat-chip-listbox
+    [(ngModel)]="selectedCategories"
+    (ngModelChange)="applyFilters()"
+    multiple
+    aria-label="Catégories">
+
+    <mat-chip-option
+      *ngFor="let category of categories"
+      [value]="category.value">
+      {{ category.value | translateCategory}}
+    </mat-chip-option>
+  </mat-chip-listbox>
+
+  <mat-chip-listbox
+    [(ngModel)]="selectedStatus"
+    (ngModelChange)="applyFilters()"
+    multiple
+    aria-label="Status">
+
+    <mat-chip-option
+      *ngFor="let state of status"
+      [value]="state.value">
+      {{ state.value | translateStatus}}
+    </mat-chip-option>
+  </mat-chip-listbox>
+
+  <div *ngIf="progressions.length > 0; else noProgressions" class="content">
+    <mat-card *ngFor="let progression of progressions" appearance="raised">
+      <mat-card-header>
+        <h1>{{progression.name}}</h1>
+      </mat-card-header>
+      <mat-card-content>
+        <div>
+          <h4>Catégorie : {{progression.category | translateCategory}}</h4>
+        </div>
+        <div>
+          <h4>Status :
+            <span [style.color]="getStatusColor(progression.status)">
+      {{progression.status | translateStatus}}
+    </span>
+          </h4>
+        </div>
+        <div>
+          {{progression.description}}
+        </div>
+      </mat-card-content>
+      <mat-card-actions *ngIf="progression.status !== 'completed' && progression.status !== 'failed'">
+        <button mat-raised-button color="primary" (click)="validate(progression.id)"
+                matTooltip="Valider le défi"
+                matTooltipPosition="above">
+          <mat-icon>check</mat-icon>
+        </button>
+        <button mat-raised-button color="warn" (click)="remove(progression.id)"
+                matTooltip="Abandonner le défi"
+                matTooltipPosition="above">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <div>
+    <ng-template #noProgressions>
+      <p>{{notFoundMessage}}</p>
+    </ng-template>
+  </div>
+</div>

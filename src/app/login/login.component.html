@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="icon">
+    <img src="favicon.ico" alt="green quest icon">
+  </div>
+  <div class="form">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <h1 tabindex="0">Connexion</h1>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Pseudo</mat-label>
+          <input matInput formControlName="username" required/>
+          <mat-error *ngIf="loginForm.controls['username'].hasError('required')">
+            Le pseudo est requis.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="fill">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput type="password" formControlName="password" required/>
+          <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
+            Le mot de passe est requis.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <button mat-raised-button color="success" type="submit" [disabled]="loginForm.invalid">Connexion</button>
+      </div>
+    </form>
+    <div class="error-message-container">
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+    </div>
+    <div class="connexion-link">
+      <p tabindex="0">Pas encore inscrit ?</p>
+      <div tabindex="0">
+        <a title="S'inscrire" [routerLink]="['/register']">
+          S'inscrire
+        </a>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isLoading" class="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

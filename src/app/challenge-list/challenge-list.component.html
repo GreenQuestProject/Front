@@ -1,0 +1,52 @@
+<app-nav-bar></app-nav-bar>
+<div class="container">
+
+  <h1>Liste de défis</h1>
+
+  <mat-chip-listbox
+    [(ngModel)]="selectedCategories"
+    (ngModelChange)="onCategorySelectionChange()"
+    multiple
+    aria-label="Catégories">
+
+    <mat-chip-option
+      *ngFor="let category of categories"
+      [value]="category.value">
+      {{ category.value | translateCategory}}
+    </mat-chip-option>
+  </mat-chip-listbox>
+
+  <div *ngIf="challenges.length > 0; else noChallenges" class="content">
+    <mat-card *ngFor="let challenge of challenges" appearance="raised">
+      <mat-card-header>
+          <h1>{{challenge.name}}</h1>
+      </mat-card-header>
+      <mat-card-content>
+        <div>
+          <h4>Catégorie : {{challenge.category | translateCategory}}</h4>
+        </div>
+        <div>
+          {{challenge.description}}
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          mat-raised-button
+          color="warn"
+          title="Commencer le défi"
+          (click)="start(challenge.id)"
+          [disabled]="challenge.isInUserProgression"
+          matTooltip="{{ challenge.isInUserProgression ? 'Déjà commencé' : 'Commencer le défi' }}"
+          matTooltipPosition="above"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <div>
+    <ng-template #noChallenges>
+      <p>{{notFoundMessage}}</p>
+    </ng-template>
+  </div>
+</div>
