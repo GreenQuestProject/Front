@@ -131,4 +131,12 @@ _A regrouper dans la prochaine version._
 - Delete health category (afa2c94)
 - Add tooltip for challenge actions (ddedb3b)
 
+## [0.0.9] - 2025-08-22
+### Maintenance
+- Mise en production **sans changement fonctionnel** (redeploy/infra uniquement).
+### Breaking changes / Migrations
+- Aucune.
+### Traçabilité
+- Tag : `v0.0.9`
+
 ---
