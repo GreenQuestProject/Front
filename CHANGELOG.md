@@ -139,4 +139,10 @@ _A regrouper dans la prochaine version._
 ### Traçabilité
 - Tag : `v0.0.9`
 
+## [0.0.10] - 2025-08-23
+### Modifié
+- Déploiement via docker compose up -d --no-deps --pull always --force-recreate frontend(-staging) (remplace le docker compose pull séparé).
+
+### Traçabilité
+- Tag : `v0.0.10`
 ---
