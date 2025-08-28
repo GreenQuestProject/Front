@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import {ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -6,6 +6,7 @@ import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {jwtInterceptor} from './interceptors/jwt.interceptor';
 import { provideServiceWorker } from '@angular/service-worker';
 import {environment} from '../environments/environment';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,5 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideServiceWorker('service-worker.js', {
             enabled: environment.production,
             registrationStrategy: 'registerWhenStable:30000'
-          })]
+          }),
+    importProvidersFrom(MatSnackBarModule)
+  ]
 };
