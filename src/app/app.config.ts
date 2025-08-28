@@ -14,7 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([jwtInterceptor])
    ),
-    provideServiceWorker('ngsw-worker.js', {
+    provideServiceWorker('service-worker.js', {
             enabled: environment.production,
             registrationStrategy: 'registerWhenStable:30000'
           })]

@@ -5,7 +5,7 @@ import {ProgressionService} from '../services/progression.service';
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {MatChipListbox, MatChipOption} from '@angular/material/chips';
 import {NavBarComponent} from '../nav-bar/nav-bar.component';
-import {NgForOf, NgIf} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {TranslateCategoryPipe} from '../pipes/translate-category.pipe';
 import {MatButton} from '@angular/material/button';
 import {TranslateStatusPipe} from '../pipes/translate-status.pipe';
@@ -17,6 +17,10 @@ import {forkJoin, switchMap} from 'rxjs';
 import {ChallengeService} from '../services/challenge.service';
 import {tap} from 'rxjs/operators';
 import {MatTooltip} from '@angular/material/tooltip';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import { RemindersService } from '../services/reminders.service';
+import { firstValueFrom } from 'rxjs';
+import { ReminderDialogComponent} from '../reminder-dialog/reminder-dialog.component';
 
 @Component({
   selector: 'app-progression-list',
@@ -35,7 +39,9 @@ import {MatTooltip} from '@angular/material/tooltip';
     FormsModule,
     MatButton,
     MatIcon,
-    MatTooltip
+    MatTooltip,
+    MatDialogModule,
+    DatePipe
   ],
   templateUrl: './progression-list.component.html',
   styleUrl: './progression-list.component.scss',
@@ -51,7 +57,12 @@ export class ProgressionListComponent implements OnInit {
   notFoundMessage: string = "";
 
 
-  constructor(private progressionService: ProgressionService, private router: Router, private challengeService: ChallengeService) {
+  constructor(
+    private progressionService: ProgressionService,
+    private router: Router,
+    private challengeService: ChallengeService,
+    private dialog: MatDialog,
+    private remindersService: RemindersService) {
   }
 
   ngOnInit(): void {
@@ -190,5 +201,52 @@ export class ProgressionListComponent implements OnInit {
     this.selectedStatus     = this.selectedStatus.filter(st  => allowedStatuses.includes(st));
 
     this.applyFilters();
+  }
+
+  async openReminderDialog(prog: Progression) {
+    const ref = this.dialog.open(ReminderDialogComponent, {
+      data: { progressionId: prog.id  },
+    });
+    const res = await firstValueFrom(ref.afterClosed());
+    if (!res) return;
+
+    try {
+      const whenISO = new Date(res.when).toISOString();
+      const out = await this.remindersService.createByProgression(prog.id!, whenISO, res.recurrence);
+      // Mémorise localement pour l’UX
+      (prog as any).reminderId = out.id;
+      (prog as any).nextReminderUtc = whenISO;
+      (prog as any).recurrence = res.recurrence;
+    } catch (e: any) {
+      alert(e?.error?.error ?? 'Impossible de planifier le rappel');
+    }
+  }
+
+  async snoozeReminder(prog: Progression) {
+    const id = (prog as any).reminderId;
+    if (!id) return;
+    try {
+      await this.remindersService.snooze(id);
+      // feedback immédiat (l’heure exacte vient du serveur, on avance localement de +10min)
+      if ((prog as any).nextReminderUtc) {
+        const next = new Date((prog as any).nextReminderUtc).getTime() + 10*60*1000;
+        (prog as any).nextReminderUtc = new Date(next).toISOString();
+      }
+    } catch {
+      alert('Échec du snooze');
+    }
+  }
+
+  async completeReminder(prog: Progression) {
+    const id = (prog as any).reminderId;
+    if (!id) return;
+    try {
+      await this.remindersService.complete(id);
+      // Si récurrence NONE: plus de rappel
+      (prog as any).reminderId = null;
+      (prog as any).nextReminderUtc = null;
+    } catch {
+      alert('Échec de la complétion du rappel');
+    }
   }
 }

@@ -1,0 +1,26 @@
+<section class="container">
+  <h2 class="">Notifications</h2>
+  <p class="">Active les notifications push pour être prévenue des nouveaux défis et de tes rappels planifiés.</p>
+
+  <mat-slide-toggle [checked]="enabled()" (change)="toggle($event.checked)">
+    Activer les notifications
+  </mat-slide-toggle>
+
+  <div class="" *ngIf="permission() === 'denied'">
+    <span class="">Permission refusée.</span> Ouvre les paramètres du navigateur pour l’autoriser.
+  </div>
+
+  <div class="content">
+    <h3 class="">Centre de notifications</h3>
+    <button mat-raised-button color="success" (click)="clear()">Vider</button>
+    <mat-list>
+      <mat-list-item *ngFor="let n of push.notifications()">
+        <mat-icon matListItemIcon>notifications</mat-icon>
+        <div matListItemTitle>{{ n.title }}</div>
+        <div matListItemLine class="">{{ n.body }}</div>
+        <div matListItemLine class="">{{ n.receivedAt | date:'short' }}</div>
+      </mat-list-item>
+      <mat-list-item *ngIf="push.notifications().length === 0">Aucune notification pour le moment.</mat-list-item>
+    </mat-list>
+  </div>
+</section>

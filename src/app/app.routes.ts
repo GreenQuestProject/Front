@@ -6,6 +6,8 @@ import {RegisterComponent} from './register/register.component';
 import {loginRedirectGuard} from './guards/login-redirect.guard';
 import {ChallengeListComponent} from './challenge-list/challenge-list.component';
 import {ProgressionListComponent} from './progression-list/progression-list.component';
+import {NotificationsSettingsComponent} from './notifications-settings/notifications-settings.component';
+import {ParametersComponent} from './parameters/parameters.component';
 
 export const routes: Routes = [
   {
@@ -37,4 +39,5 @@ export const routes: Routes = [
   {
     path: '', redirectTo: '/défis', pathMatch: 'full'
   },
+  { path: 'paramètres', component: ParametersComponent, canActivate: [childAuthGuard] }
 ];
