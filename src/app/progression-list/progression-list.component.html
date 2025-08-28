@@ -60,7 +60,25 @@
                 matTooltipPosition="above">
           <mat-icon>close</mat-icon>
         </button>
+
+        <!-- Rappels -->
+        <span class="spacer"></span>
+        <button mat-raised-button (click)="openReminderDialog(progression)" matTooltip="Planifier un rappel" [disabled]="progression.reminderId">
+          <mat-icon>alarm_add</mat-icon>
+        </button>
+        <button mat-raised-button (click)="snoozeReminder(progression)" [disabled]="!progression.reminderId"
+                matTooltip="Décaler de 10 minutes">
+          <mat-icon>schedule</mat-icon>
+        </button>
+        <button mat-raised-button color="accent" (click)="completeReminder(progression)" [disabled]="!progression.reminderId"
+                matTooltip="Marquer le rappel comme fait">
+          <mat-icon>done_all</mat-icon>
+        </button>
       </mat-card-actions>
+      <div *ngIf="progression.nextReminderUtc" class="reminder-hint">
+        Prochain rappel : {{ progression.nextReminderUtc | date:'short' }} (UTC)
+        <span *ngIf="progression.recurrence"> — Recurrence : {{ progression.recurrence }}</span>
+      </div>
     </mat-card>
   </div>
   <div>

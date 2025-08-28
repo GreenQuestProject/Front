@@ -12,7 +12,8 @@ import {
 import { renderStandalone } from '../../testing/test-helpers';
 import { Progression } from '../interfaces/progression';
 import {ChallengeService} from '../services/challenge.service';
-
+import { RemindersService } from '../services/reminders.service';
+import {MatDialog} from '@angular/material/dialog';
 
 
 describe('ProgressionListComponent', () => {
@@ -30,13 +31,14 @@ describe('ProgressionListComponent', () => {
   let progressionSpy: jasmine.SpyObj<ProgressionService>;
   let challengeSpy: jasmine.SpyObj<ChallengeService>;
   let authSpy: jasmine.SpyObj<AuthService>;
+  let remindersSpy: jasmine.SpyObj<RemindersService>;
+  let dialogSpy: jasmine.SpyObj<MatDialog>;
 
   beforeEach(() => {
     challengeSpy = jasmine.createSpyObj<ChallengeService>('ChallengeService', [
       'getChallengeCategories',
       'getChallengeStatus',
     ]);
-
     challengeSpy.getChallengeCategories.and.returnValue(of(CATEGORIES_FIXTURE));
     challengeSpy.getChallengeStatus.and.returnValue(of(STATUSES_FIXTURE));
 
@@ -44,8 +46,7 @@ describe('ProgressionListComponent', () => {
       'getProgressions',
       'updateStatus',
     ]);
-    // Stub par défaut (sécurité)
-    progressionSpy.getProgressions.and.returnValue(of([]));
+    progressionSpy.getProgressions.and.returnValue(of([])); // défaut
 
     authSpy = jasmine.createSpyObj<AuthService>('AuthService', [
       'getCurrentUser',
@@ -58,6 +59,17 @@ describe('ProgressionListComponent', () => {
     authSpy.isLoggedIn.and.returnValue(of(false));
     authSpy.isAdmin.and.returnValue(of(false));
     authSpy.initializeAuth.and.returnValue(of(null));
+
+    remindersSpy = jasmine.createSpyObj<RemindersService>('RemindersService', [
+      'snooze',
+      'complete',
+      'createByProgression',
+    ]);
+    remindersSpy.snooze.and.resolveTo({});
+    remindersSpy.complete.and.resolveTo({});
+    remindersSpy.createByProgression.and.resolveTo({ id: 123 });
+
+    dialogSpy = jasmine.createSpyObj<MatDialog>('MatDialog', ['open']);
   });
 
   it('devrait créer le composant', async () => {
@@ -68,7 +80,8 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService,   useValue: remindersSpy }
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(filtered));
@@ -86,7 +99,8 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(filtered));
@@ -110,7 +124,8 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of([]), of([]));
@@ -135,7 +150,8 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of([]), of([]));
@@ -166,7 +182,8 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
@@ -193,7 +210,8 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
@@ -218,7 +236,8 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {
         (progressionSpy.getProgressions as any).calls.reset();
@@ -237,7 +256,8 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {/* rien: on ne déclenche pas de logique réseau ici */},
     });
@@ -254,7 +274,8 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of([]), of([]));
@@ -278,7 +299,8 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {
         // ngOnInit (1er fetch) + applyFilters initial (2e fetch) → on s'en fiche du contenu
@@ -309,7 +331,8 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {
         // ngOnInit + applyFilters initial pour avoir des données
@@ -334,7 +357,8 @@ describe('ProgressionListComponent', () => {
       providers: [
         { provide: ProgressionService, useValue: progressionSpy },
         { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
@@ -348,5 +372,187 @@ describe('ProgressionListComponent', () => {
 
     expect(consoleErrorSpy).toHaveBeenCalled();
     expect(instance.progressions).toEqual(snapshot);
+  });
+
+  it('openReminderDialog: ferme sans résultat → ne crée pas de rappel', async () => {
+    const afterClosed$ = of(undefined); // simulate closing with no payload
+    const openSpy = spyOn(MatDialog.prototype, 'open').and.returnValue({
+      afterClosed: () => afterClosed$,
+    } as any);
+
+    const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
+    const filtered = initial;
+
+    const { instance } = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        { provide: ProgressionService, useValue: progressionSpy },
+        { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService, useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
+      ],
+      beforeDetectChanges: () => {
+        stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(filtered));
+      },
+    });
+
+    const prog = { ...filtered[0] } as Progression;
+    await instance.openReminderDialog(prog);
+
+    expect(openSpy).toHaveBeenCalled();
+    expect(remindersSpy.createByProgression).not.toHaveBeenCalled();
+    expect((prog as any).reminderId).toBeUndefined();
+  });
+
+  it('openReminderDialog: crée un rappel, met à jour les champs locaux', async () => {
+    const payload = { when: new Date('2025-08-28T10:00:00Z'), recurrence: 'WEEKLY' };
+    const afterClosed$ = of(payload);
+    spyOn(MatDialog.prototype, 'open').and.returnValue({
+      afterClosed: () => afterClosed$,
+    } as any);
+    remindersSpy.createByProgression.and.resolveTo({ id: 456 });
+
+    const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
+    const filtered = initial;
+
+    const { instance } = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        { provide: ProgressionService, useValue: progressionSpy },
+        { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService, useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
+      ],
+      beforeDetectChanges: () => {
+        stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(filtered));
+      },
+    });
+
+    const prog = { ...filtered[0], id: filtered[0].id! } as Progression;
+    await instance.openReminderDialog(prog);
+
+    const whenIso = new Date(payload.when).toISOString();
+    expect(remindersSpy.createByProgression).toHaveBeenCalledWith(prog.id!, whenIso, 'WEEKLY');
+    expect((prog as any).reminderId).toBe(456);
+    expect((prog as any).nextReminderUtc).toBe(whenIso);
+    expect((prog as any).recurrence).toBe('WEEKLY');
+  });
+
+  it('snoozeReminder: appelle le service et décale nextReminderUtc de +10 min', async () => {
+    const { instance } = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        { provide: ProgressionService, useValue: progressionSpy },
+        { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService,   useValue: remindersSpy }
+      ],
+      beforeDetectChanges: () => {},
+    });
+
+    const base = '2025-08-28T10:00:00.000Z';
+    const prog = { id: 1, name: 'A', category: 'ecology', status: 'pending', description: '' } as Progression;
+    (prog as any).reminderId = 999;
+    (prog as any).nextReminderUtc = base;
+
+    await instance.snoozeReminder(prog);
+
+    expect(remindersSpy.snooze).toHaveBeenCalledWith(999);
+    const after = new Date((prog as any).nextReminderUtc).getTime();
+    const expected = new Date(base).getTime() + 10 * 60 * 1000;
+    expect(after).toBe(expected);
+  });
+
+  it('completeReminder: appelle le service et nettoie les champs locaux', async () => {
+    const { instance } = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        { provide: ProgressionService, useValue: progressionSpy },
+        { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService,   useValue: challengeSpy },
+        { provide: RemindersService,   useValue: remindersSpy }
+      ],
+      beforeDetectChanges: () => {},
+    });
+
+    const prog = { id: 2, name: 'B', category: 'health', status: 'pending', description: '' } as Progression;
+    (prog as any).reminderId = 321;
+    (prog as any).nextReminderUtc = '2025-08-28T10:05:00.000Z';
+
+    await instance.completeReminder(prog);
+
+    expect(remindersSpy.complete).toHaveBeenCalledWith(321);
+    expect((prog as any).reminderId).toBeNull();
+    expect((prog as any).nextReminderUtc).toBeNull();
+  });
+
+  it('openReminderDialog: échec createByProgression → alert et pas de mise à jour locale', async () => {
+    const payload = { when: new Date('2025-08-28T11:00:00Z'), recurrence: 'NONE' };
+    spyOn(MatDialog.prototype, 'open').and.returnValue({
+      afterClosed: () => of(payload),
+    } as any);
+    remindersSpy.createByProgression.and.rejectWith({ error: { error: 'Boom' } });
+    const alertSpy = spyOn(window, 'alert');
+
+    const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
+    const filtered = initial;
+
+    const { instance } = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        { provide: ProgressionService, useValue: progressionSpy },
+        { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService, useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
+      ],
+      beforeDetectChanges: () => {
+        stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(filtered));
+      },
+    });
+
+    const prog = { ...filtered[0], id: filtered[0].id! } as Progression;
+    await instance.openReminderDialog(prog);
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect((prog as any).reminderId).toBeUndefined();
+    expect((prog as any).nextReminderUtc).toBeUndefined();
+  });
+
+  it('snoozeReminder: en cas d\'erreur → affiche un alert', async () => {
+    const { instance } = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        { provide: ProgressionService, useValue: progressionSpy },
+        { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService, useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
+      ],
+    });
+
+    const prog = { id: 1, name: 'X', category: 'ecology', status: 'pending', description: '' } as Progression;
+    (prog as any).reminderId = 111;
+    (prog as any).nextReminderUtc = '2025-08-28T10:00:00Z';
+
+    remindersSpy.snooze.and.rejectWith(new Error('fail snooze'));
+    const alertSpy = spyOn(window, 'alert');
+
+    await instance.snoozeReminder(prog);
+
+    expect(alertSpy).toHaveBeenCalledWith('Échec du snooze');
+  });
+
+  it('completeReminder: en cas d\'erreur → affiche un alert', async () => {
+    const { instance } = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        { provide: ProgressionService, useValue: progressionSpy },
+        { provide: AuthService, useValue: authSpy },
+        { provide: ChallengeService, useValue: challengeSpy },
+        { provide: RemindersService, useValue: remindersSpy },
+      ],
+    });
+
+    const prog = { id: 2, name: 'Y', category: 'health', status: 'pending', description: '' } as Progression;
+    (prog as any).reminderId = 222;
+
+    remindersSpy.complete.and.rejectWith(new Error('fail complete'));
+    const alertSpy = spyOn(window, 'alert');
+
+    await instance.completeReminder(prog);
+
+    expect(alertSpy).toHaveBeenCalledWith('Échec de la complétion du rappel');
   });
 });

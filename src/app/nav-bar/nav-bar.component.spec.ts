@@ -37,6 +37,7 @@ describe('NavBarComponent (DOM)', () => {
     //expect(getByTitle('Accueil')).toBeTruthy();
     expect(getByTitle('Tous les défis')).toBeTruthy();
     expect(getByTitle('Mes défis')).toBeTruthy();
+    expect(getByTitle('Paramètres')).toBeTruthy();
     /*expect(getByTitle('Progression')).toBeTruthy();
     expect(getByTitle('En savoir plus')).toBeTruthy();
     expect(getByTitle('Profil')).toBeTruthy();
@@ -69,6 +70,7 @@ describe('NavBarComponent (DOM)', () => {
     const accueil = getByTitle('Accueil');
     const defis = getByTitle('Tous les défis');
     const progression = getByTitle('Mes défis');
+    const parametres = getByTitle('Paramètres');
 
     const reflect = (el: Element | null) =>
       el?.getAttribute('ng-reflect-router-link') || el?.getAttribute('href') || '';
@@ -76,5 +78,6 @@ describe('NavBarComponent (DOM)', () => {
     //expect(reflect(accueil)).toContain('/accueil');
     expect(reflect(defis)).toContain('/défis');
     expect(reflect(progression)).toContain('/progression');
+    expect(reflect(parametres)).toContain('/paramètres');
   });
 });

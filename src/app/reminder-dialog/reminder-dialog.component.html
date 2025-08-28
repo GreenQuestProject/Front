@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Planifier un rappel</h2>
+<mat-dialog-content class="grid">
+  <mat-form-field>
+    <mat-label>Date & heure</mat-label>
+    <input matInput type="datetime-local" [(ngModel)]="when" />
+  </mat-form-field>
+<br>
+  <mat-form-field>
+    <mat-label>Récurrence</mat-label>
+      <mat-select [(ngModel)]="recurrence">
+        <mat-option value="NONE">Aucune</mat-option>
+        <mat-option value="DAILY">Quotidienne</mat-option>
+        <mat-option value="WEEKLY">Hebdomadaire</mat-option>
+      </mat-select>
+
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="close()">Annuler</button>
+  <button mat-button cdkFocusInitial (click)="save()" [disabled]="!when">Planifier</button>
+</mat-dialog-actions>
