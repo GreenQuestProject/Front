@@ -7,6 +7,11 @@ import {jwtInterceptor} from './interceptors/jwt.interceptor';
 import { provideServiceWorker } from '@angular/service-worker';
 import {environment} from '../environments/environment';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+
+registerLocaleData(localeFr);  // <---- important
+import { LOCALE_ID } from '@angular/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,6 +24,7 @@ export const appConfig: ApplicationConfig = {
             enabled: environment.production,
             registrationStrategy: 'registerWhenStable:30000'
           }),
-    importProvidersFrom(MatSnackBarModule)
+    importProvidersFrom(MatSnackBarModule),
+    { provide: LOCALE_ID, useValue: 'fr-FR' }
   ]
 };
