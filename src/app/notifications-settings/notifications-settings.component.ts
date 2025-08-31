@@ -30,7 +30,7 @@ export class NotificationsSettingsComponent {
   private snack = inject(MatSnackBar);
   push = inject(PushService);
   private http = inject(HttpClient);
-
+//TODO: Pour V2 implementer la route /preferences
   permission = this.perms.permission;
   enabled = signal(false);
 
