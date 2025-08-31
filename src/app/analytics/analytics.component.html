@@ -1,0 +1,106 @@
+<app-nav-bar></app-nav-bar>
+<div class="container">
+  <h1>Statistiques</h1>
+  <div *ngIf="loading()" class="">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div *ngIf="!loading()" class="content">
+    <div *ngIf="profile() as p">
+      <div class="kpi-grid">
+        <mat-card>
+          <mat-card-content>
+            <h2>Niveau</h2>
+            <h3>{{ p.level }}</h3>
+           </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-content>
+            <h2>XP total</h2>
+            <h3>{{ p.xpTotal | number }}</h3>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-content>
+            <h2>Série en cours</h2>
+            <h3>{{ p.currentStreakDays }} j</h3>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-content>
+            <h2>Défis réalisés</h2>
+            <h3>{{ p.completedCount }}</h3>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="impact-grid">
+        <mat-card>
+          <mat-card-content>
+            <h2>CO₂ évité</h2>
+            <h3>{{ p.impact.co2Kg | number:'1.0-2' }} kg</h3>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-content>
+            <h2>Eau économisée</h2>
+            <h3>{{ p.impact.waterL | number }} L</h3>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-content>
+            <h2 class="label">Déchets évités</h2>
+            <h3 class="value">{{ p.impact.wasteKg | number:'1.0-1' }} kg</h3>
+          </mat-card-content>
+        </mat-card>
+        <mat-card>
+          <mat-card-content>
+            <h2 class="label">Badges</h2>
+            <h3 class="value">{{ p.badges.length || 0 }}</h3>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="badges" *ngIf="p.badges.length">
+        <mat-card>
+          <mat-card-content>
+            <h2>Derniers badges</h2>
+            <ul>
+              <li *ngFor="let b of (p.badges ?? []) | slice:0:8">
+                <span class="badge" [class]="'rarity-' + b.rarity">{{ b.name }}</span>
+                <small>{{ b.unlockedAt | date:'mediumDate' }}</small>
+              </li>
+            </ul>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <mat-card class="split">
+      <div class="panel">
+        <h3>Tendance hebdo (communauté)</h3>
+        <div class="chart-wrapper">
+          <canvas baseChart
+                  [data]="lineData"
+                  [options]="lineOptions"
+                  type="line"></canvas>
+        </div>
+        <p class="hint">Compare tes KPIs ci-dessus avec la tendance globale.</p>
+      </div>
+      <div class="panel">
+        <h3>Leaderboard (XP)</h3>
+        <table class="table">
+          <thead>
+          <tr><th>#</th><th>Utilisateur</th><th>XP</th></tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let u of (leaderboard() ?? []); let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ u.username }}</td>
+            <td>{{ u.xp_total | number }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+
+
