@@ -38,6 +38,7 @@ describe('NavBarComponent (DOM)', () => {
     expect(getByTitle('Mes défis')).toBeTruthy();
     expect(getByTitle('Paramètres')).toBeTruthy();
     expect(getByTitle('Articles')).toBeTruthy();
+    expect(getByTitle('Statistiques')).toBeTruthy();
   });
 
   it('clic sur "Se déconnecter" → confirme = true : appelle AuthService.logout()', () => {
@@ -63,19 +64,19 @@ describe('NavBarComponent (DOM)', () => {
   });
 
   it('quelques routerLink reflétés dans le DOM', () => {
-    const accueil = getByTitle('Accueil');
     const defis = getByTitle('Tous les défis');
     const progression = getByTitle('Mes défis');
     const parametres = getByTitle('Paramètres');
     const articles = getByTitle('Articles');
+    const statistiques = getByTitle('Statistiques');
 
     const reflect = (el: Element | null) =>
       el?.getAttribute('ng-reflect-router-link') || el?.getAttribute('href') || '';
 
-    //expect(reflect(accueil)).toContain('/accueil');
     expect(reflect(defis)).toContain('/défis');
     expect(reflect(progression)).toContain('/progression');
     expect(reflect(parametres)).toContain('/paramètres');
     expect(reflect(articles)).toContain('/articles');
+    expect(reflect(statistiques)).toContain('/statistiques');
   });
 });

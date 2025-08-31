@@ -12,6 +12,7 @@ import localeFr from '@angular/common/locales/fr';
 
 registerLocaleData(localeFr);  // <---- important
 import { LOCALE_ID } from '@angular/core';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,6 +26,7 @@ export const appConfig: ApplicationConfig = {
             registrationStrategy: 'registerWhenStable:30000'
           }),
     importProvidersFrom(MatSnackBarModule),
-    { provide: LOCALE_ID, useValue: 'fr-FR' }
+    { provide: LOCALE_ID, useValue: 'fr-FR' },
+    provideCharts(withDefaultRegisterables())
   ]
 };

@@ -8,6 +8,7 @@ import {ChallengeListComponent} from './challenge-list/challenge-list.component'
 import {ProgressionListComponent} from './progression-list/progression-list.component';
 import {ParametersComponent} from './parameters/parameters.component';
 import {ArticlesComponent} from './articles/articles.component';
+import {AnalyticsComponent} from './analytics/analytics.component';
 
 export const routes: Routes = [
   {
@@ -40,5 +41,6 @@ export const routes: Routes = [
     path: '', redirectTo: '/défis', pathMatch: 'full'
   },
   { path: 'paramètres', component: ParametersComponent, canActivate: [childAuthGuard] },
-  { path: 'articles', component: ArticlesComponent, canActivate: [childAuthGuard] }
+  { path: 'articles', component: ArticlesComponent, canActivate: [childAuthGuard] },
+  { path: 'statistiques', component: AnalyticsComponent, canActivate: [childAuthGuard]  },
 ];
