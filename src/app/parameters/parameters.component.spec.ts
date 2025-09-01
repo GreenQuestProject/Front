@@ -39,11 +39,10 @@ describe('ParametersComponent', () => {
     const notes = element.querySelector('app-notifications-settings');
 
     expect(nav).withContext('app-nav-bar manquant').not.toBeNull();
-    //TODO : decommenter apres implementation de la route /preferences
-    //expect(notes).withContext('app-notifications-settings manquant').not.toBeNull();
+
+    expect(notes).withContext('app-notifications-settings manquant').not.toBeNull();
   });
-/*
-//TODO : decommenter apres implementation de la route /preferences
+
   it('DOM: <app-notifications-settings> est dans .container', async () => {
     const { element } = await renderStandalone(ParametersComponent);
 
@@ -52,5 +51,5 @@ describe('ParametersComponent', () => {
 
     const nested = wrapper!.querySelector('app-notifications-settings');
     expect(nested).withContext('le composant notifications doit être dans .container').not.toBeNull();
-  });*/
+  });
 });

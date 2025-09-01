@@ -30,16 +30,18 @@ export class NotificationsSettingsComponent {
   private snack = inject(MatSnackBar);
   push = inject(PushService);
   private http = inject(HttpClient);
-//TODO: Pour V2 implementer la route /preferences
+
   permission = this.perms.permission;
   enabled = signal(false);
 
   ngOnInit() {
 
+    //TODO: Pour V2 implementer la route /preferences
+    /*
     this.http.get<{ newChallenge: boolean }>('/api/preferences').subscribe({
       next: (r) => this.enabled.set(!!r?.newChallenge),
       error: () => {}
-    });
+    });*/
   }
 
   async toggle(on: boolean) {
@@ -56,7 +58,8 @@ export class NotificationsSettingsComponent {
       await this.push.disablePush();
     }
     this.enabled.set(on);
-    this.http.post('/api/preferences', { newChallenge: on }).subscribe();
+    //TODO: Pour V2 implementer la route /preferences
+    //this.http.post('/api/preferences', { newChallenge: on }).subscribe();
   }
 
   clear() {
