@@ -18,6 +18,8 @@ import {ProgressionService} from '../services/progression.service';
 import {ChallengeCategory} from '../interfaces/challenge-category';
 import {switchMap} from 'rxjs';
 import {tap} from 'rxjs/operators';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ChallengeDialogComponent } from '../challenge-dialog/challenge-dialog.component';
 
 @Component({
   selector: 'app-challenge-list',
@@ -29,14 +31,13 @@ import {tap} from 'rxjs/operators';
     NgIf,
     NgForOf,
     MatCardActions,
-    MatIcon,
     MatButton,
     MatChipListbox,
     MatChipOption,
     FormsModule,
     MatChipsModule,
     TranslateCategoryPipe,
-    MatTooltip
+    MatDialogModule
   ],
   templateUrl: './challenge-list.component.html',
   styleUrl: './challenge-list.component.scss',
@@ -49,7 +50,8 @@ export class ChallengeListComponent implements OnInit {
   selectedCategories: string[] = [];
   notFoundMessage: string = "";
 
-  constructor(private challengeService: ChallengeService, private router: Router, private progressionService: ProgressionService) {
+  constructor(private challengeService: ChallengeService, private router: Router,
+              private progressionService: ProgressionService, private dialog: MatDialog) {
 
   }
 
@@ -108,6 +110,35 @@ export class ChallengeListComponent implements OnInit {
         console.error(error);
         this.isLoading = false;
       }
+    });
+  }
+
+  openDetails(id?: number) {
+    if (!id) return;
+
+    // Récupère le light pour son flag
+    const light = this.challenges.find(c => c.id === id);
+
+    this.challengeService.getChallenge(id).subscribe({
+      next: (full) => {
+
+        const dataForDialog = { ...full, isInUserProgression: light?.isInUserProgression ?? full.isInUserProgression };
+        console.log(dataForDialog);
+        const ref = this.dialog.open(ChallengeDialogComponent, {
+          data: dataForDialog,
+          width: '560px',
+          autoFocus: false
+        });
+
+        ref.afterClosed().subscribe(res => {
+          if (res?.action === 'started' && res.id) {
+            this.challenges = this.challenges.map(c =>
+              c.id === res.id ? { ...c, isInUserProgression: true } : c
+            );
+          }
+        });
+      },
+      error: (err) => console.error('Erreur lors du chargement du défi :', err)
     });
   }
 

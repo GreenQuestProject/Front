@@ -32,6 +32,13 @@
       <mat-card-actions>
         <button
           mat-raised-button
+          color="primary"
+          (click)="$event.stopPropagation(); openDetails(challenge.id)">
+          Voir détails
+        </button>
+<!--
+        <button
+          mat-raised-button
           color="warn"
           title="Commencer le défi"
           (click)="start(challenge.id)"
@@ -40,7 +47,7 @@
           matTooltipPosition="above"
         >
           <mat-icon>add</mat-icon>
-        </button>
+        </button>-->
       </mat-card-actions>
     </mat-card>
   </div>

@@ -1,0 +1,41 @@
+<h2 mat-dialog-title class="title">{{ data.name }}</h2>
+
+<div mat-dialog-content class="content">
+  <mat-chip-set class="chips">
+    <mat-chip>{{ data.category | translateCategory }}</mat-chip>
+    <mat-chip>Difficulté: {{ starLine(data.difficulty!) }}</mat-chip>
+    <mat-chip>{{ data.basePoints }} pts</mat-chip>
+    <mat-chip *ngIf="data.isRepeatable">Répétable</mat-chip>
+    <mat-chip *ngIf="!data.isRepeatable">Non répétable</mat-chip>
+  </mat-chip-set>
+
+  <p *ngIf="data.description">{{ data.description }}</p>
+
+  <div class="impacts">
+    <h3>Estimations d’impact</h3>
+    <ul>
+      <li>CO₂ : {{ data.co2EstimateKg }} kg</li>
+      <li>Eau : {{ data.waterEstimateL }} L</li>
+      <li>Déchets : {{ data.wasteEstimateKg }} kg</li>
+    </ul>
+  </div>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Fermer</button>
+  <button
+    mat-raised-button
+    color="warn"
+    title="Commencer le défi"
+    (click)="startFromDialog($event)"
+    [disabled]="data.isInUserProgression || isStarting"
+    matTooltip="{{
+      data.isInUserProgression
+        ? 'Déjà en cours'
+        : (data.isRepeatable ? 'Recommencer le défi' : 'Commencer le défi')
+    }}"
+
+    matTooltipPosition="above">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
