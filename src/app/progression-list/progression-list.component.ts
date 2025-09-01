@@ -5,7 +5,7 @@ import {ProgressionService} from '../services/progression.service';
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader} from '@angular/material/card';
 import {MatChipListbox, MatChipOption} from '@angular/material/chips';
 import {NavBarComponent} from '../nav-bar/nav-bar.component';
-import {DatePipe, NgForOf, NgIf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {TranslateCategoryPipe} from '../pipes/translate-category.pipe';
 import {MatButton} from '@angular/material/button';
 import {TranslateStatusPipe} from '../pipes/translate-status.pipe';
@@ -41,7 +41,7 @@ import { ReminderDialogComponent} from '../reminder-dialog/reminder-dialog.compo
     MatIcon,
     MatTooltip,
     MatDialogModule,
-    DatePipe
+    //DatePipe
   ],
   templateUrl: './progression-list.component.html',
   styleUrl: './progression-list.component.scss',

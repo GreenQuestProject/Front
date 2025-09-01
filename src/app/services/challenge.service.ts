@@ -31,4 +31,8 @@ export class ChallengeService {
     return this.http.get<ChallengeStatus[]>(this.apiUrl + '/challenge/enums/status');
   }
 
+  getChallenge(id: number): Observable<Challenge> {
+    return this.http.get<Challenge>(`${this.apiUrl}/challenge/${id}`);
+  }
+
 }
