@@ -65,8 +65,10 @@ describe('ChallengeListComponent (DOM + logic)', () => {
   const render = () => fixture.detectChanges();
 
   const cards = () => element.querySelectorAll('mat-card');
-  const detailsButtons = () => Array.from(element.querySelectorAll('button'))
-    .filter(b => (b.textContent || '').trim() === 'Voir détails') as HTMLButtonElement[];
+  const detailsButtons = () =>
+    Array.from(
+      element.querySelectorAll('button[aria-label="Voir détails"]')
+    ) as HTMLButtonElement[];
 
   it('devrait créer le composant', () => {
     challengeSpy.getChallengeCategories.and.returnValue(of([
@@ -91,7 +93,6 @@ describe('ChallengeListComponent (DOM + logic)', () => {
     expect(component.selectedCategories.sort()).toEqual(['ecology', 'health'].sort());
     expect(component.notFoundMessage).toBe('Aucun défi trouvé.');
 
-    // DOM
     expect(cards().length).toBe(3);
     const names = Array.from(element.querySelectorAll('mat-card h1')).map(h => h.textContent?.trim());
     expect(names).toEqual(['Défi A', 'Défi B', 'Défi C']);
@@ -241,6 +242,6 @@ describe('ChallengeListComponent (DOM + logic)', () => {
 
     const cfg = lastDialogConfig as { data: Challenge };
     expect(cfg.data.id).toBe(3);
-    expect(cfg.data.isInUserProgression).toBeTrue(); // merge depuis la liste
+    expect(cfg.data.isInUserProgression).toBeTrue();
   }));
 });

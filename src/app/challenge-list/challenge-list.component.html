@@ -33,21 +33,11 @@
         <button
           mat-raised-button
           color="primary"
+          title="Voir détails"
+          aria-label="Voir détails"
           (click)="$event.stopPropagation(); openDetails(challenge.id)">
-          Voir détails
+          <mat-icon>open_in_new</mat-icon>
         </button>
-<!--
-        <button
-          mat-raised-button
-          color="warn"
-          title="Commencer le défi"
-          (click)="start(challenge.id)"
-          [disabled]="challenge.isInUserProgression"
-          matTooltip="{{ challenge.isInUserProgression ? 'Déjà commencé' : 'Commencer le défi' }}"
-          matTooltipPosition="above"
-        >
-          <mat-icon>add</mat-icon>
-        </button>-->
       </mat-card-actions>
     </mat-card>
   </div>

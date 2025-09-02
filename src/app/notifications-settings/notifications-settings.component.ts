@@ -9,6 +9,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {NotificationPermissionService} from '../services/notification-permission.service';
 import {PushService} from '../services/push.service';
 import {HttpClient} from '@angular/common/http';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-notifications-settings',
@@ -30,18 +31,16 @@ export class NotificationsSettingsComponent {
   private snack = inject(MatSnackBar);
   push = inject(PushService);
   private http = inject(HttpClient);
+  private apiUrl: string = environment.apiUrl+'/preferences';
 
   permission = this.perms.permission;
   enabled = signal(false);
 
   ngOnInit() {
-
-    //TODO: Pour V2 implementer la route /preferences
-    /*
-    this.http.get<{ newChallenge: boolean }>('/api/preferences').subscribe({
+    this.http.get<{ newChallenge: boolean }>(this.apiUrl).subscribe({
       next: (r) => this.enabled.set(!!r?.newChallenge),
-      error: () => {}
-    });*/
+      error: (err) => { console.warn('/preferences GET error', err); }
+    });
   }
 
   async toggle(on: boolean) {
@@ -53,13 +52,18 @@ export class NotificationsSettingsComponent {
         return;
       }
       const ok = await this.push.enablePush();
-      if (!ok) { this.snack.open('Échec de l’activation des push', 'OK', { duration: 3000 }); this.enabled.set(false); return; }
+      if (!ok) {
+        this.snack.open('Échec de l’activation des push (voir Console)', 'OK', { duration: 4000 });
+        this.enabled.set(false);
+        return;
+      }
     } else {
       await this.push.disablePush();
     }
     this.enabled.set(on);
-    //TODO: Pour V2 implementer la route /preferences
-    //this.http.post('/api/preferences', { newChallenge: on }).subscribe();
+    this.http.post(this.apiUrl, { newChallenge: on }).subscribe({
+      error: (err) => console.warn('/preferences POST error', err)
+    });
   }
 
   clear() {
