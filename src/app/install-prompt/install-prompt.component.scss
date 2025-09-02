@@ -1,0 +1,26 @@
+.install-banner {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  margin: 0 auto; max-width: 680px;
+  background: #111; color: #fff; padding: 12px 14px;
+  border-radius: 16px 16px 0 0; box-shadow: 0 -6px 24px rgba(0,0,0,0.2);
+  display: flex; align-items: center; gap: 12px; z-index: 9999;
+}
+.install-banner .title { font-weight: 600; font-size: 14px; }
+.install-banner .desc { font-size: 13px; opacity: .85; }
+.install-actions { margin-left: auto; display: flex; gap: 8px; }
+.btn {
+  border: none; padding: 8px 12px; border-radius: 10px; cursor: pointer;
+  background: #fff; color: #111; font-weight: 600;
+}
+.btn.secondary { background: transparent; color: #fff; outline: 1px solid #fff4; }
+.ios-hint {
+  position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%);
+  max-width: 680px; background: #fff; color: #111; padding: 12px 14px;
+  border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.2); z-index: 9999;
+  font-size: 14px; line-height: 1.35;
+}
+.ios-steps { margin: 8px 0 0; padding: 0 0 0 16px; }
+.ios-steps li { margin: 4px 0; }
+.ios-icons { display:inline-flex; gap:6px; vertical-align: middle; }
+.ios-icons img { width:18px; height:18px; object-fit:contain; }
+.ios-icon { font-size: 18px; width: 18px; height: 18px; line-height: 18px; vertical-align: -3px; }

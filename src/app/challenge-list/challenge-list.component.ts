@@ -13,7 +13,6 @@ import {
 } from '@angular/material/chips';
 import {FormsModule} from '@angular/forms';
 import {TranslateCategoryPipe} from '../pipes/translate-category.pipe';
-import {MatTooltip} from '@angular/material/tooltip';
 import {ProgressionService} from '../services/progression.service';
 import {ChallengeCategory} from '../interfaces/challenge-category';
 import {switchMap} from 'rxjs';
@@ -37,7 +36,8 @@ import { ChallengeDialogComponent } from '../challenge-dialog/challenge-dialog.c
     FormsModule,
     MatChipsModule,
     TranslateCategoryPipe,
-    MatDialogModule
+    MatDialogModule,
+    MatIcon
   ],
   templateUrl: './challenge-list.component.html',
   styleUrl: './challenge-list.component.scss',
@@ -72,7 +72,7 @@ export class ChallengeListComponent implements OnInit {
       error: err => {
         this.isLoading = false;
         console.error(err);
-        if (err.status === 401) this.router.navigateByUrl('/login');
+        if (err.status === 401) this.router.navigateByUrl('/login').then(_ => {});
       }
     });
   }
@@ -81,7 +81,7 @@ export class ChallengeListComponent implements OnInit {
     if (!id) return;
 
     this.progressionService.startChallenge(id).subscribe({
-      next: (response) => {
+      next: (_) => {
         this.challenges = this.challenges.map(c =>
           c.id === id ? {...c, isInUserProgression: true} : c
         );
@@ -116,14 +116,14 @@ export class ChallengeListComponent implements OnInit {
   openDetails(id?: number) {
     if (!id) return;
 
-    // Récupère le light pour son flag
     const light = this.challenges.find(c => c.id === id);
 
     this.challengeService.getChallenge(id).subscribe({
       next: (full) => {
 
-        const dataForDialog = { ...full, isInUserProgression: light?.isInUserProgression ?? full.isInUserProgression };
-        console.log(dataForDialog);
+        const dataForDialog = {
+                        ...full,
+                        isInUserProgression: light?.isInUserProgression ?? full.isInUserProgression };
         const ref = this.dialog.open(ChallengeDialogComponent, {
           data: dataForDialog,
           width: '560px',

@@ -1,251 +1,170 @@
-import { of, throwError } from 'rxjs';
-import { renderStandalone } from '../../testing/test-helpers';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { signal } from '@angular/core';
 
 import { NotificationsSettingsComponent } from './notifications-settings.component';
-import { NotificationPermissionService } from '../services/notification-permission.service';
-import { PushService } from '../services/push.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotificationPermissionService, NotificationPermissionState } from '../services/notification-permission.service';
+import { PushService } from '../services/push.service';
+import { environment } from '../../environments/environment';
 
-type NotificationPermission = 'default' | 'denied' | 'granted';
+class NotificationPermissionServiceStub {
+  permission = signal<NotificationPermissionState>('default');
+  result: NotificationPermissionState = 'granted';
+  async request(): Promise<NotificationPermissionState> {
+    this.permission.set(this.result);
+    return this.result;
+  }
+}
+
+class PushServiceStub {
+  notifications = signal<any[]>([]);
+  enablePush = jasmine.createSpy('enablePush').and.resolveTo(true);
+  disablePush = jasmine.createSpy('disablePush').and.resolveTo(undefined);
+}
 
 describe('NotificationsSettingsComponent', () => {
-  let permSpy: jasmine.SpyObj<NotificationPermissionService>;
-  let pushSpy: jasmine.SpyObj<PushService>;
+  let fixture: ComponentFixture<NotificationsSettingsComponent>;
+  let comp: NotificationsSettingsComponent;
+
   let httpSpy: jasmine.SpyObj<HttpClient>;
-  let snackSpy: jasmine.SpyObj<MatSnackBar>;
+  let permsStub: NotificationPermissionServiceStub;
+  let pushStub: PushServiceStub;
 
-  beforeEach(() => {
-    permSpy = jasmine.createSpyObj<NotificationPermissionService>('NotificationPermissionService', [
-      'request',
-      'permission', // on stubbe via getter plus bas
-    ]) as any;
+  const envApiUrlOriginal = environment.apiUrl;
 
-    // on falsifie la propriété "permission" comme un signal: () => value
-    (permSpy as any).permission = () => 'default' as NotificationPermission;
-    permSpy.request.and.callFake(async () => (permSpy as any).permission());
-
-    pushSpy = jasmine.createSpyObj<PushService>('PushService', [
-      'enablePush',
-      'disablePush',
-      'notifications',
-    ]) as any;
-
-    // notifications signal: on simule par une fonction (getter) + set(...)
-    let _notes: Array<{ title: string; body: string; receivedAt: Date }> = [];
-    (pushSpy as any).notifications = (() => _notes) as any;
-    (pushSpy as any).notifications.set = (arr: typeof _notes) => { _notes = arr; };
-
-    pushSpy.enablePush.and.resolveTo(true);
-    pushSpy.disablePush.and.resolveTo();
-
+  beforeEach(async () => {
     httpSpy = jasmine.createSpyObj<HttpClient>('HttpClient', ['get', 'post']);
-    // Valeurs par défaut (sécurité)
-    httpSpy.get.and.returnValue(of({ newChallenge: false }));
-    httpSpy.post.and.returnValue(of({}));
+    permsStub = new NotificationPermissionServiceStub();
+    pushStub = new PushServiceStub();
 
-    snackSpy = jasmine.createSpyObj<MatSnackBar>('MatSnackBar', ['open']);
+    environment.apiUrl = 'https://api.test.local/api';
+
+    await TestBed.configureTestingModule({
+      imports: [NotificationsSettingsComponent],
+      providers: [
+        { provide: HttpClient, useValue: httpSpy },
+        { provide: NotificationPermissionService, useValue: permsStub },
+        { provide: PushService, useValue: pushStub },
+      ],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(NotificationsSettingsComponent);
+    comp = fixture.componentInstance;
   });
 
-  it('devrait créer le composant', async () => {
-    const { instance } = await renderStandalone(NotificationsSettingsComponent, {
-      providers: [
-        { provide: NotificationPermissionService, useValue: permSpy },
-        { provide: PushService, useValue: pushSpy },
-        { provide: HttpClient, useValue: httpSpy },
-        { provide: MatSnackBar, useValue: snackSpy },
-      ],
-    });
-    expect(instance).toBeTruthy();
-  });
-/*
-  it('ngOnInit: enabled=true quand /api/preferences → { newChallenge: true }', async () => {
-    httpSpy.get.and.returnValue(of({ newChallenge: true }));
-    const { instance } = await renderStandalone(NotificationsSettingsComponent, {
-      providers: [
-        { provide: NotificationPermissionService, useValue: permSpy },
-        { provide: PushService, useValue: pushSpy },
-        { provide: HttpClient, useValue: httpSpy },
-      ],
-    });
-    expect(instance.enabled()).toBeTrue();
-  });
-*/
-  it('ngOnInit: enabled=false quand /api/preferences → { newChallenge: false }', async () => {
-    httpSpy.get.and.returnValue(of({ newChallenge: false }));
-    const { instance } = await renderStandalone(NotificationsSettingsComponent, {
-      providers: [
-        { provide: NotificationPermissionService, useValue: permSpy },
-        { provide: PushService, useValue: pushSpy },
-        { provide: HttpClient, useValue: httpSpy },
-      ],
-    });
-    expect(instance.enabled()).toBeFalse();
+  afterEach(() => {
+    environment.apiUrl = envApiUrlOriginal;
   });
 
-
-  it('toggle(true): permission refusée → snack, enabled=false, pas de POST', async () => {
-    httpSpy.get.and.returnValue(of({ newChallenge: false }));
-    (permSpy as any).permission = () => 'denied' as NotificationPermission;
-    permSpy.request.and.resolveTo('denied');
-
-    const openSpy = spyOn(MatSnackBar.prototype as any, 'open');
-
-    const { instance } = await renderStandalone(NotificationsSettingsComponent, {
-      providers: [
-        { provide: NotificationPermissionService, useValue: permSpy },
-        { provide: PushService, useValue: pushSpy },
-        { provide: HttpClient, useValue: httpSpy },
-      ],
-    });
-
-    await instance.toggle(true);
-
-    expect(openSpy).toHaveBeenCalled();
-    expect(pushSpy.enablePush).not.toHaveBeenCalled();
-    expect(instance.enabled()).toBeFalse();
-    expect(httpSpy.post).not.toHaveBeenCalled();
-  });
-
-  it('toggle(true): permission accordée + enablePush OK → POST { newChallenge: true }', async () => {
-    httpSpy.get.and.returnValue(of({ newChallenge: false }));
-
-    (permSpy as any).permission = () => 'granted' as NotificationPermission;
-    permSpy.request.and.resolveTo('granted');
-    pushSpy.enablePush.and.resolveTo(true);
-    httpSpy.post.calls.reset();
-    httpSpy.post.and.returnValue(of({}));
-
-    const { instance } = await renderStandalone(NotificationsSettingsComponent, {
-      providers: [
-        { provide: NotificationPermissionService, useValue: permSpy },
-        { provide: PushService, useValue: pushSpy },
-        { provide: HttpClient, useValue: httpSpy },
-        { provide: MatSnackBar, useValue: snackSpy },
-      ],
-    });
-
-
-    await instance.toggle(true);
-
-    expect(pushSpy.enablePush).toHaveBeenCalled();
-    //expect(httpSpy.post).toHaveBeenCalledWith('/api/preferences', { newChallenge: true });
-    expect(instance.enabled()).toBeTrue();
-  });
-
-  it("toggle(true): enablePush KO → snack, enabled=false, pas de POST", async () => {
-    httpSpy.get.and.returnValue(of({ newChallenge: false }));
-    (permSpy as any).permission = () => 'granted' as NotificationPermission;
-    permSpy.request.and.resolveTo('granted');
-    pushSpy.enablePush.and.resolveTo(false);
-
-    const openSpy = spyOn(MatSnackBar.prototype as any, 'open');
-
-    const { instance } = await renderStandalone(NotificationsSettingsComponent, {
-      providers: [
-        { provide: NotificationPermissionService, useValue: permSpy },
-        { provide: PushService, useValue: pushSpy },
-        { provide: HttpClient, useValue: httpSpy },
-      ],
-    });
-
-    await instance.toggle(true);
-
-    expect(openSpy).toHaveBeenCalled();
-    expect(httpSpy.post).not.toHaveBeenCalled();
-    expect(instance.enabled()).toBeFalse();
-  });
-
-  it('toggle(false): disablePush appelé + POST { newChallenge: false }', async () => {
-    httpSpy.get.and.returnValue(of({ newChallenge: true }));
-    httpSpy.post.calls.reset();
-    httpSpy.post.and.returnValue(of({}));
-
-    const { instance } = await renderStandalone(NotificationsSettingsComponent, {
-      providers: [
-        { provide: NotificationPermissionService, useValue: permSpy },
-        { provide: PushService, useValue: pushSpy },
-        { provide: HttpClient, useValue: httpSpy },
-        { provide: MatSnackBar, useValue: snackSpy },
-      ],
-    });
-
-    await instance.toggle(false);
-
-    expect(pushSpy.disablePush).toHaveBeenCalled();
-    //expect(httpSpy.post).toHaveBeenCalledWith('/api/preferences', { newChallenge: false });
-    expect(instance.enabled()).toBeFalse();
-  });
-
-  it('clear(): vide le centre de notifications', async () => {
-    const { instance } = await renderStandalone(NotificationsSettingsComponent, {
-      providers: [
-        { provide: NotificationPermissionService, useValue: permSpy },
-        { provide: PushService, useValue: pushSpy },
-        { provide: HttpClient, useValue: httpSpy },
-        { provide: MatSnackBar, useValue: snackSpy },
-      ],
-    });
-
-    (pushSpy as any).notifications.set([
-      { title: 'Hey', body: 'Test', receivedAt: new Date() },
-    ]);
-
-    instance.clear();
-
-    expect((pushSpy as any).notifications().length).toBe(0);
-  });
-
-  it('DOM: affiche le message vide si aucune notification', async () => {
-    const { element } = await renderStandalone(NotificationsSettingsComponent, {
-      providers: [
-        { provide: NotificationPermissionService, useValue: permSpy },
-        { provide: PushService, useValue: pushSpy },
-        { provide: HttpClient, useValue: httpSpy },
-        { provide: MatSnackBar, useValue: snackSpy },
-      ],
-    });
-
-    // aucune note par défaut
-    const text = (element.textContent || '').trim();
-    expect(text).toContain('Aucune notification pour le moment.');
-  });
-
-  it('DOM: après ajout de notifications, la liste se met à jour', async () => {
-    const { element, fixture } = await renderStandalone(NotificationsSettingsComponent, {
-      providers: [
-        { provide: NotificationPermissionService, useValue: permSpy },
-        { provide: PushService, useValue: pushSpy },
-        { provide: HttpClient, useValue: httpSpy },
-        { provide: MatSnackBar, useValue: snackSpy },
-      ],
-    });
-
-    (pushSpy as any).notifications.set([
-      { title: 'Titre 1', body: 'Corps 1', receivedAt: new Date() },
-      { title: 'Titre 2', body: 'Corps 2', receivedAt: new Date() },
-    ]);
-
+  function detect() {
     fixture.detectChanges();
+  }
 
-    const items = element.querySelectorAll('mat-list-item');
-    // 2 items (et plus le fallback "Aucune notification...")
-    expect(items.length).toBe(2);
-    const content = (element.textContent || '').trim();
-    expect(content).toContain('Titre 1');
-    expect(content).toContain('Titre 2');
+  it('ngOnInit: GET /preferences et enabled = true quand newChallenge=true', () => {
+    httpSpy.get.and.returnValue(of({ newChallenge: true }));
+    detect();
+
+    expect(httpSpy.get).toHaveBeenCalledWith('https://api.test.local/api/preferences');
+    expect(comp.enabled()).toBeTrue();
   });
 
-  it("ngOnInit: GET /api/preferences en erreur → ne jette pas, enabled reste false", async () => {
-    httpSpy.get.and.returnValue(throwError(() => new Error('network')));
-    const { instance } = await renderStandalone(NotificationsSettingsComponent, {
-      providers: [
-        { provide: NotificationPermissionService, useValue: permSpy },
-        { provide: PushService, useValue: pushSpy },
-        { provide: HttpClient, useValue: httpSpy },
-        { provide: MatSnackBar, useValue: snackSpy },
-      ],
-    });
-    expect(instance.enabled()).toBeFalse();
+  it('toggle(true): permission granted + enablePush OK → enabled=true et POST /preferences {true}',
+    async () => {
+    httpSpy.get.and.returnValue(of({ newChallenge: false }));
+    detect();
+
+    const snack = fixture.debugElement.injector.get(MatSnackBar);
+    const openSpy = spyOn(snack, 'open').and.stub();
+
+    permsStub.result = 'granted';
+    pushStub.enablePush.and.resolveTo(true);
+    httpSpy.post.and.returnValue(of({}));
+
+    await comp.toggle(true);
+
+    expect(pushStub.enablePush).toHaveBeenCalled();
+    expect(comp.enabled()).toBeTrue();
+    expect(httpSpy.post).toHaveBeenCalledWith(
+      'https://api.test.local/api/preferences',
+      { newChallenge: true }
+    );
+    expect(snack.open).not.toHaveBeenCalledWith(
+      jasmine.stringMatching('Échec de l’activation des push'), 'OK', jasmine.anything()
+    );
+  });
+
+  it('toggle(true): permission denied → snackbar, enabled=false, pas de POST ni enablePush',
+    async () => {
+    httpSpy.get.and.returnValue(of({ newChallenge: false })); // init
+    detect();
+
+    const snack = fixture.debugElement.injector.get(MatSnackBar);
+    const openSpy = spyOn(snack, 'open').and.stub();
+
+    permsStub.result = 'denied';
+
+    await comp.toggle(true);
+
+    expect(pushStub.enablePush).not.toHaveBeenCalled();
+    expect(comp.enabled()).toBeFalse();
+    expect(openSpy).toHaveBeenCalledWith(
+      'Autorise les notifications dans ton navigateur',
+      'OK',
+      { duration: 4000 }
+    );
+    expect(httpSpy.post).not.toHaveBeenCalled();
+  });
+
+  it('toggle(true): enablePush=false → snackbar erreur, enabled=false, pas de POST',
+    async () => {
+    httpSpy.get.and.returnValue(of({ newChallenge: false }));
+    detect();
+
+    const snack = fixture.debugElement.injector.get(MatSnackBar);
+    const openSpy = spyOn(snack, 'open').and.stub();
+
+
+    permsStub.result = 'granted';
+    pushStub.enablePush.and.resolveTo(false);
+
+    await comp.toggle(true);
+
+    expect(pushStub.enablePush).toHaveBeenCalled();
+    expect(comp.enabled()).toBeFalse();
+    expect(openSpy).toHaveBeenCalledWith(
+      'Échec de l’activation des push (voir Console)',
+      'OK',
+      { duration: 4000 }
+    );
+    expect(httpSpy.post).not.toHaveBeenCalled();
+  });
+
+  it('toggle(false): appelle disablePush, enabled=false et POST /preferences {false}',
+    async () => {
+    httpSpy.get.and.returnValue(of({ newChallenge: true }));
+    detect();
+
+    const snack = fixture.debugElement.injector.get(MatSnackBar);
+    const openSpy = spyOn(snack, 'open').and.stub();
+
+
+    httpSpy.post.and.returnValue(of({}));
+
+    await comp.toggle(false);
+
+    expect(pushStub.disablePush).toHaveBeenCalled();
+    expect(comp.enabled()).toBeFalse();
+    expect(httpSpy.post).toHaveBeenCalledWith(
+      'https://api.test.local/api/preferences',
+      { newChallenge: false }
+    );
+  });
+
+  it('clear(): vide le centre de notifications (signal)', () => {
+    pushStub.notifications.set([{ title: 'A' }, { title: 'B' }]);
+    comp.clear();
+    expect(pushStub.notifications()).toEqual([]);
   });
 });

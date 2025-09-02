@@ -259,7 +259,7 @@ describe('ProgressionListComponent', () => {
         { provide: ChallengeService,   useValue: challengeSpy },
         { provide: RemindersService, useValue: remindersSpy },
       ],
-      beforeDetectChanges: () => {/* rien: on ne déclenche pas de logique réseau ici */},
+      beforeDetectChanges: () => {},
     });
 
     expect(instance.getStatusColor('pending')).toBe('#FFA500');
@@ -303,16 +303,13 @@ describe('ProgressionListComponent', () => {
         { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {
-        // ngOnInit (1er fetch) + applyFilters initial (2e fetch) → on s'en fiche du contenu
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
       },
     });
 
-    // Filtres non vides pour déclencher l'appel
     instance.selectedCategories = ['ecology'];
     instance.selectedStatus = ['pending'];
 
-    // Prochain getProgressions() → erreur
     (progressionSpy.getProgressions as any).calls.reset();
     (progressionSpy.getProgressions as any).and.returnValue(
       throwError(() => new Error('network down'))
@@ -320,8 +317,8 @@ describe('ProgressionListComponent', () => {
 
     instance.applyFilters();
 
-    expect(instance.isLoading).toBeFalse();         // remis à false dans le bloc error
-    expect(consoleErrorSpy).toHaveBeenCalled();     // console.error(error)
+    expect(instance.isLoading).toBeFalse();
+    expect(consoleErrorSpy).toHaveBeenCalled();
   });
 
   it("validate(): en cas d'erreur sur updateStatus, log l'erreur et ne modifie pas la liste", async () => {
@@ -335,7 +332,6 @@ describe('ProgressionListComponent', () => {
         { provide: RemindersService, useValue: remindersSpy },
       ],
       beforeDetectChanges: () => {
-        // ngOnInit + applyFilters initial pour avoir des données
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
       },
     });
@@ -346,7 +342,6 @@ describe('ProgressionListComponent', () => {
     instance.validate(initial[0].id!);
 
     expect(consoleErrorSpy).toHaveBeenCalled();
-    // pas de changement local si erreur
     expect(instance.progressions).toEqual(snapshot);
   });
 
@@ -373,7 +368,7 @@ describe('ProgressionListComponent', () => {
     expect(consoleErrorSpy).toHaveBeenCalled();
     expect(instance.progressions).toEqual(snapshot);
   });
-/*
+
   it('openReminderDialog: ferme sans résultat → ne crée pas de rappel', async () => {
     const afterClosed$ = of(undefined); // simulate closing with no payload
     const openSpy = spyOn(MatDialog.prototype, 'open').and.returnValue({
@@ -554,5 +549,5 @@ describe('ProgressionListComponent', () => {
     await instance.completeReminder(prog);
 
     expect(alertSpy).toHaveBeenCalledWith('Échec de la complétion du rappel');
-  });*/
+  });
 });

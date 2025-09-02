@@ -36,7 +36,7 @@ describe('NavBarComponent (DOM)', () => {
   it('affiche tous les liens/boutons attendus avec leurs titres', () => {
     expect(getByTitle('Tous les défis')).toBeTruthy();
     expect(getByTitle('Mes défis')).toBeTruthy();
-    //expect(getByTitle('Paramètres')).toBeTruthy();
+    expect(getByTitle('Paramètres')).toBeTruthy();
     expect(getByTitle('Articles')).toBeTruthy();
     expect(getByTitle('Statistiques')).toBeTruthy();
   });
@@ -66,7 +66,7 @@ describe('NavBarComponent (DOM)', () => {
   it('quelques routerLink reflétés dans le DOM', () => {
     const defis = getByTitle('Tous les défis');
     const progression = getByTitle('Mes défis');
-    //const parametres = getByTitle('Paramètres');
+    const parametres = getByTitle('Paramètres');
     const articles = getByTitle('Articles');
     const statistiques = getByTitle('Statistiques');
 
@@ -75,7 +75,7 @@ describe('NavBarComponent (DOM)', () => {
 
     expect(reflect(defis)).toContain('/défis');
     expect(reflect(progression)).toContain('/progression');
-    //expect(reflect(parametres)).toContain('/paramètres');
+    expect(reflect(parametres)).toContain('/paramètres');
     expect(reflect(articles)).toContain('/articles');
     expect(reflect(statistiques)).toContain('/statistiques');
   });

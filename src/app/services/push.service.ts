@@ -1,21 +1,16 @@
-import {inject, Injectable, signal} from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { SwPush } from '@angular/service-worker';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import {firstValueFrom} from 'rxjs';
-import {AppNotification} from '../interfaces/app-notification';
+import { firstValueFrom } from 'rxjs';
+import { AppNotification } from '../interfaces/app-notification';
 
-
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class PushService {
-
   private swPush = inject(SwPush);
   private http = inject(HttpClient);
-  private apiUrl: string = environment.apiUrl+'/push';
-  // centre de notifications in-app (dernier 50)
+  private apiUrl = `${environment.apiUrl}/push`;
+
   notifications = signal<AppNotification[]>(this.restore());
 
   private restore(): AppNotification[] {
@@ -24,7 +19,6 @@ export class PushService {
   private persist() { localStorage.setItem('app.notifications', JSON.stringify(this.notifications())); }
 
   constructor() {
-// messages émis quand l’app est au premier-plan par le SW Angular
     this.swPush.messages.subscribe((msg: any) => {
       const note: AppNotification = {
         title: msg?.notification?.title || msg?.title || 'Notification',
@@ -37,23 +31,45 @@ export class PushService {
       this.persist();
     });
 
-// clics sur notifications (quand l’utilisateur clique sur une notif push)
     this.swPush.notificationClicks.subscribe(event => {
       const url = (event.notification?.data as any)?.url || '/';
-// Laisser le SW ouvrir/focus; ici on peut router si l’app est déjà ouverte
-// location.assign(url); // option : déléguer au router
     });
   }
 
   async enablePush(): Promise<boolean> {
     try {
+      if (!this.swPush.isEnabled) {
+        console.error('[Push] ServiceWorker non activé (build prod ? HTTPS ? provideServiceWorker ?)');
+        return false;
+      }
+      if (!environment.vapidPublicKey) {
+        console.error('[Push] vapidPublicKey manquante dans environment');
+        return false;
+      }
+
       const sub = await this.swPush.requestSubscription({ serverPublicKey: environment.vapidPublicKey });
-      await firstValueFrom(this.http.post(`${this.apiUrl}/subscribe`, sub));
+      const raw = (sub as any)?.toJSON ? (sub as any).toJSON() : (sub as any);
+      const payload = {
+        endpoint: raw.endpoint,
+        keys: { p256dh: raw.keys.p256dh, auth: raw.keys.auth },
+        encoding: 'aes128gcm',
+      };
+      await firstValueFrom(this.http.post(`${this.apiUrl}/subscribe`, payload));
       return true;
-    } catch { return false; }
+    } catch (e: any) {
+      console.error('[Push] enablePush() failed:', e);
+      return false;
+    }
   }
 
   async disablePush(): Promise<void> {
-    try { await firstValueFrom(this.http.post(`${this.apiUrl}/unsubscribe`, {})); } finally {}
+    try {
+      const sub = await firstValueFrom(this.swPush.subscription);
+      const endpoint = sub?.endpoint;
+      await firstValueFrom(this.http.post(`${this.apiUrl}/unsubscribe`, { endpoint }));
+      await sub?.unsubscribe();
+    } catch (e) {
+      console.error('[Push] disablePush() failed:', e);
+    }
   }
 }

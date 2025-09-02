@@ -4,7 +4,6 @@ import { NotificationPermissionService, NotificationPermissionState } from './no
 describe('NotificationPermissionService', () => {
   let service: NotificationPermissionService;
 
-  // On garde l'original pour restaurer ensuite
   const originalNotification = (window as any).Notification;
 
   function setNotificationMock(
@@ -15,11 +14,9 @@ describe('NotificationPermissionService', () => {
     if (requestPermissionImpl) {
       requestSpy.and.callFake(requestPermissionImpl);
     } else {
-      // par défaut, renvoie la permission courante
       requestSpy.and.callFake(async () => permission);
     }
 
-    // Mock minimal de l'API Notification côté navigateur
     (window as any).Notification = {
       permission,
       requestPermission: requestSpy,
@@ -28,12 +25,10 @@ describe('NotificationPermissionService', () => {
   }
 
   afterEach(() => {
-    // Restaure la global après chaque test
     (window as any).Notification = originalNotification;
   });
 
   it('should be created', () => {
-    // permission initiale = default
     setNotificationMock('default');
     TestBed.configureTestingModule({});
     service = TestBed.inject(NotificationPermissionService);
@@ -57,18 +52,15 @@ describe('NotificationPermissionService', () => {
   });
 
   it("request(): si 'Notification' n'est plus présent → retourne 'denied' et ne touche pas au signal", async () => {
-    // Construire le service avec une API présente
     setNotificationMock('default');
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({});
     const s = TestBed.inject(NotificationPermissionService);
 
-    // Supprimer la propriété (important: pas 'undefined')
     delete (window as any).Notification;
 
     const res = await s.request();
     expect(res).toBe('denied');
-    // Le signal reste sur la valeur initiale ('default')
     expect(s.permission()).toBe('default');
   });
 

@@ -60,9 +60,9 @@ describe('ChallengeDialogComponent (DOM + logic)', () => {
   });
 
   it('starLine(): borne entre 1 et 5 et arrondi', () => {
-    expect(component.starLine(0)).toBe('★☆☆☆☆');       // borne basse
-    expect(component.starLine(3.3)).toBe('★★★☆☆');     // arrondi
-    expect(component.starLine(7)).toBe('★★★★★');       // borne haute
+    expect(component.starLine(0)).toBe('★☆☆☆☆');
+    expect(component.starLine(3.3)).toBe('★★★☆☆');
+    expect(component.starLine(7)).toBe('★★★★★');
   });
 
   it('asNumber(): convertit string/number, undefined → 0', () => {
@@ -72,19 +72,15 @@ describe('ChallengeDialogComponent (DOM + logic)', () => {
   });
 
   it('hasImpacts(): true si au moins une estimation définie', () => {
-    // aucun impact
     expect(component.hasImpacts()).toBeFalse();
 
-    // un impact suffit
     component.data.co2EstimateKg = 1 as any;
     expect(component.hasImpacts()).toBeTrue();
 
-    // reset et tester un autre
     component.data.co2EstimateKg = undefined as any;
     component.data.waterEstimateL = 10 as any;
     expect(component.hasImpacts()).toBeTrue();
 
-    // reset et tester le dernier
     component.data.waterEstimateL = undefined as any;
     component.data.wasteEstimateKg = 0.5 as any;
     expect(component.hasImpacts()).toBeTrue();
@@ -114,27 +110,22 @@ describe('ChallengeDialogComponent (DOM + logic)', () => {
   });
 
   it('startFromDialog(): succès → MAJ isInUserProgression, isStarting repasse false, et close avec payload', fakeAsync(() => {
-    // Arrange
     component.data = { ...BASE_DATA, id: 7, isInUserProgression: false } as any;
     progressionSpy.startChallenge.and.returnValue(of({ ok: true } as any));
 
     fixture.detectChanges();
     expect(startButton().disabled).toBeFalse();
 
-    // Act
     component.startFromDialog({ stopPropagation() {} } as any);
 
-    // Pas d’attente sur l’état transitoire: of(...) est sync
     tick();
     fixture.detectChanges();
 
-    // Assert finaux
     expect(progressionSpy.startChallenge).toHaveBeenCalledOnceWith(7);
     expect(component.data.isInUserProgression).toBeTrue();
     expect(component.isStarting).toBeFalse();
     expect(dialogRefSpy.close).toHaveBeenCalledWith({ action: 'started', id: 7 });
 
-    // DOM: le bouton devient disabled
     expect(startButton().disabled).toBeTrue();
   }));
 
@@ -144,7 +135,6 @@ describe('ChallengeDialogComponent (DOM + logic)', () => {
 
     component.startFromDialog({ stopPropagation() {} } as any);
 
-    // Pas d’attente sur l’état transitoire
     tick();
     fixture.detectChanges();
 
@@ -152,8 +142,6 @@ describe('ChallengeDialogComponent (DOM + logic)', () => {
     expect(consoleErrorSpy).toHaveBeenCalled();
     expect(component.isStarting).toBeFalse();
     expect(dialogRefSpy.close).not.toHaveBeenCalled();
-
-    // DOM: bouton réactivé (pas en cours, pas commencé)
     expect(startButton().disabled).toBeFalse();
   }));
 
