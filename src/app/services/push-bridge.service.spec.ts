@@ -1,7 +1,7 @@
-import { TestBed } from '@angular/core/testing';
-import { PushBridgeService } from './push-bridge.service';
-import { RemindersService } from './reminders.service';
-import { Router } from '@angular/router';
+import {TestBed} from '@angular/core/testing';
+import {PushBridgeService} from './push-bridge.service';
+import {RemindersService} from './reminders.service';
+import {Router} from '@angular/router';
 
 describe('PushBridgeService', () => {
   let service: PushBridgeService;
@@ -26,8 +26,8 @@ describe('PushBridgeService', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: RemindersService, useValue: remindersSpy },
-        { provide: Router, useValue: routerSpy },
+        {provide: RemindersService, useValue: remindersSpy},
+        {provide: Router, useValue: routerSpy},
       ],
     });
 
@@ -35,7 +35,8 @@ describe('PushBridgeService', () => {
     swMessageHandler = null;
 
     const fakeSW = {
-      addEventListener: (...args: any[]) => {},
+      addEventListener: (...args: any[]) => {
+      },
     };
     addEventListenerSpy = spyOn(fakeSW, 'addEventListener').and.callFake(
       (type: string, cb: (e: MessageEvent) => void) => {
@@ -75,7 +76,7 @@ describe('PushBridgeService', () => {
   it('ignore les messages sans type REMINDER_ACTION', async () => {
     expect(swMessageHandler).toBeTruthy();
 
-    swMessageHandler!({ data: { type: 'OTHER' } } as any);
+    swMessageHandler!({data: {type: 'OTHER'}} as any);
 
     expect(remindersSpy.complete).not.toHaveBeenCalled();
     expect(remindersSpy.snooze).not.toHaveBeenCalled();
@@ -85,7 +86,7 @@ describe('PushBridgeService', () => {
   it('action "done" → appelle reminders.complete(reminderId)', async () => {
     expect(swMessageHandler).toBeTruthy();
 
-    swMessageHandler!({ data: { type: 'REMINDER_ACTION', action: 'done', reminderId: 7 } } as any);
+    swMessageHandler!({data: {type: 'REMINDER_ACTION', action: 'done', reminderId: 7}} as any);
 
     await Promise.resolve();
 
@@ -96,7 +97,7 @@ describe('PushBridgeService', () => {
   it('action "snooze" → appelle reminders.snooze(reminderId)', async () => {
     expect(swMessageHandler).toBeTruthy();
 
-    swMessageHandler!({ data: { type: 'REMINDER_ACTION', action: 'snooze', reminderId: 9 } } as any);
+    swMessageHandler!({data: {type: 'REMINDER_ACTION', action: 'snooze', reminderId: 9}} as any);
 
     await Promise.resolve();
 
@@ -107,7 +108,7 @@ describe('PushBridgeService', () => {
   it('présence d’un url → navigateByUrl(url)', async () => {
     expect(swMessageHandler).toBeTruthy();
 
-    swMessageHandler!({ data: { type: 'REMINDER_ACTION', action: 'done', reminderId: 1, url: '/dash' } } as any);
+    swMessageHandler!({data: {type: 'REMINDER_ACTION', action: 'done', reminderId: 1, url: '/dash'}} as any);
 
     await Promise.resolve();
 
@@ -118,7 +119,7 @@ describe('PushBridgeService', () => {
     remindersSpy.complete.and.rejectWith(new Error('boom'));
     const errSpy = spyOn(console, 'error');
 
-    swMessageHandler!({ data: { type: 'REMINDER_ACTION', action: 'done', reminderId: 123 } } as any);
+    swMessageHandler!({data: {type: 'REMINDER_ACTION', action: 'done', reminderId: 123}} as any);
 
     await Promise.resolve();
 

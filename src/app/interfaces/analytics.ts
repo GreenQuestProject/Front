@@ -16,8 +16,15 @@ export interface LeaderboardResponse {
   items: LeaderboardItem[];
 }
 
-export interface OverviewWeeklyPoint { x: string; y: number; }
-export interface OverviewCategory { key: string; done: number; }
+export interface OverviewWeeklyPoint {
+  x: string;
+  y: number;
+}
+
+export interface OverviewCategory {
+  key: string;
+  done: number;
+}
 
 export interface OverviewResponse {
   completed: number;
@@ -37,5 +44,6 @@ export interface FunnelRow {
 
 export interface CohortRow {
   signup_week: string;
+
   [key: string]: string | number;
 }

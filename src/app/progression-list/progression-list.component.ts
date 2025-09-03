@@ -13,14 +13,13 @@ import {FormsModule} from '@angular/forms';
 import {MatIcon} from '@angular/material/icon';
 import {ChallengeCategory} from '../interfaces/challenge-category';
 import {ChallengeStatus} from '../interfaces/challenge-status';
-import {forkJoin, switchMap} from 'rxjs';
+import {firstValueFrom, forkJoin, switchMap} from 'rxjs';
 import {ChallengeService} from '../services/challenge.service';
 import {tap} from 'rxjs/operators';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import { RemindersService } from '../services/reminders.service';
-import { firstValueFrom } from 'rxjs';
-import { ReminderDialogComponent} from '../reminder-dialog/reminder-dialog.component';
+import {RemindersService} from '../services/reminders.service';
+import {ReminderDialogComponent} from '../reminder-dialog/reminder-dialog.component';
 
 @Component({
   selector: 'app-progression-list',
@@ -76,8 +75,8 @@ export class ProgressionListComponent implements OnInit {
         this.selectedStatus = statuses.map(s => s.value).filter(s => s !== 'failed');
       }),
       switchMap(() => this.progressionService.getProgressions()),
-        tap(initial => {
-          this.progressions = initial;
+      tap(initial => {
+        this.progressions = initial;
       }),
       switchMap(() =>
         this.progressionService.getProgressions(this.selectedCategories, this.selectedStatus)
@@ -91,7 +90,8 @@ export class ProgressionListComponent implements OnInit {
       error: err => {
         console.error(err);
         this.isLoading = false;
-        if (err.status === 401) this.router.navigateByUrl('/login').then(_ => {});
+        if (err.status === 401) this.router.navigateByUrl('/login').then(_ => {
+        });
       }
     });
   }
@@ -167,19 +167,9 @@ export class ProgressionListComponent implements OnInit {
     });
   }
 
-  private refreshFilters() {
-    const allowedCategories = this.categories.map(c => c.value);
-    const allowedStatuses   = this.status.map(s => s.value);
-
-    this.selectedCategories = this.selectedCategories.filter(cat => allowedCategories.includes(cat));
-    this.selectedStatus     = this.selectedStatus.filter(st  => allowedStatuses.includes(st));
-
-    this.applyFilters();
-  }
-
   async openReminderDialog(prog: Progression) {
     const ref = this.dialog.open(ReminderDialogComponent, {
-      data: { progressionId: prog.id  },
+      data: {progressionId: prog.id},
     });
     const res = await firstValueFrom(ref.afterClosed());
     if (!res) return;
@@ -201,7 +191,7 @@ export class ProgressionListComponent implements OnInit {
     try {
       await this.remindersService.snooze(id);
       if ((prog as any).nextReminderUtc) {
-        const next = new Date((prog as any).nextReminderUtc).getTime() + 10*60*1000;
+        const next = new Date((prog as any).nextReminderUtc).getTime() + 10 * 60 * 1000;
         (prog as any).nextReminderUtc = new Date(next).toISOString();
       }
     } catch {
@@ -219,5 +209,15 @@ export class ProgressionListComponent implements OnInit {
     } catch {
       alert('Échec de la complétion du rappel');
     }
+  }
+
+  private refreshFilters() {
+    const allowedCategories = this.categories.map(c => c.value);
+    const allowedStatuses = this.status.map(s => s.value);
+
+    this.selectedCategories = this.selectedCategories.filter(cat => allowedCategories.includes(cat));
+    this.selectedStatus = this.selectedStatus.filter(st => allowedStatuses.includes(st));
+
+    this.applyFilters();
   }
 }

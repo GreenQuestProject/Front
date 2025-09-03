@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import {Routes} from '@angular/router';
 import {LoginComponent} from './login/login.component';
 import {HomeComponent} from './home/home.component';
 import {childAuthGuard} from './guards/child-auth.guard';
@@ -35,7 +35,7 @@ export const routes: Routes = [
   {
     path: '', redirectTo: '/défis', pathMatch: 'full'
   },
-  { path: 'paramètres', component: ParametersComponent, canActivate: [childAuthGuard] },
-  { path: 'articles', component: ArticlesComponent, canActivate: [childAuthGuard] },
-  { path: 'statistiques', component: AnalyticsComponent, canActivate: [childAuthGuard]  },
+  {path: 'paramètres', component: ParametersComponent, canActivate: [childAuthGuard]},
+  {path: 'articles', component: ArticlesComponent, canActivate: [childAuthGuard]},
+  {path: 'statistiques', component: AnalyticsComponent, canActivate: [childAuthGuard]},
 ];

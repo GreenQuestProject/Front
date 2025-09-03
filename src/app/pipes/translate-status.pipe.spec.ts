@@ -1,4 +1,4 @@
-import { TranslateStatusPipe } from './translate-status.pipe';
+import {TranslateStatusPipe} from './translate-status.pipe';
 
 describe('TranslateStatusPipe', () => {
   it('create an instance', () => {

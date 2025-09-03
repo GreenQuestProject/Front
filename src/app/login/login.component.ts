@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {User} from "../interfaces/user";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
-import { AuthService } from "../services/auth.service";
+import {AuthService} from "../services/auth.service";
 import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import {MatButton} from '@angular/material/button';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
@@ -27,16 +27,17 @@ import {NgIf} from '@angular/common';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  loginForm:FormGroup;
+  loginForm: FormGroup;
   errorMessage: string | null = null;
   isLoading: boolean = false;
-  constructor(private fb:FormBuilder,
+
+  constructor(private fb: FormBuilder,
               private authService: AuthService,
               private router: Router) {
 
     this.loginForm = this.fb.group({
-      username: ['',Validators.required],
-      password: ['',Validators.required]
+      username: ['', Validators.required],
+      password: ['', Validators.required]
     });
   }
 
@@ -53,16 +54,16 @@ export class LoginComponent {
             },
             error: (error) => {
               this.isLoading = false;
-              if(error.status == 401){
+              if (error.status == 401) {
                 this.errorMessage = 'Identifiants invalides.';
-              }else {
+              } else {
                 this.errorMessage = 'Une erreur inattendue s\'est produite. Veuillez réessayer ultérieurement.';
                 console.error('Error while login', error);
               }
             }
           }
         );
-    }else {
+    } else {
       this.isLoading = false;
       this.errorMessage = 'Veuillez remplir correctement le formulaire avant de le soumettre.';
       console.log('Invalid form');

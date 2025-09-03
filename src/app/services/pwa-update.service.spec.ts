@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-import { Subject } from 'rxjs';
-import { PwaUpdateService } from './pwa-update.service';
-import { SwUpdate, VersionEvent } from '@angular/service-worker';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {TestBed} from '@angular/core/testing';
+import {Subject} from 'rxjs';
+import {PwaUpdateService} from './pwa-update.service';
+import {SwUpdate, VersionEvent} from '@angular/service-worker';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 describe('PwaUpdateService', () => {
   let versionUpdates$: Subject<VersionEvent>;
@@ -36,8 +36,8 @@ describe('PwaUpdateService', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: SwUpdate, useValue: swUpdateMock },
-        { provide: MatSnackBar, useValue: snackBarSpy },
+        {provide: SwUpdate, useValue: swUpdateMock},
+        {provide: MatSnackBar, useValue: snackBarSpy},
       ],
     });
 
@@ -54,47 +54,47 @@ describe('PwaUpdateService', () => {
     expect(setIntervalSpy).not.toHaveBeenCalled();
     expect(snackBarSpy.open).not.toHaveBeenCalled();
 
-    versionUpdates$.next({ type: 'VERSION_READY' } as any);
+    versionUpdates$.next({type: 'VERSION_READY'} as any);
     expect(snackBarSpy.open).not.toHaveBeenCalled();
   });
 
   it('isEnabled=true : planifie checkForUpdate() horaire et ouvre un snackbar sur VERSION_READY (sans recharger la page)',
     async () => {
-    const service = setup(true);
+      const service = setup(true);
 
-    expect(setIntervalSpy).toHaveBeenCalled();
-    const [, delay] = setIntervalSpy.calls.mostRecent().args;
-    expect(delay).toBe(60 * 60 * 1000);
+      expect(setIntervalSpy).toHaveBeenCalled();
+      const [, delay] = setIntervalSpy.calls.mostRecent().args;
+      expect(delay).toBe(60 * 60 * 1000);
 
-    expect(swUpdateMock.checkForUpdate).not.toHaveBeenCalled();
-    (intervalHandler as Function)();
-    expect(swUpdateMock.checkForUpdate).toHaveBeenCalled();
+      expect(swUpdateMock.checkForUpdate).not.toHaveBeenCalled();
+      (intervalHandler as Function)();
+      expect(swUpdateMock.checkForUpdate).toHaveBeenCalled();
 
-    const onAction$ = new Subject<void>();
-    snackBarSpy.open.and.returnValue({ onAction: () => onAction$.asObservable() } as any);
+      const onAction$ = new Subject<void>();
+      snackBarSpy.open.and.returnValue({onAction: () => onAction$.asObservable()} as any);
 
-    versionUpdates$.next({ type: 'VERSION_READY', currentVersion: {} as any, latestVersion: {} as any });
+      versionUpdates$.next({type: 'VERSION_READY', currentVersion: {} as any, latestVersion: {} as any});
 
-    expect(snackBarSpy.open).toHaveBeenCalledWith(
-      'Une nouvelle version est disponible',
-      'Mettre à jour',
-      { duration: 10000 }
-    );
+      expect(snackBarSpy.open).toHaveBeenCalledWith(
+        'Une nouvelle version est disponible',
+        'Mettre à jour',
+        {duration: 10000}
+      );
 
-    const aarSpy = spyOn<any>(service as any, 'activateAndReload').and.stub();
+      const aarSpy = spyOn<any>(service as any, 'activateAndReload').and.stub();
 
-    onAction$.next();
-    onAction$.complete();
-    await Promise.resolve();
+      onAction$.next();
+      onAction$.complete();
+      await Promise.resolve();
 
-    expect(aarSpy).toHaveBeenCalled();
-  });
+      expect(aarSpy).toHaveBeenCalled();
+    });
 
   it('ignore les événements ≠ VERSION_READY', () => {
     setup(true);
 
     snackBarSpy.open.calls.reset();
-    versionUpdates$.next({ type: 'VERSION_DETECTED', version: {} as any } as any);
+    versionUpdates$.next({type: 'VERSION_DETECTED', version: {} as any} as any);
 
     expect(snackBarSpy.open).not.toHaveBeenCalled();
   });

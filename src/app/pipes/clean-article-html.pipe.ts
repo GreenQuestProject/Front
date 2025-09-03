@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
 @Pipe({
@@ -6,7 +6,8 @@ import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
   standalone: true
 })
 export class CleanArticleHtmlPipe implements PipeTransform {
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(private sanitizer: DomSanitizer) {
+  }
 
   transform(value: string | null | undefined): SafeHtml {
     if (!value) return this.sanitizer.bypassSecurityTrustHtml('');
@@ -22,12 +23,17 @@ export class CleanArticleHtmlPipe implements PipeTransform {
     root.querySelectorAll('script, iframe, object, embed, form, link, style').forEach(el => el.remove());
 
     root.querySelectorAll<HTMLElement>('*').forEach(el => {
-      [...el.attributes].forEach(attr => { if (/^on/i.test(attr.name)) el.removeAttribute(attr.name); });
+      [...el.attributes].forEach(attr => {
+        if (/^on/i.test(attr.name)) el.removeAttribute(attr.name);
+      });
     });
 
     Array.from(root.querySelectorAll('a')).forEach(a => {
       const href = a.getAttribute('href');
-      if (isBadHref(href)) { a.remove(); return; }
+      if (isBadHref(href)) {
+        a.remove();
+        return;
+      }
 
       const kids = Array.from(a.children);
       const mediaOnly = kids.length > 0 && kids.every(el => /^(IMG|PICTURE|SVG|VIDEO|AUDIO|SOURCE|FIGURE)$/i.test(el.tagName));
@@ -48,7 +54,7 @@ export class CleanArticleHtmlPipe implements PipeTransform {
       if (src && !/^https?:\/\//i.test(src)) el.remove();
     });
 
-    const allowed = new Set(['IMG','P','STRONG','EM','UL','OL','LI','BR','SPAN','SMALL','B','I','FIGURE','FIGCAPTION']);
+    const allowed = new Set(['IMG', 'P', 'STRONG', 'EM', 'UL', 'OL', 'LI', 'BR', 'SPAN', 'SMALL', 'B', 'I', 'FIGURE', 'FIGCAPTION']);
     root.querySelectorAll('*').forEach(el => {
       if (!allowed.has(el.tagName)) {
         const frag = document.createDocumentFragment();
@@ -74,8 +80,8 @@ export class CleanArticleHtmlPipe implements PipeTransform {
         s.borderRadius = '6px';
       }
 
-      img.setAttribute('loading','lazy');
-      img.setAttribute('decoding','async');
+      img.setAttribute('loading', 'lazy');
+      img.setAttribute('decoding', 'async');
     });
 
     root.querySelectorAll('p, div, h1,h2,h3,h4,h5,h6, blockquote, figure').forEach(el => {

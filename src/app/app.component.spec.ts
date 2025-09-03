@@ -1,15 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { PwaUpdateService } from './services/pwa-update.service';
-import { PushBridgeService } from './services/push-bridge.service';
+import {TestBed} from '@angular/core/testing';
+import {AppComponent} from './app.component';
+import {PwaUpdateService} from './services/pwa-update.service';
+import {PushBridgeService} from './services/push-bridge.service';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
       providers: [
-        { provide: PwaUpdateService, useValue: {} },
-        { provide: PushBridgeService, useValue: {} },
+        {provide: PwaUpdateService, useValue: {}},
+        {provide: PushBridgeService, useValue: {}},
       ],
     }).compileComponents();
   });

@@ -1,4 +1,4 @@
-import { Article } from './article';
+import {Article} from './article';
 
 export type SortField = 'date' | 'title' | 'source';
 export type SortOrder = 'asc' | 'desc';

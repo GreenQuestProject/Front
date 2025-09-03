@@ -2,7 +2,8 @@ import {inject, Injectable} from '@angular/core';
 import {firstValueFrom} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-export type Recurrence = 'NONE'|'DAILY'|'WEEKLY';
+
+export type Recurrence = 'NONE' | 'DAILY' | 'WEEKLY';
 
 
 @Injectable({
@@ -10,15 +11,15 @@ export type Recurrence = 'NONE'|'DAILY'|'WEEKLY';
 })
 export class RemindersService {
 
-  constructor() { }
-
   private http = inject(HttpClient);
-
   private tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Paris';
-  private apiUrl: string = environment.apiUrl+'/reminders';
+  private apiUrl: string = environment.apiUrl + '/reminders';
+
+  constructor() {
+  }
 
   async createByProgression(progressionId: number, whenLocalISO: string, recurrence: Recurrence = 'NONE') {
-    return firstValueFrom(this.http.post<{id:number}>(this.apiUrl, {
+    return firstValueFrom(this.http.post<{ id: number }>(this.apiUrl, {
       progressionId,
       scheduledAt: whenLocalISO,
       timezone: this.tz,

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {Component} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
 import {PwaUpdateService} from './services/pwa-update.service';
 import {PushBridgeService} from './services/push-bridge.service';
 import {InstallPromptComponent} from './install-prompt/install-prompt.component';
@@ -13,5 +13,7 @@ import {InstallPromptComponent} from './install-prompt/install-prompt.component'
 })
 export class AppComponent {
   title = 'GreenQuest';
-  constructor(private _update: PwaUpdateService, _bridge: PushBridgeService) {}
+
+  constructor(private _update: PwaUpdateService, _bridge: PushBridgeService) {
+  }
 }

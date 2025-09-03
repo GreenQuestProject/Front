@@ -1,12 +1,12 @@
-import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import {TestBed} from '@angular/core/testing';
+import {provideHttpClient} from '@angular/common/http';
+import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 
-import { ChallengeService } from './challenge.service';
-import { environment } from '../../environments/environment';
-import { Challenge } from '../interfaces/challenge';
-import { ChallengeCategory } from '../interfaces/challenge-category';
-import { ChallengeStatus } from '../interfaces/challenge-status';
+import {ChallengeService} from './challenge.service';
+import {environment} from '../../environments/environment';
+import {Challenge} from '../interfaces/challenge';
+import {ChallengeCategory} from '../interfaces/challenge-category';
+import {ChallengeStatus} from '../interfaces/challenge-status';
 
 describe('ChallengeService', () => {
   let service: ChallengeService;
@@ -35,7 +35,7 @@ describe('ChallengeService', () => {
 
   it('getChallenges() doit faire un GET sans param quand categories est undefined', () => {
     const mockResponse: Challenge[] = [
-      { id: 1, title: 'Test', category: 'energy' } as unknown as Challenge,
+      {id: 1, title: 'Test', category: 'energy'} as unknown as Challenge,
     ];
 
     service.getChallenges().subscribe((res) => {
@@ -55,7 +55,7 @@ describe('ChallengeService', () => {
   it('getChallenges() doit ajouter le param category quand categories est non vide', () => {
     const cats = ['energy', 'water'];
     const mockResponse: Challenge[] = [
-      { id: 2, title: 'Eau', category: 'water' } as unknown as Challenge,
+      {id: 2, title: 'Eau', category: 'water'} as unknown as Challenge,
     ];
 
     service.getChallenges(cats).subscribe((res) => {
@@ -102,13 +102,13 @@ describe('ChallengeService', () => {
     });
 
     const req = httpMock.expectOne(`${apiUrl}/challenge`);
-    req.flush({ message: 'boom' }, { status, statusText });
+    req.flush({message: 'boom'}, {status, statusText});
   });
 
   it('getChallengeCategories() doit faire un GET /challenge/enums/categories et retourner la liste', () => {
     const mock: ChallengeCategory[] = [
-      { name: 'ENERGY', value: 'energy' } as ChallengeCategory,
-      { name: 'WATER',  value: 'water'  } as ChallengeCategory,
+      {name: 'ENERGY', value: 'energy'} as ChallengeCategory,
+      {name: 'WATER', value: 'water'} as ChallengeCategory,
     ];
 
     service.getChallengeCategories().subscribe(res => {
@@ -124,9 +124,9 @@ describe('ChallengeService', () => {
 
   it('getChallengeStatus() doit faire un GET /challenge/enums/status et retourner la liste', () => {
     const mock: ChallengeStatus[] = [
-      { name: 'PENDING',  value: 'pending'  } as ChallengeStatus,
-      { name: 'ONGOING',  value: 'ongoing'  } as ChallengeStatus,
-      { name: 'DONE',     value: 'done'     } as ChallengeStatus,
+      {name: 'PENDING', value: 'pending'} as ChallengeStatus,
+      {name: 'ONGOING', value: 'ongoing'} as ChallengeStatus,
+      {name: 'DONE', value: 'done'} as ChallengeStatus,
     ];
 
     service.getChallengeStatus().subscribe(res => {
@@ -154,7 +154,7 @@ describe('ChallengeService', () => {
 
     const req = httpMock.expectOne(`${apiUrl}/challenge/enums/categories`);
     expect(req.request.method).toBe('GET');
-    req.flush({ message: 'upstream down' }, { status, statusText });
+    req.flush({message: 'upstream down'}, {status, statusText});
   });
 
   it('getChallengeStatus() doit propager une erreur HTTP', () => {
@@ -171,7 +171,7 @@ describe('ChallengeService', () => {
 
     const req = httpMock.expectOne(`${apiUrl}/challenge/enums/status`);
     expect(req.request.method).toBe('GET');
-    req.flush({ message: 'missing' }, { status, statusText });
+    req.flush({message: 'missing'}, {status, statusText});
   });
 
 });

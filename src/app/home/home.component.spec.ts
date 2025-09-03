@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HomeComponent } from './home.component';
-import { AuthService } from '../services/auth.service';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { NavBarComponent } from '../nav-bar/nav-bar.component';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {HomeComponent} from './home.component';
+import {AuthService} from '../services/auth.service';
+import {ActivatedRoute} from '@angular/router';
+import {of} from 'rxjs';
+import {NavBarComponent} from '../nav-bar/nav-bar.component';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -16,8 +16,8 @@ describe('HomeComponent', () => {
     TestBed.configureTestingModule({
       imports: [HomeComponent, NavBarComponent],
       providers: [
-        { provide: AuthService, useValue: authServiceSpy },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: {} } } }
+        {provide: AuthService, useValue: authServiceSpy},
+        {provide: ActivatedRoute, useValue: {snapshot: {paramMap: {}}}}
       ]
     }).compileComponents();
 
@@ -30,7 +30,7 @@ describe('HomeComponent', () => {
   });
 
   it('should set username to current user\'s username on init', () => {
-    const mockUser = { username: 'testUser', password: 'testPassword' };
+    const mockUser = {username: 'testUser', password: 'testPassword'};
     authServiceSpy.getCurrentUser.and.returnValue(of(mockUser));
 
     component.ngOnInit();

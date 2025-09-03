@@ -1,19 +1,19 @@
 <div
-  class="install-banner"
-  *ngIf="svc.showBanner() && !svc.isIOS && !svc.isStandalone">
+  *ngIf="svc.showBanner() && !svc.isIOS && !svc.isStandalone"
+  class="install-banner">
   <div>
     <div class="title">Installe l’app sur ton écran d’accueil</div>
     <div class="desc">Accès rapide et notifications push en arrière-plan.</div>
   </div>
   <div class="install-actions">
-    <button class="btn secondary" (click)="svc.hide()">Plus tard</button>
-    <button class="btn" (click)="svc.promptInstall()">Installer</button>
+    <button (click)="svc.hide()" class="btn secondary">Plus tard</button>
+    <button (click)="svc.promptInstall()" class="btn">Installer</button>
   </div>
 </div>
 
 <div
-  class="ios-hint"
-  *ngIf="svc.isIOS && !svc.isStandalone">
+  *ngIf="svc.isIOS && !svc.isStandalone"
+  class="ios-hint">
   <b>Installer l’app</b> pour recevoir les notifications :
   <ol class="ios-steps">
     <li>Appuie sur

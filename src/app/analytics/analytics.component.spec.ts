@@ -1,15 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
-import { of, Subject, throwError } from 'rxjs';
-import { Chart, registerables } from 'chart.js';
+import {TestBed} from '@angular/core/testing';
+import {provideRouter, Router} from '@angular/router';
+import {of, Subject, throwError} from 'rxjs';
+import {Chart, registerables} from 'chart.js';
+import {AnalyticsComponent} from './analytics.component';
+import {GamificationService} from '../services/gamification.service';
+import {AnalyticsService} from '../services/analytics.service';
+import {AuthService} from '../services/auth.service';
+
+import {GamificationProfile, LeaderboardItem, OverviewResponse} from '../interfaces/analytics';
+
 Chart.register(...registerables);
-
-import { AnalyticsComponent } from './analytics.component';
-import { GamificationService } from '../services/gamification.service';
-import { AnalyticsService } from '../services/analytics.service';
-import { AuthService } from '../services/auth.service';
-
-import { GamificationProfile, LeaderboardItem, OverviewResponse } from '../interfaces/analytics';
 
 describe('AnalyticsComponent (DOM + logic)', () => {
   let fixture: any;
@@ -26,24 +26,24 @@ describe('AnalyticsComponent (DOM + logic)', () => {
     xpTotal: 12345,
     currentStreakDays: 9,
     completedCount: 42,
-    impact: { co2Kg: 12.34, waterL: 5678, wasteKg: 3.2 },
+    impact: {co2Kg: 12.34, waterL: 5678, wasteKg: 3.2},
     badges: [
-      { name: 'Eco Starter', rarity: 'common', unlockedAt: new Date('2025-01-10').toISOString() } as any,
-      { name: 'Water Saver', rarity: 'rare', unlockedAt: new Date('2025-02-01').toISOString() } as any,
+      {name: 'Eco Starter', rarity: 'common', unlockedAt: new Date('2025-01-10').toISOString()} as any,
+      {name: 'Water Saver', rarity: 'rare', unlockedAt: new Date('2025-02-01').toISOString()} as any,
     ],
   };
 
   const LEADERBOARD_FIXTURE: LeaderboardItem[] = [
-    { username: 'alice', xp_total: 15000 } as any,
-    { username: 'me',    xp_total: 12345 } as any,
-    { username: 'bob',   xp_total: 9000 }  as any,
+    {username: 'alice', xp_total: 15000} as any,
+    {username: 'me', xp_total: 12345} as any,
+    {username: 'bob', xp_total: 9000} as any,
   ];
 
   const OVERVIEW_FIXTURE: OverviewResponse = {
     weekly: [
-      { x: '2025-W30', y: 10 },
-      { x: '2025-W31', y: 12 },
-      { x: '2025-W32', y: 15 },
+      {x: '2025-W30', y: 10},
+      {x: '2025-W31', y: 12},
+      {x: '2025-W32', y: 15},
     ],
   } as any;
 
@@ -60,9 +60,9 @@ describe('AnalyticsComponent (DOM + logic)', () => {
     await TestBed.configureTestingModule({
       imports: [AnalyticsComponent],
       providers: [
-        { provide: GamificationService, useValue: gamificationSpy },
-        { provide: AnalyticsService, useValue: analyticsSpy },
-        { provide: AuthService, useValue: authSpy },
+        {provide: GamificationService, useValue: gamificationSpy},
+        {provide: AnalyticsService, useValue: analyticsSpy},
+        {provide: AuthService, useValue: authSpy},
         provideRouter([]),
       ],
     }).compileComponents();
@@ -86,7 +86,7 @@ describe('AnalyticsComponent (DOM + logic)', () => {
 
   it('devrait créer le composant', () => {
     gamificationSpy.getProfile.and.returnValue(of(PROFILE_FIXTURE));
-    gamificationSpy.getLeaderboard.and.returnValue(of({ items: LEADERBOARD_FIXTURE } as any));
+    gamificationSpy.getLeaderboard.and.returnValue(of({items: LEADERBOARD_FIXTURE} as any));
     analyticsSpy.getOverviewPublic.and.returnValue(of(OVERVIEW_FIXTURE));
 
     render();
@@ -95,7 +95,7 @@ describe('AnalyticsComponent (DOM + logic)', () => {
 
   it('ngOnInit: charge profil + leaderboard + overview, construit le graph, cache le spinner (DOM vérifié)', () => {
     gamificationSpy.getProfile.and.returnValue(of(PROFILE_FIXTURE));
-    gamificationSpy.getLeaderboard.and.returnValue(of({ items: LEADERBOARD_FIXTURE } as any));
+    gamificationSpy.getLeaderboard.and.returnValue(of({items: LEADERBOARD_FIXTURE} as any));
     analyticsSpy.getOverviewPublic.and.returnValue(of(OVERVIEW_FIXTURE));
 
     render();
@@ -121,7 +121,7 @@ describe('AnalyticsComponent (DOM + logic)', () => {
 
   it('computed userRank: renvoie le rang de "me" dans le leaderboard', () => {
     gamificationSpy.getProfile.and.returnValue(of(PROFILE_FIXTURE));
-    gamificationSpy.getLeaderboard.and.returnValue(of({ items: LEADERBOARD_FIXTURE } as any));
+    gamificationSpy.getLeaderboard.and.returnValue(of({items: LEADERBOARD_FIXTURE} as any));
     analyticsSpy.getOverviewPublic.and.returnValue(of(OVERVIEW_FIXTURE));
 
     render();
@@ -131,7 +131,7 @@ describe('AnalyticsComponent (DOM + logic)', () => {
 
   it('état avec leaderboard vide: tableau vide (DOM)', () => {
     gamificationSpy.getProfile.and.returnValue(of(PROFILE_FIXTURE));
-    gamificationSpy.getLeaderboard.and.returnValue(of({ items: [] } as any));
+    gamificationSpy.getLeaderboard.and.returnValue(of({items: []} as any));
     analyticsSpy.getOverviewPublic.and.returnValue(of(OVERVIEW_FIXTURE));
 
     render();
@@ -141,8 +141,8 @@ describe('AnalyticsComponent (DOM + logic)', () => {
   });
 
   it('gestion erreur: set error message; loading reste true (complete non appelé) → spinner visible', () => {
-    gamificationSpy.getProfile.and.returnValue(throwError(() => ({ error: { message: 'Oops' } })));
-    gamificationSpy.getLeaderboard.and.returnValue(of({ items: [] } as any));
+    gamificationSpy.getProfile.and.returnValue(throwError(() => ({error: {message: 'Oops'}})));
+    gamificationSpy.getLeaderboard.and.returnValue(of({items: []} as any));
     analyticsSpy.getOverviewPublic.and.returnValue(of(OVERVIEW_FIXTURE));
 
     render();
@@ -166,7 +166,7 @@ describe('AnalyticsComponent (DOM + logic)', () => {
     expect(spinner()).not.toBeNull();
 
     pendingProfile$.next(PROFILE_FIXTURE);
-    pendingLb$.next({ items: LEADERBOARD_FIXTURE });
+    pendingLb$.next({items: LEADERBOARD_FIXTURE});
     pendingOverview$.next(OVERVIEW_FIXTURE);
 
     pendingProfile$.complete();

@@ -1,8 +1,7 @@
-import { TestBed } from '@angular/core/testing';
-import { CanActivateChildFn } from '@angular/router';
-import { childAuthGuard } from './child-auth.guard';
-import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import {TestBed} from '@angular/core/testing';
+import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from '@angular/router';
+import {childAuthGuard} from './child-auth.guard';
+import {AuthService} from '../services/auth.service';
 import {Observable, of} from 'rxjs';
 
 describe('childAuthGuard', () => {
@@ -17,13 +16,13 @@ describe('childAuthGuard', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: AuthService, useValue: authServiceSpy },
-        { provide: Router, useValue: routerSpy },
+        {provide: AuthService, useValue: authServiceSpy},
+        {provide: Router, useValue: routerSpy},
       ],
     });
 
     route = {} as ActivatedRouteSnapshot;
-    state = { url: '/protected-child-route' } as RouterStateSnapshot;
+    state = {url: '/protected-child-route'} as RouterStateSnapshot;
   });
 
   it('should allow access when user is logged in', (done) => {

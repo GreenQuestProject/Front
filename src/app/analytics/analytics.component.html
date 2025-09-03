@@ -11,7 +11,7 @@
           <mat-card-content>
             <h2>Niveau</h2>
             <h3>{{ p.level }}</h3>
-           </mat-card-content>
+          </mat-card-content>
         </mat-card>
         <mat-card>
           <mat-card-content>
@@ -58,13 +58,13 @@
           </mat-card-content>
         </mat-card>
       </div>
-      <div class="badges" *ngIf="p.badges.length">
+      <div *ngIf="p.badges.length" class="badges">
         <mat-card>
           <mat-card-content>
             <h2>Derniers badges</h2>
             <ul>
               <li *ngFor="let b of (p.badges ?? []) | slice:0:8">
-                <span class="badge" [class]="'rarity-' + b.rarity">{{ b.name }}</span>
+                <span [class]="'rarity-' + b.rarity" class="badge">{{ b.name }}</span>
                 <small>{{ b.unlockedAt | date:'mediumDate' }}</small>
               </li>
             </ul>
@@ -76,18 +76,22 @@
       <div class="panel">
         <h3>Tendance hebdo (communauté)</h3>
         <div class="chart-wrapper">
-          <canvas baseChart
-                  [data]="lineData"
+          <canvas [data]="lineData"
                   [options]="lineOptions"
+                  baseChart
                   type="line"></canvas>
         </div>
         <p class="hint">Compare tes KPIs ci-dessus avec la tendance globale.</p>
       </div>
       <div class="panel">
         <h3>Leaderboard (XP)</h3>
-        <table class="table" aria-describedby="Leaderboard">
+        <table aria-describedby="Leaderboard" class="table">
           <thead>
-          <tr><th>#</th><th>Utilisateur</th><th>XP</th></tr>
+          <tr>
+            <th>#</th>
+            <th>Utilisateur</th>
+            <th>XP</th>
+          </tr>
           </thead>
           <tbody>
           <tr *ngFor="let u of (leaderboard() ?? []); let i = index">

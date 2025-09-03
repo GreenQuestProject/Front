@@ -15,9 +15,9 @@ module.exports = function (config) {
     coverageReporter: {
       dir: path.join(__dirname, './coverage'),
       reporters: [
-        { type: 'html', subdir: '.' },
-        { type: 'lcovonly', subdir: '.' },
-        { type: 'text-summary' }
+        {type: 'html', subdir: '.'},
+        {type: 'lcovonly', subdir: '.'},
+        {type: 'text-summary'}
       ]
     }
   });

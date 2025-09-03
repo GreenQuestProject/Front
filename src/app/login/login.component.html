@@ -1,14 +1,14 @@
 <div class="container">
   <div class="icon">
-    <img src="favicon.ico" alt="green quest icon">
+    <img alt="green quest icon" src="favicon.ico">
   </div>
   <div class="form">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
       <h1 tabindex="0">Connexion</h1>
       <div>
         <mat-form-field appearance="fill">
           <mat-label>Pseudo</mat-label>
-          <input matInput formControlName="username" required/>
+          <input formControlName="username" matInput required/>
           <mat-error *ngIf="loginForm.controls['username'].hasError('required')">
             Le pseudo est requis.
           </mat-error>
@@ -17,14 +17,14 @@
       <div>
         <mat-form-field appearance="fill">
           <mat-label>Mot de passe</mat-label>
-          <input matInput type="password" formControlName="password" required/>
+          <input formControlName="password" matInput required type="password"/>
           <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
             Le mot de passe est requis.
           </mat-error>
         </mat-form-field>
       </div>
       <div>
-        <button mat-raised-button color="success" type="submit" [disabled]="loginForm.invalid">Connexion</button>
+        <button [disabled]="loginForm.invalid" color="success" mat-raised-button type="submit">Connexion</button>
       </div>
     </form>
     <div class="error-message-container">
@@ -35,7 +35,7 @@
     <div class="connexion-link">
       <p tabindex="0">Pas encore inscrit ?</p>
       <div tabindex="0">
-        <a title="S'inscrire" [routerLink]="['/register']">
+        <a [routerLink]="['/register']" title="S'inscrire">
           S'inscrire
         </a>
       </div>

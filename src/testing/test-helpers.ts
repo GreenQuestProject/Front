@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
-import { Provider, Type } from '@angular/core';
+import {TestBed} from '@angular/core/testing';
+import {provideRouter, Router} from '@angular/router';
+import {Provider, Type} from '@angular/core';
 
 export function provideTestingRouter() {
   return provideRouter([]);
@@ -10,7 +10,7 @@ export function setupCommonSpies() {
   const router = TestBed.inject(Router);
   const navigateByUrlSpy = spyOn(router, 'navigateByUrl').and.returnValue(Promise.resolve(true));
   const consoleErrorSpy = spyOn(console, 'error').and.stub();
-  return { router, navigateByUrlSpy, consoleErrorSpy };
+  return {router, navigateByUrlSpy, consoleErrorSpy};
 }
 
 type RenderOptions = {
@@ -37,12 +37,12 @@ export async function renderStandalone<T>(
   const element = fixture.nativeElement as HTMLElement;
 
   if (options?.beforeDetectChanges) {
-    await options.beforeDetectChanges({ fixture, instance, element });
+    await options.beforeDetectChanges({fixture, instance, element});
   }
 
   const spies = setupCommonSpies();
 
   fixture.detectChanges();
 
-  return { fixture, instance, element, ...spies };
+  return {fixture, instance, element, ...spies};
 }

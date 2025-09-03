@@ -1,9 +1,9 @@
-import { TestBed } from '@angular/core/testing';
-import { BrowserTestingModule } from '@angular/platform-browser/testing';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { SecurityContext } from '@angular/core';
+import {TestBed} from '@angular/core/testing';
+import {BrowserTestingModule} from '@angular/platform-browser/testing';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import {SecurityContext} from '@angular/core';
 
-import { CleanArticleHtmlPipe } from './clean-article-html.pipe';
+import {CleanArticleHtmlPipe} from './clean-article-html.pipe';
 
 describe('CleanArticleHtmlPipe', () => {
   let pipe: CleanArticleHtmlPipe;
@@ -106,7 +106,7 @@ describe('CleanArticleHtmlPipe', () => {
 
   describe('images: styles responsives et attributs', () => {
     const setInnerWidth = (w: number) => {
-      Object.defineProperty(window, 'innerWidth', { value: w, configurable: true });
+      Object.defineProperty(window, 'innerWidth', {value: w, configurable: true});
     };
 
     it('desktop/tablette : max-height 220px', () => {

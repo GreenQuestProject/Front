@@ -1,12 +1,17 @@
 # Changelog (Frontend)
+
 Toutes les modifications notables du **front Angular** sont listées ici (SemVer).
 
 ## [Unreleased] - 2025-08-22
+
 _A regrouper dans la prochaine version._
 
 ## [0.0.1] - 2025-05-09
+
 > Périmètre : 11 commits (du 2025-04-15 au 2025-05-09).
+
 ### Modifié
+
 - Init project (3ec76d1)
 - Init project (30ba15f)
 - Init project (c389ad9)
@@ -22,8 +27,11 @@ _A regrouper dans la prochaine version._
 ---
 
 ## [0.0.2] - 2025-05-10
+
 > Périmètre : 11 commits (du 2025-05-09 au 2025-05-10).
+
 ### Modifié
+
 - Fix workflow (3890d97)
 - Fix workflow (1003259)
 - Fix workflow (608bd9c)
@@ -39,8 +47,11 @@ _A regrouper dans la prochaine version._
 ---
 
 ## [0.0.3] - 2025-05-30
+
 > Périmètre : 11 commits (du 2025-05-10 au 2025-05-30).
+
 ### Modifié
+
 - Fix nginx conf (0713706)
 - Fix call to api (2277a32)
 - disable autocompletion when registering (2bd919a)
@@ -56,8 +67,11 @@ _A regrouper dans la prochaine version._
 ---
 
 ## [0.0.4] - 2025-06-29
+
 > Périmètre : 11 commits (du 2025-06-14 au 2025-06-29).
+
 ### Modifié
+
 - File env replacements for prod (d7f5608)
 - Lisrt of progression (fd61c06)
 - Lisrt of progression (fd3181e)
@@ -73,8 +87,11 @@ _A regrouper dans la prochaine version._
 ---
 
 ## [0.0.5] - 2025-08-16
+
 > Périmètre : 11 commits (du 2025-08-09 au 2025-08-16).
+
 ### Modifié
+
 - Update CI/CD (54e2051)
 - Update CI/CD (d441312)
 - Update CI/CD (f8652b2)
@@ -90,8 +107,11 @@ _A regrouper dans la prochaine version._
 ---
 
 ## [0.0.6] - 2025-08-16
+
 > Périmètre : 11 commits (du 2025-08-16 au 2025-08-16).
+
 ### Modifié
+
 - Update dockerfile (ff1cd73)
 - Update CI/CD (bac8a77)
 - Update angular config (ef88219)
@@ -107,8 +127,11 @@ _A regrouper dans la prochaine version._
 ---
 
 ## [0.0.7] - 2025-08-19
+
 > Périmètre : 11 commits (du 2025-08-17 au 2025-08-19).
+
 ### Modifié
+
 - Update config angular (8675057)
 - Update config angular (df0a80e)
 - Update config angular (58aab9f)
@@ -124,25 +147,39 @@ _A regrouper dans la prochaine version._
 ---
 
 ## [0.0.8] - 2025-08-20
+
 > Périmètre : 4 commits (du 2025-08-19 au 2025-08-20).
+
 ### Modifié
+
 - Update CI/CD (a0ab7bf)
 - Update CI/CD (784e412)
 - Delete health category (afa2c94)
 - Add tooltip for challenge actions (ddedb3b)
 
 ## [0.0.9] - 2025-08-22
+
 ### Maintenance
+
 - Mise en production **sans changement fonctionnel** (redeploy/infra uniquement).
+
 ### Breaking changes / Migrations
+
 - Aucune.
+
 ### Traçabilité
+
 - Tag : `v0.0.9`
 
 ## [0.0.10] - 2025-08-23
+
 ### Modifié
-- Déploiement via docker compose up -d --no-deps --pull always --force-recreate frontend(-staging) (remplace le docker compose pull séparé).
+
+- Déploiement via docker compose up -d --no-deps --pull always --force-recreate frontend(-staging) (remplace le docker
+  compose pull séparé).
 
 ### Traçabilité
+
 - Tag : `v0.0.10`
+
 ---

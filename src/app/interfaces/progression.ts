@@ -1,4 +1,3 @@
-
 export interface Progression {
   id: number;
   challengeId: number;
@@ -10,5 +9,5 @@ export interface Progression {
   completedAt: string;
   reminderId?: number | null;
   nextReminderUtc?: string | null;
-  recurrence?: 'NONE'|'DAILY'|'WEEKLY';
+  recurrence?: 'NONE' | 'DAILY' | 'WEEKLY';
 }

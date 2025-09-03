@@ -1,5 +1,5 @@
-import { TestBed } from '@angular/core/testing';
-import { InstallPromptService } from './install-prompt.service';
+import {TestBed} from '@angular/core/testing';
+import {InstallPromptService} from './install-prompt.service';
 
 describe('InstallPromptService', () => {
   let service: InstallPromptService;
@@ -13,10 +13,13 @@ describe('InstallPromptService', () => {
       return {
         matches: val && query === '(display-mode: standalone)',
         media: query,
-        addListener: () => {},
+        addListener: () => {
+        },
         onchange: null,
-        addEventListener: () => {},
-        removeEventListener: () => {},
+        addEventListener: () => {
+        },
+        removeEventListener: () => {
+        },
         dispatchEvent: () => false,
       } as any;
     }) as any;
@@ -53,7 +56,7 @@ describe('InstallPromptService', () => {
 
   it('instancie avec showBanner=false et isStandalone selon matchMedia/navigator', () => {
     setStandalone(false);
-    TestBed.configureTestingModule({ providers: [InstallPromptService] });
+    TestBed.configureTestingModule({providers: [InstallPromptService]});
     service = TestBed.inject(InstallPromptService);
 
     expect(service).toBeTruthy();
@@ -63,10 +66,10 @@ describe('InstallPromptService', () => {
 
   it('affiche la bannière sur beforeinstallprompt si pas standalone', () => {
     setStandalone(false);
-    TestBed.configureTestingModule({ providers: [InstallPromptService] });
+    TestBed.configureTestingModule({providers: [InstallPromptService]});
     service = TestBed.inject(InstallPromptService);
 
-    const evt: any = { preventDefault: jasmine.createSpy('preventDefault') };
+    const evt: any = {preventDefault: jasmine.createSpy('preventDefault')};
     handlers['beforeinstallprompt'][0](evt);
 
     expect(evt.preventDefault).toHaveBeenCalled();
@@ -75,10 +78,10 @@ describe('InstallPromptService', () => {
 
   it('ne montre pas la bannière si déjà standalone', () => {
     setStandalone(true);
-    TestBed.configureTestingModule({ providers: [InstallPromptService] });
+    TestBed.configureTestingModule({providers: [InstallPromptService]});
     service = TestBed.inject(InstallPromptService);
 
-    const evt: any = { preventDefault: jasmine.createSpy('preventDefault') };
+    const evt: any = {preventDefault: jasmine.createSpy('preventDefault')};
     handlers['beforeinstallprompt'][0](evt);
 
     expect(service.showBanner()).toBeFalse();
@@ -86,13 +89,14 @@ describe('InstallPromptService', () => {
 
   it('promptInstall() appelle prompt() et ferme la bannière puis reset le deferred', async () => {
     setStandalone(false);
-    TestBed.configureTestingModule({ providers: [InstallPromptService] });
+    TestBed.configureTestingModule({providers: [InstallPromptService]});
     service = TestBed.inject(InstallPromptService);
 
     const evt: any = {
-      preventDefault: () => {},
+      preventDefault: () => {
+      },
       prompt: jasmine.createSpy('prompt'),
-      userChoice: Promise.resolve({ outcome: 'accepted' }),
+      userChoice: Promise.resolve({outcome: 'accepted'}),
     };
     handlers['beforeinstallprompt'][0](evt);
     expect(service.showBanner()).toBeTrue();
@@ -105,7 +109,7 @@ describe('InstallPromptService', () => {
 
   it('promptInstall() est no-op si aucun deferred', async () => {
     setStandalone(false);
-    TestBed.configureTestingModule({ providers: [InstallPromptService] });
+    TestBed.configureTestingModule({providers: [InstallPromptService]});
     service = TestBed.inject(InstallPromptService);
 
     await expectAsync(service.promptInstall()).toBeResolved();
@@ -114,7 +118,7 @@ describe('InstallPromptService', () => {
 
   it('refreshStandaloneStatus() met isStandalone=true et ferme la bannière si standalone', () => {
     setStandalone(false);
-    TestBed.configureTestingModule({ providers: [InstallPromptService] });
+    TestBed.configureTestingModule({providers: [InstallPromptService]});
     service = TestBed.inject(InstallPromptService);
 
     service.showBanner.set(true);
@@ -128,7 +132,7 @@ describe('InstallPromptService', () => {
 
   it('visibilitychange déclenche refreshStandaloneStatus()', () => {
     setStandalone(false);
-    TestBed.configureTestingModule({ providers: [InstallPromptService] });
+    TestBed.configureTestingModule({providers: [InstallPromptService]});
     service = TestBed.inject(InstallPromptService);
 
     service.showBanner.set(true);
@@ -141,7 +145,7 @@ describe('InstallPromptService', () => {
 
   it('hide() ferme la bannière', () => {
     setStandalone(false);
-    TestBed.configureTestingModule({ providers: [InstallPromptService] });
+    TestBed.configureTestingModule({providers: [InstallPromptService]});
     service = TestBed.inject(InstallPromptService);
 
     service.showBanner.set(true);

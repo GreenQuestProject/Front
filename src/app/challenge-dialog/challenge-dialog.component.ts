@@ -39,12 +39,14 @@ export class ChallengeDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: Challenge,
     private ref: MatDialogRef<ChallengeDialogComponent>,
     private progressionService: ProgressionService
-  ) {}
+  ) {
+  }
 
   starLine(n: number) {
     const v = Math.max(1, Math.min(5, Math.round(n)));
     return '★'.repeat(v) + '☆'.repeat(5 - v);
   }
+
   asNumber(v: string | number | undefined): number {
     if (v === undefined) return 0;
     return typeof v === 'string' ? Number(v) : v;
@@ -56,7 +58,9 @@ export class ChallengeDialogComponent {
       || this.data.wasteEstimateKg !== undefined;
   }
 
-  close() { this.ref.close(); }
+  close() {
+    this.ref.close();
+  }
 
   startFromDialog(event: MouseEvent) {
     event.stopPropagation();
@@ -69,7 +73,7 @@ export class ChallengeDialogComponent {
         this.data.isInUserProgression = true;
         this.isStarting = false;
 
-        this.ref.close({ action: 'started', id: this.data.id });
+        this.ref.close({action: 'started', id: this.data.id});
       },
       error: (err) => {
         console.error('Erreur lors du démarrage du défi :', err);

@@ -1,7 +1,21 @@
-.title { margin: 0; }
-.content { display: grid; gap: 12px; }
-.chips { margin-bottom: 6px; }
-ul { margin: 0; padding-left: 18px; }
+.title {
+  margin: 0;
+}
+
+.content {
+  display: grid;
+  gap: 12px;
+}
+
+.chips {
+  margin-bottom: 6px;
+}
+
+ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
 button {
   aspect-ratio: 1 / 1;
   min-width: 45px;
@@ -9,7 +23,7 @@ button {
 
 }
 
-.start{
+.start {
   padding: 0 0 0 15px;
 }
 

@@ -27,19 +27,20 @@ import {environment} from '../../environments/environment';
   standalone: true,
 })
 export class NotificationsSettingsComponent {
-  private perms = inject(NotificationPermissionService);
-  private snack = inject(MatSnackBar);
   push = inject(PushService);
-  private http = inject(HttpClient);
-  private apiUrl: string = environment.apiUrl+'/preferences';
-
-  permission = this.perms.permission;
   enabled = signal(false);
+  private perms = inject(NotificationPermissionService);
+  permission = this.perms.permission;
+  private snack = inject(MatSnackBar);
+  private http = inject(HttpClient);
+  private apiUrl: string = environment.apiUrl + '/preferences';
 
   ngOnInit() {
     this.http.get<{ newChallenge: boolean }>(this.apiUrl).subscribe({
       next: (r) => this.enabled.set(!!r?.newChallenge),
-      error: (err) => { console.warn('/preferences GET error', err); }
+      error: (err) => {
+        console.warn('/preferences GET error', err);
+      }
     });
   }
 
@@ -47,13 +48,13 @@ export class NotificationsSettingsComponent {
     if (on) {
       const perm = await this.perms.request();
       if (perm !== 'granted') {
-        this.snack.open('Autorise les notifications dans ton navigateur', 'OK', { duration: 4000 });
+        this.snack.open('Autorise les notifications dans ton navigateur', 'OK', {duration: 4000});
         this.enabled.set(false);
         return;
       }
       const ok = await this.push.enablePush();
       if (!ok) {
-        this.snack.open('Échec de l’activation des push (voir Console)', 'OK', { duration: 4000 });
+        this.snack.open('Échec de l’activation des push (voir Console)', 'OK', {duration: 4000});
         this.enabled.set(false);
         return;
       }
@@ -61,7 +62,7 @@ export class NotificationsSettingsComponent {
       await this.push.disablePush();
     }
     this.enabled.set(on);
-    this.http.post(this.apiUrl, { newChallenge: on }).subscribe({
+    this.http.post(this.apiUrl, {newChallenge: on}).subscribe({
       error: (err) => console.warn('/preferences POST error', err)
     });
   }

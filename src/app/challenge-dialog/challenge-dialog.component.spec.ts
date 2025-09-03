@@ -1,9 +1,9 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { ChallengeDialogComponent } from './challenge-dialog.component';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { of, throwError } from 'rxjs';
-import { Challenge } from '../interfaces/challenge';
-import { ProgressionService } from '../services/progression.service';
+import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {ChallengeDialogComponent} from './challenge-dialog.component';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {of, throwError} from 'rxjs';
+import {Challenge} from '../interfaces/challenge';
+import {ProgressionService} from '../services/progression.service';
 
 describe('ChallengeDialogComponent (DOM + logic)', () => {
   let fixture: any;
@@ -35,9 +35,9 @@ describe('ChallengeDialogComponent (DOM + logic)', () => {
     await TestBed.configureTestingModule({
       imports: [ChallengeDialogComponent],
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: MatDialogRef, useValue: dialogRefSpy },
-        { provide: MAT_DIALOG_DATA, useValue: { ...BASE_DATA } },
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: MatDialogRef, useValue: dialogRefSpy},
+        {provide: MAT_DIALOG_DATA, useValue: {...BASE_DATA}},
       ],
     }).compileComponents();
 
@@ -93,7 +93,10 @@ describe('ChallengeDialogComponent (DOM + logic)', () => {
 
   it('startFromDialog(): ne fait rien si pas d’id', () => {
     component.data.id = undefined as any;
-    component.startFromDialog({ stopPropagation() {} } as any);
+    component.startFromDialog({
+      stopPropagation() {
+      }
+    } as any);
 
     expect(progressionSpy.startChallenge).not.toHaveBeenCalled();
     expect(dialogRefSpy.close).not.toHaveBeenCalled();
@@ -103,20 +106,26 @@ describe('ChallengeDialogComponent (DOM + logic)', () => {
     component.data.id = 99 as any;
     component.data.isInUserProgression = true as any;
 
-    component.startFromDialog({ stopPropagation() {} } as any);
+    component.startFromDialog({
+      stopPropagation() {
+      }
+    } as any);
 
     expect(progressionSpy.startChallenge).not.toHaveBeenCalled();
     expect(dialogRefSpy.close).not.toHaveBeenCalled();
   });
 
   it('startFromDialog(): succès → MAJ isInUserProgression, isStarting repasse false, et close avec payload', fakeAsync(() => {
-    component.data = { ...BASE_DATA, id: 7, isInUserProgression: false } as any;
-    progressionSpy.startChallenge.and.returnValue(of({ ok: true } as any));
+    component.data = {...BASE_DATA, id: 7, isInUserProgression: false} as any;
+    progressionSpy.startChallenge.and.returnValue(of({ok: true} as any));
 
     fixture.detectChanges();
     expect(startButton().disabled).toBeFalse();
 
-    component.startFromDialog({ stopPropagation() {} } as any);
+    component.startFromDialog({
+      stopPropagation() {
+      }
+    } as any);
 
     tick();
     fixture.detectChanges();
@@ -124,16 +133,19 @@ describe('ChallengeDialogComponent (DOM + logic)', () => {
     expect(progressionSpy.startChallenge).toHaveBeenCalledOnceWith(7);
     expect(component.data.isInUserProgression).toBeTrue();
     expect(component.isStarting).toBeFalse();
-    expect(dialogRefSpy.close).toHaveBeenCalledWith({ action: 'started', id: 7 });
+    expect(dialogRefSpy.close).toHaveBeenCalledWith({action: 'started', id: 7});
 
     expect(startButton().disabled).toBeTrue();
   }));
 
   it('startFromDialog(): erreur → log, isStarting repasse false, ne ferme pas', fakeAsync(() => {
-    component.data = { ...BASE_DATA, id: 8, isInUserProgression: false } as any;
+    component.data = {...BASE_DATA, id: 8, isInUserProgression: false} as any;
     progressionSpy.startChallenge.and.returnValue(throwError(() => new Error('boom')));
 
-    component.startFromDialog({ stopPropagation() {} } as any);
+    component.startFromDialog({
+      stopPropagation() {
+      }
+    } as any);
 
     tick();
     fixture.detectChanges();

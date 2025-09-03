@@ -1,9 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-import { loginRedirectGuard } from './login-redirect.guard';
-import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import {TestBed} from '@angular/core/testing';
+import {loginRedirectGuard} from './login-redirect.guard';
+import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from '@angular/router';
+import {AuthService} from '../services/auth.service';
 import {Observable, of} from 'rxjs';
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 describe('loginRedirectGuard', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;
@@ -17,13 +16,13 @@ describe('loginRedirectGuard', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: AuthService, useValue: authServiceSpy },
-        { provide: Router, useValue: routerSpy },
+        {provide: AuthService, useValue: authServiceSpy},
+        {provide: Router, useValue: routerSpy},
       ],
     });
 
     route = {} as ActivatedRouteSnapshot;
-    state = { url: '/some-url' } as RouterStateSnapshot;
+    state = {url: '/some-url'} as RouterStateSnapshot;
   });
 
   it('should redirect to /défis when user is logged in', (done) => {

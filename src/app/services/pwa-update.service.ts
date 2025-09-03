@@ -1,8 +1,8 @@
-import { Injectable, inject } from '@angular/core';
-import { SwUpdate, VersionEvent } from '@angular/service-worker';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {inject, Injectable} from '@angular/core';
+import {SwUpdate, VersionEvent} from '@angular/service-worker';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class PwaUpdateService {
   private swUpdate = inject(SwUpdate);
   private snackBar = inject(MatSnackBar);
@@ -21,7 +21,7 @@ export class PwaUpdateService {
     const ref = this.snackBar.open(
       'Une nouvelle version est disponible',
       'Mettre à jour',
-      { duration: 10000 }
+      {duration: 10000}
     );
 
     ref.onAction().subscribe(() => this.activateAndReload());

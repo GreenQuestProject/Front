@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
-import { GamificationService } from './gamification.service';
-import { environment } from '../../environments/environment';
-import { GamificationProfile, LeaderboardResponse } from '../interfaces/analytics';
+import {GamificationService} from './gamification.service';
+import {environment} from '../../environments/environment';
+import {GamificationProfile, LeaderboardResponse} from '../interfaces/analytics';
 import {provideHttpClient} from '@angular/common/http';
 
 describe('GamificationService', () => {
@@ -33,7 +33,7 @@ describe('GamificationService', () => {
       xpTotal: 200,
       currentStreakDays: 3,
       completedCount: 12,
-      impact: { co2Kg: 4.5, waterL: 100, wasteKg: 2.1 },
+      impact: {co2Kg: 4.5, waterL: 100, wasteKg: 2.1},
       badges: [],
     };
 
@@ -49,8 +49,8 @@ describe('GamificationService', () => {
   it('getLeaderboard() should call GET /leaderboard', () => {
     const mockLeaderboard: LeaderboardResponse = {
       items: [
-        { username: 'alice', xp_total: 1000 } as any,
-        { username: 'bob', xp_total: 800 } as any,
+        {username: 'alice', xp_total: 1000} as any,
+        {username: 'bob', xp_total: 800} as any,
       ],
     };
 
@@ -64,7 +64,7 @@ describe('GamificationService', () => {
   });
 
   it('claimWeeklyQuest() should POST /claim avec le code', () => {
-    const mockResp = { status: 'ok', xp_credited: 50 };
+    const mockResp = {status: 'ok', xp_credited: 50};
     const code = '2025-W10';
 
     service.claimWeeklyQuest(code).subscribe(res => {
@@ -73,7 +73,7 @@ describe('GamificationService', () => {
 
     const req = httpMock.expectOne(`${baseUrl}/claim`);
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({ type: 'quest', code });
+    expect(req.request.body).toEqual({type: 'quest', code});
     req.flush(mockResp);
   });
 });

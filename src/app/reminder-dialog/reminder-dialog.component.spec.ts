@@ -1,6 +1,6 @@
-import { renderStandalone } from '../../testing/test-helpers';
-import { ReminderDialogComponent } from './reminder-dialog.component';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {renderStandalone} from '../../testing/test-helpers';
+import {ReminderDialogComponent} from './reminder-dialog.component';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 describe('ReminderDialogComponent', () => {
   let refSpy: jasmine.SpyObj<MatDialogRef<ReminderDialogComponent>>;
@@ -10,10 +10,10 @@ describe('ReminderDialogComponent', () => {
   });
 
   it('devrait créer le composant', async () => {
-    const { instance } = await renderStandalone(ReminderDialogComponent, {
+    const {instance} = await renderStandalone(ReminderDialogComponent, {
       providers: [
-        { provide: MatDialogRef, useValue: refSpy },
-        { provide: MAT_DIALOG_DATA, useValue: { progressionId: 42 } },
+        {provide: MatDialogRef, useValue: refSpy},
+        {provide: MAT_DIALOG_DATA, useValue: {progressionId: 42}},
       ],
     });
 
@@ -21,10 +21,10 @@ describe('ReminderDialogComponent', () => {
   });
 
   it('état initial: when="", recurrence="NONE", bouton Planifier désactivé', async () => {
-    const { instance, element } = await renderStandalone(ReminderDialogComponent, {
+    const {instance, element} = await renderStandalone(ReminderDialogComponent, {
       providers: [
-        { provide: MatDialogRef, useValue: refSpy },
-        { provide: MAT_DIALOG_DATA, useValue: { progressionId: 42 } },
+        {provide: MatDialogRef, useValue: refSpy},
+        {provide: MAT_DIALOG_DATA, useValue: {progressionId: 42}},
       ],
     });
 
@@ -39,10 +39,10 @@ describe('ReminderDialogComponent', () => {
   });
 
   it('click "Annuler": appelle ref.close() sans payload', async () => {
-    const { element } = await renderStandalone(ReminderDialogComponent, {
+    const {element} = await renderStandalone(ReminderDialogComponent, {
       providers: [
-        { provide: MatDialogRef, useValue: refSpy },
-        { provide: MAT_DIALOG_DATA, useValue: { progressionId: 42 } },
+        {provide: MatDialogRef, useValue: refSpy},
+        {provide: MAT_DIALOG_DATA, useValue: {progressionId: 42}},
       ],
     });
 
@@ -55,10 +55,10 @@ describe('ReminderDialogComponent', () => {
   });
 
   it('click "Planifier": envoie { when, recurrence } et ferme le dialog', async () => {
-    const { instance, element, fixture } = await renderStandalone(ReminderDialogComponent, {
+    const {instance, element, fixture} = await renderStandalone(ReminderDialogComponent, {
       providers: [
-        { provide: MatDialogRef, useValue: refSpy },
-        { provide: MAT_DIALOG_DATA, useValue: { progressionId: 42 } },
+        {provide: MatDialogRef, useValue: refSpy},
+        {provide: MAT_DIALOG_DATA, useValue: {progressionId: 42}},
       ],
     });
 
@@ -80,10 +80,10 @@ describe('ReminderDialogComponent', () => {
   });
 
   it('méthodes publiques: close() et save() appellent MatDialogRef.close(...) correctement', async () => {
-    const { instance } = await renderStandalone(ReminderDialogComponent, {
+    const {instance} = await renderStandalone(ReminderDialogComponent, {
       providers: [
-        { provide: MatDialogRef, useValue: refSpy },
-        { provide: MAT_DIALOG_DATA, useValue: { progressionId: 42 } },
+        {provide: MatDialogRef, useValue: refSpy},
+        {provide: MAT_DIALOG_DATA, useValue: {progressionId: 42}},
       ],
     });
 

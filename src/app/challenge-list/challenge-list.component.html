@@ -4,10 +4,10 @@
   <h1>Liste de défis</h1>
 
   <mat-chip-listbox
-    [(ngModel)]="selectedCategories"
     (ngModelChange)="onCategorySelectionChange()"
-    multiple
-    aria-label="Catégories">
+    [(ngModel)]="selectedCategories"
+    aria-label="Catégories"
+    multiple>
 
     <mat-chip-option
       *ngFor="let category of categories"
@@ -19,7 +19,7 @@
   <div *ngIf="challenges.length > 0; else noChallenges" class="content">
     <mat-card *ngFor="let challenge of challenges" appearance="raised">
       <mat-card-header>
-          <h1>{{challenge.name}}</h1>
+        <h1>{{challenge.name}}</h1>
       </mat-card-header>
       <mat-card-content>
         <div>
@@ -31,11 +31,11 @@
       </mat-card-content>
       <mat-card-actions>
         <button
-          mat-raised-button
-          color="primary"
-          title="Voir détails"
+          (click)="$event.stopPropagation(); openDetails(challenge.id)"
           aria-label="Voir détails"
-          (click)="$event.stopPropagation(); openDetails(challenge.id)">
+          color="primary"
+          mat-raised-button
+          title="Voir détails">
           <mat-icon>open_in_new</mat-icon>
         </button>
       </mat-card-actions>

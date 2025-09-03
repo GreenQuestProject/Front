@@ -10,7 +10,10 @@ self.addEventListener('push', (event) => {
     data = event.data ? event.data.json() : {};
   } catch (e) {
     console.warn('[SW] push JSON parse failed, fallback to text()', e);
-    try { data = { title: 'Notification', body: event.data?.text?.() || '' }; } catch {}
+    try {
+      data = {title: 'Notification', body: event.data?.text?.() || ''};
+    } catch {
+    }
   }
 
   const title = data.title || 'Notification';
@@ -20,9 +23,9 @@ self.addEventListener('push', (event) => {
     badge: data.badge || '/assets/icons/badge-72x72.png',
     data: data.data || {},
     actions: data.actions || [
-      { action: 'open',   title: 'Ouvrir' },
-      { action: 'done',   title: 'Fait' },
-      { action: 'snooze', title: 'Plus tard' }
+      {action: 'open', title: 'Ouvrir'},
+      {action: 'done', title: 'Fait'},
+      {action: 'snooze', title: 'Plus tard'}
     ],
     tag: data.tag || 'default'
   };
@@ -39,7 +42,7 @@ self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
   const action = event.action || 'open';
-  const ndata  = event.notification?.data || {};
+  const ndata = event.notification?.data || {};
 
   const base = (self.FRONTEND_BASE_URL || self.location.origin).replace(/\/+$/, '');
   const path = (ndata.url || '/').toString();
@@ -51,12 +54,14 @@ self.addEventListener('notificationclick', (event) => {
   }
 
   const relay = (async () => {
-    const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const all = await self.clients.matchAll({type: 'window', includeUncontrolled: true});
 
     let targetClient = all.find(c => {
       try {
         return new URL(c.url).href === targetUrl;
-      } catch { return false; }
+      } catch {
+        return false;
+      }
     });
 
     if (!targetClient) {
@@ -81,7 +86,10 @@ self.addEventListener('notificationclick', (event) => {
 
     if (new URL(targetClient.url).href !== targetUrl && (action === 'open' || action === 'reload')) {
       if ('navigate' in targetClient) {
-        try { await targetClient.navigate(targetUrl); } catch {}
+        try {
+          await targetClient.navigate(targetUrl);
+        } catch {
+        }
       } else if ('openWindow' in self.clients) {
         const opened = await self.clients.openWindow(targetUrl);
         opened?.postMessage({

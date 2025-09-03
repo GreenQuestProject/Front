@@ -1,7 +1,7 @@
-import { TestBed } from '@angular/core/testing';
-import { NavBarComponent } from './nav-bar.component';
-import { AuthService } from '../services/auth.service';
-import { provideRouter } from '@angular/router';
+import {TestBed} from '@angular/core/testing';
+import {NavBarComponent} from './nav-bar.component';
+import {AuthService} from '../services/auth.service';
+import {provideRouter} from '@angular/router';
 
 describe('NavBarComponent (DOM)', () => {
   let fixture: any;
@@ -15,7 +15,7 @@ describe('NavBarComponent (DOM)', () => {
     await TestBed.configureTestingModule({
       imports: [NavBarComponent],
       providers: [
-        { provide: AuthService, useValue: authSpy },
+        {provide: AuthService, useValue: authSpy},
         provideRouter([]),
       ],
     }).compileComponents();

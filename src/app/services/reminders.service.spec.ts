@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-import { RemindersService } from './reminders.service';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import {TestBed} from '@angular/core/testing';
+import {of} from 'rxjs';
+import {RemindersService} from './reminders.service';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../environments/environment';
 
 describe('RemindersService', () => {
   let service: RemindersService;
@@ -17,11 +17,11 @@ describe('RemindersService', () => {
     environment.apiUrl = 'https://api.example';
 
     spyOn(Intl.DateTimeFormat.prototype, 'resolvedOptions')
-      .and.returnValue({ timeZone: 'Asia/Tokyo' } as any);
+      .and.returnValue({timeZone: 'Asia/Tokyo'} as any);
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: HttpClient, useValue: httpSpy },
+        {provide: HttpClient, useValue: httpSpy},
       ],
     });
 
@@ -38,7 +38,7 @@ describe('RemindersService', () => {
   });
 
   it('createByProgression: POST /reminders avec progressionId, scheduledAt, timezone (Intl) et recurrence', async () => {
-    httpSpy.post.and.returnValue(of({ id: 42 }));
+    httpSpy.post.and.returnValue(of({id: 42}));
 
     const res = await service.createByProgression(7, '2025-08-28T10:00:00', 'WEEKLY');
 
@@ -51,11 +51,11 @@ describe('RemindersService', () => {
         recurrence: 'WEEKLY',
       }
     );
-    expect(res).toEqual({ id: 42 });
+    expect(res).toEqual({id: 42});
   });
 
   it('createByProgression: recurrence par défaut = "NONE" quand omise', async () => {
-    httpSpy.post.and.returnValue(of({ id: 1 }));
+    httpSpy.post.and.returnValue(of({id: 1}));
 
     await service.createByProgression(1, '2025-01-01T09:00:00');
 
@@ -65,20 +65,20 @@ describe('RemindersService', () => {
   });
 
   it('complete: POST /reminders/{id}/complete avec {}', async () => {
-    httpSpy.post.and.returnValue(of({ ok: true }));
+    httpSpy.post.and.returnValue(of({ok: true}));
 
     const out = await service.complete(123);
 
     expect(httpSpy.post).toHaveBeenCalledWith('https://api.example/reminders/123/complete', {});
-    expect(out).toEqual({ ok: true });
+    expect(out).toEqual({ok: true});
   });
 
   it('snooze: POST /reminders/{id}/snooze avec {}', async () => {
-    httpSpy.post.and.returnValue(of({ ok: true }));
+    httpSpy.post.and.returnValue(of({ok: true}));
 
     const out = await service.snooze(999);
 
     expect(httpSpy.post).toHaveBeenCalledWith('https://api.example/reminders/999/snooze', {});
-    expect(out).toEqual({ ok: true });
+    expect(out).toEqual({ok: true});
   });
 });

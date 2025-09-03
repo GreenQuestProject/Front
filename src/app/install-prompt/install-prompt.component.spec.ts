@@ -1,16 +1,17 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { By } from '@angular/platform-browser';
-import { InstallPromptComponent } from './install-prompt.component';
-import { InstallPromptService } from '../services/install-prompt.service';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {By} from '@angular/platform-browser';
+import {InstallPromptComponent} from './install-prompt.component';
+import {InstallPromptService} from '../services/install-prompt.service';
 
 class InstallPromptServiceStub {
   isIOS = false;
   isStandalone = false;
   show = false;
-  showBanner = () => this.show;
   hide = jasmine.createSpy('hide');
   promptInstall = jasmine.createSpy('promptInstall').and.returnValue(Promise.resolve());
+
+  showBanner = () => this.show;
 }
 
 describe('InstallPromptComponent', () => {
@@ -23,7 +24,7 @@ describe('InstallPromptComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [InstallPromptComponent],
-      providers: [{ provide: InstallPromptService, useValue: svc }],
+      providers: [{provide: InstallPromptService, useValue: svc}],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 

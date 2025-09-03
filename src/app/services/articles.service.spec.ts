@@ -1,9 +1,9 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 
-import { ArticlesService } from './articles.service';
-import { EcoNewsQuery, EcoNewsResponse, SortField, SortOrder } from '../interfaces/eco-news';
+import {ArticlesService} from './articles.service';
+import {EcoNewsQuery, EcoNewsResponse, SortField, SortOrder} from '../interfaces/eco-news';
 
 const TEST_API_URL = 'http://test.local/api';
 
@@ -50,7 +50,7 @@ describe('ArticlesService (HTTP)', () => {
 
     const mockBody: EcoNewsResponse = {
       data: [],
-      meta: { page: 1, per_page: 10, total: 0 } as any,
+      meta: {page: 1, per_page: 10, total: 0} as any,
     };
     req.flush(mockBody);
 
@@ -80,7 +80,7 @@ describe('ArticlesService (HTTP)', () => {
     expect(req.request.params.get('order')).toBe('desc');
     expect(req.request.params.get('sources')).toBe('lemonde,guardian,nyt');
 
-    req.flush({ data: [], meta: { page: 3, per_page: 40, total: 0 } as any });
+    req.flush({data: [], meta: {page: 3, per_page: 40, total: 0} as any});
   });
 
   it('getEcoNews(): ignore les valeurs null/undefined (ne passe pas le param)', () => {
@@ -103,7 +103,7 @@ describe('ArticlesService (HTTP)', () => {
     const keys = req.request.params.keys();
     expect(keys).toEqual([]);
 
-    req.flush({ data: [], meta: { page: 1, per_page: 10, total: 0 } as any });
+    req.flush({data: [], meta: {page: 1, per_page: 10, total: 0} as any});
   });
 
   it('getEcoNews(): retourne un EcoNewsResponse typé', () => {
@@ -121,11 +121,11 @@ describe('ArticlesService (HTTP)', () => {
           published_at: new Date('2025-01-01').toISOString(),
         } as any,
       ],
-      meta: { page: 2, per_page: 20, total: 100 } as any,
+      meta: {page: 2, per_page: 20, total: 100} as any,
     };
 
     let received: EcoNewsResponse | undefined;
-    service.getEcoNews({ page: 2, per_page: 20 }).subscribe((res) => (received = res));
+    service.getEcoNews({page: 2, per_page: 20}).subscribe((res) => (received = res));
 
     const req = httpMock.expectOne((r) => r.method === 'GET' && r.url === expectedUrl);
     req.flush(body);

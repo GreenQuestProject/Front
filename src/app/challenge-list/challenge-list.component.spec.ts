@@ -1,12 +1,12 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { ChallengeListComponent } from './challenge-list.component';
-import { ChallengeService } from '../services/challenge.service';
-import { ProgressionService } from '../services/progression.service';
-import { AuthService } from '../services/auth.service';
-import { provideRouter, Router } from '@angular/router';
-import { of, Subject, throwError } from 'rxjs';
-import { Challenge } from '../interfaces/challenge';
-import { MatDialog } from '@angular/material/dialog';
+import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {ChallengeListComponent} from './challenge-list.component';
+import {ChallengeService} from '../services/challenge.service';
+import {ProgressionService} from '../services/progression.service';
+import {AuthService} from '../services/auth.service';
+import {provideRouter, Router} from '@angular/router';
+import {of, Subject, throwError} from 'rxjs';
+import {Challenge} from '../interfaces/challenge';
+import {MatDialog} from '@angular/material/dialog';
 
 describe('ChallengeListComponent (DOM + logic)', () => {
   let fixture: any;
@@ -24,9 +24,9 @@ describe('ChallengeListComponent (DOM + logic)', () => {
   let lastDialogConfig: any = undefined;
 
   const CHALLENGES_FIXTURE: Challenge[] = [
-    { id: 1, name: 'Défi A', category: 'ecology', description: 'A...', isInUserProgression: false } as Challenge,
-    { id: 2, name: 'Défi B', category: 'health',  description: 'B...', isInUserProgression: false } as Challenge,
-    { id: 3, name: 'Défi C', category: 'health',  description: 'C...', isInUserProgression: true  } as Challenge,
+    {id: 1, name: 'Défi A', category: 'ecology', description: 'A...', isInUserProgression: false} as Challenge,
+    {id: 2, name: 'Défi B', category: 'health', description: 'B...', isInUserProgression: false} as Challenge,
+    {id: 3, name: 'Défi C', category: 'health', description: 'C...', isInUserProgression: true} as Challenge,
   ];
 
   beforeEach(async () => {
@@ -40,16 +40,16 @@ describe('ChallengeListComponent (DOM + logic)', () => {
     await TestBed.configureTestingModule({
       imports: [ChallengeListComponent],
       providers: [
-        { provide: ChallengeService, useValue: challengeSpy },
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
         provideRouter([]),
       ],
     }).compileComponents();
 
     dialogOpenSpy = spyOn(MatDialog.prototype, 'open').and.callFake((_comp: any, config?: any) => {
       lastDialogConfig = config;
-      return { afterClosed: () => of(currentDialogResult) } as any;
+      return {afterClosed: () => of(currentDialogResult)} as any;
     });
 
     fixture = TestBed.createComponent(ChallengeListComponent);
@@ -72,8 +72,8 @@ describe('ChallengeListComponent (DOM + logic)', () => {
 
   it('devrait créer le composant', () => {
     challengeSpy.getChallengeCategories.and.returnValue(of([
-      { name: 'ECOLOGY', value: 'ecology' },
-      { name: 'HEALTH',  value: 'health' }
+      {name: 'ECOLOGY', value: 'ecology'},
+      {name: 'HEALTH', value: 'health'}
     ]));
     challengeSpy.getChallenges.and.returnValue(of([]));
     render();
@@ -82,8 +82,8 @@ describe('ChallengeListComponent (DOM + logic)', () => {
 
   it('ngOnInit: charge défis, initialise catégories et message (DOM vérifié)', () => {
     challengeSpy.getChallengeCategories.and.returnValue(of([
-      { name: 'ECOLOGY', value: 'ecology' },
-      { name: 'HEALTH',  value: 'health' }
+      {name: 'ECOLOGY', value: 'ecology'},
+      {name: 'HEALTH', value: 'health'}
     ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     render();
@@ -103,7 +103,7 @@ describe('ChallengeListComponent (DOM + logic)', () => {
   });
 
   it('ngOnInit: 401 → redirige /login et log', () => {
-    challengeSpy.getChallengeCategories.and.returnValue(throwError(() => ({ status: 401 })));
+    challengeSpy.getChallengeCategories.and.returnValue(throwError(() => ({status: 401})));
     render();
 
     expect(router.navigateByUrl).toHaveBeenCalledOnceWith('/login');
@@ -112,11 +112,11 @@ describe('ChallengeListComponent (DOM + logic)', () => {
 
   it('start(): succès → met à jour localement (DOM mis à jour)', () => {
     challengeSpy.getChallengeCategories.and.returnValue(of([
-      { name: 'ECOLOGY', value: 'ecology' },
-      { name: 'HEALTH',  value: 'health' }
+      {name: 'ECOLOGY', value: 'ecology'},
+      {name: 'HEALTH', value: 'health'}
     ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
-    progressionSpy.startChallenge.and.returnValue(of({ ok: true }));
+    progressionSpy.startChallenge.and.returnValue(of({ok: true}));
     render();
 
     component.start(1);
@@ -129,14 +129,14 @@ describe('ChallengeListComponent (DOM + logic)', () => {
 
   it('start(): erreur → log console, pas de MAJ locale', () => {
     challengeSpy.getChallengeCategories.and.returnValue(of([
-      { name: 'ECOLOGY', value: 'ecology' },
-      { name: 'HEALTH',  value: 'health' }
+      {name: 'ECOLOGY', value: 'ecology'},
+      {name: 'HEALTH', value: 'health'}
     ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     progressionSpy.startChallenge.and.returnValue(throwError(() => new Error('boom')));
     render();
 
-    const before = component.challenges.map(c => ({ ...c }));
+    const before = component.challenges.map(c => ({...c}));
     component.start(1);
 
     expect(consoleErrorSpy).toHaveBeenCalled();
@@ -145,8 +145,8 @@ describe('ChallengeListComponent (DOM + logic)', () => {
 
   it('onCategorySelectionChange(): si aucune catégorie → challenges=[] (DOM: notFound)', () => {
     challengeSpy.getChallengeCategories.and.returnValue(of([
-      { name: 'ECOLOGY', value: 'ecology' },
-      { name: 'HEALTH',  value: 'health' }
+      {name: 'ECOLOGY', value: 'ecology'},
+      {name: 'HEALTH', value: 'health'}
     ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     render();
@@ -161,8 +161,8 @@ describe('ChallengeListComponent (DOM + logic)', () => {
 
   it('onCategorySelectionChange(): filtre et remplit challenges, isLoading true → false', () => {
     challengeSpy.getChallengeCategories.and.returnValue(of([
-      { name: 'ECOLOGY', value: 'ecology' },
-      { name: 'HEALTH',  value: 'health' }
+      {name: 'ECOLOGY', value: 'ecology'},
+      {name: 'HEALTH', value: 'health'}
     ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     render();
@@ -185,8 +185,8 @@ describe('ChallengeListComponent (DOM + logic)', () => {
 
   it('onCategorySelectionChange(): erreur → log console, isLoading repasse à false', () => {
     challengeSpy.getChallengeCategories.and.returnValue(of([
-      { name: 'ECOLOGY', value: 'ecology' },
-      { name: 'HEALTH',  value: 'health' }
+      {name: 'ECOLOGY', value: 'ecology'},
+      {name: 'HEALTH', value: 'health'}
     ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     render();
@@ -201,8 +201,8 @@ describe('ChallengeListComponent (DOM + logic)', () => {
 
   it('openDetails(): récupère le détail, ouvre le dialog, et MAJ la liste si "started"', fakeAsync(() => {
     challengeSpy.getChallengeCategories.and.returnValue(of([
-      { name: 'ECOLOGY', value: 'ecology' },
-      { name: 'HEALTH',  value: 'health' }
+      {name: 'ECOLOGY', value: 'ecology'},
+      {name: 'HEALTH', value: 'health'}
     ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     fixture.detectChanges();
@@ -211,7 +211,7 @@ describe('ChallengeListComponent (DOM + logic)', () => {
       id: 1, name: 'Défi A', category: 'ecology', description: 'A...', isInUserProgression: false
     } as Challenge));
 
-    currentDialogResult = { action: 'started', id: 1 };
+    currentDialogResult = {action: 'started', id: 1};
 
     component.openDetails(1);
     tick();
@@ -224,8 +224,8 @@ describe('ChallengeListComponent (DOM + logic)', () => {
 
   it('openDetails(): merge isInUserProgression depuis la liste dans les data du dialog', fakeAsync(() => {
     challengeSpy.getChallengeCategories.and.returnValue(of([
-      { name: 'ECOLOGY', value: 'ecology' },
-      { name: 'HEALTH',  value: 'health' }
+      {name: 'ECOLOGY', value: 'ecology'},
+      {name: 'HEALTH', value: 'health'}
     ]));
     challengeSpy.getChallenges.and.returnValue(of(CHALLENGES_FIXTURE));
     fixture.detectChanges();

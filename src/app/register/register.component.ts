@@ -30,9 +30,10 @@ export class RegisterComponent {
   registerForm: FormGroup;
   errorMessage: string | null = null;
   isLoading: boolean = false;
+
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.registerForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]  ],
+      email: ['', [Validators.required, Validators.email]],
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
@@ -50,9 +51,9 @@ export class RegisterComponent {
         error: (error) => {
           this.isLoading = false;
 
-          console.error('Error while registering',error);
+          console.error('Error while registering', error);
 
-          const violations = (error.error?.violations ?? []) as {propertyPath: string; title: string}[];
+          const violations = (error.error?.violations ?? []) as { propertyPath: string; title: string }[];
 
           this.errorMessage = violations[0]?.title
             || (error.error?.detail ?? 'Une erreur inattendue s\'est produite. Veuillez réessayer ultérieurement.');

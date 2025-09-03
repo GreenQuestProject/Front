@@ -1,9 +1,9 @@
-import { TestBed } from '@angular/core/testing';
-import { of, Subject, ReplaySubject } from 'rxjs';
-import { PushService } from './push.service';
-import { SwPush } from '@angular/service-worker';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import {TestBed} from '@angular/core/testing';
+import {of, ReplaySubject, Subject} from 'rxjs';
+import {PushService} from './push.service';
+import {SwPush} from '@angular/service-worker';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../environments/environment';
 
 describe('PushService', () => {
   let service: PushService;
@@ -24,10 +24,10 @@ describe('PushService', () => {
     subscription$.next(null);
     swPushMock = jasmine.createSpyObj<SwPush>('SwPush', ['requestSubscription']);
 
-    Object.defineProperty(swPushMock, 'isEnabled', { get: () => opts?.swEnabled ?? true });
-    Object.defineProperty(swPushMock, 'messages', { get: () => messages$.asObservable() });
-    Object.defineProperty(swPushMock, 'notificationClicks', { get: () => clicks$.asObservable() });
-    Object.defineProperty(swPushMock, 'subscription', { get: () => subscription$.asObservable() });
+    Object.defineProperty(swPushMock, 'isEnabled', {get: () => opts?.swEnabled ?? true});
+    Object.defineProperty(swPushMock, 'messages', {get: () => messages$.asObservable()});
+    Object.defineProperty(swPushMock, 'notificationClicks', {get: () => clicks$.asObservable()});
+    Object.defineProperty(swPushMock, 'subscription', {get: () => subscription$.asObservable()});
 
     httpSpy = jasmine.createSpyObj<HttpClient>('HttpClient', ['post']);
 
@@ -39,8 +39,8 @@ describe('PushService', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: SwPush, useValue: swPushMock },
-        { provide: HttpClient, useValue: httpSpy },
+        {provide: SwPush, useValue: swPushMock},
+        {provide: HttpClient, useValue: httpSpy},
       ],
     });
 
@@ -61,21 +61,21 @@ describe('PushService', () => {
   });
 
   it('restore(): si JSON invalide → notifications = []', () => {
-    configureDefaultTestBed({ storage: '{"oops":' });
+    configureDefaultTestBed({storage: '{"oops":'});
     expect(service.notifications()).toEqual([]);
   });
 
   it('constructor: réception d’un message → ajoute en tête + persiste', () => {
     configureDefaultTestBed();
 
-    const payload = { notification: { title: 'Titre', body: 'Corps' }, data: { url: '/foo' } };
+    const payload = {notification: {title: 'Titre', body: 'Corps'}, data: {url: '/foo'}};
     messages$.next(payload);
 
     const list = service.notifications();
     expect(list.length).toBe(1);
     expect(list[0].title).toBe('Titre');
     expect(list[0].body).toBe('Corps');
-    expect(list[0].data).toEqual({ url: '/foo' });
+    expect(list[0].data).toEqual({url: '/foo'});
     expect(typeof list[0].receivedAt).toBe('string');
 
     expect(setItemSpy).toHaveBeenCalled();
@@ -87,19 +87,19 @@ describe('PushService', () => {
 
   it('constructor: message sans title → titre par défaut "Notification"', () => {
     configureDefaultTestBed();
-    messages$.next({ body: 'hello' });
+    messages$.next({body: 'hello'});
     const list = service.notifications();
     expect(list[0].title).toBe('Notification');
     expect(list[0].body).toBe('hello');
   });
 
   it('constructor: limite à 50 notifications', () => {
-    const fifty = Array.from({ length: 50 }, (_, i) => ({
+    const fifty = Array.from({length: 50}, (_, i) => ({
       title: `Old ${i + 1}`, body: `B${i + 1}`, data: null, receivedAt: new Date(2020, 0, i + 1).toISOString(),
     }));
-    configureDefaultTestBed({ storage: JSON.stringify(fifty) });
+    configureDefaultTestBed({storage: JSON.stringify(fifty)});
 
-    messages$.next({ notification: { title: 'NEW', body: 'NB' }, data: null });
+    messages$.next({notification: {title: 'NEW', body: 'NB'}, data: null});
 
     const list = service.notifications();
     expect(list.length).toBe(50);
@@ -110,7 +110,7 @@ describe('PushService', () => {
   it('enablePush(): succès → true & POST /push/subscribe (payload normalisé)', async () => {
     configureDefaultTestBed();
 
-    const fakeSub = { toJSON: () => ({ endpoint: 'xxx', keys: { p256dh: 'a', auth: 'b' } }) } as any;
+    const fakeSub = {toJSON: () => ({endpoint: 'xxx', keys: {p256dh: 'a', auth: 'b'}})} as any;
     swPushMock.requestSubscription.and.resolveTo(fakeSub);
     httpSpy.post.and.returnValue(of({}));
 
@@ -122,7 +122,7 @@ describe('PushService', () => {
     });
     expect(httpSpy.post).toHaveBeenCalledWith(
       `${environment.apiUrl}/push/subscribe`,
-      { endpoint: 'xxx', keys: { p256dh: 'a', auth: 'b' }, encoding: 'aes128gcm' }
+      {endpoint: 'xxx', keys: {p256dh: 'a', auth: 'b'}, encoding: 'aes128gcm'}
     );
   });
 
@@ -152,7 +152,7 @@ describe('PushService', () => {
 
     expect(httpSpy.post).toHaveBeenCalledWith(
       `${environment.apiUrl}/push/unsubscribe`,
-      { endpoint: 'xxx' }
+      {endpoint: 'xxx'}
     );
     expect(fakeNavSub.unsubscribe).toHaveBeenCalled();
   });

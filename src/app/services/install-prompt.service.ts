@@ -1,14 +1,14 @@
-import { Injectable, signal } from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class InstallPromptService {
 
-  private _deferredPrompt: any = null;
   showBanner = signal(false);
   isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   isStandalone =
     window.matchMedia?.('(display-mode: standalone)').matches ||
     (navigator as any).standalone === true;
+  private _deferredPrompt: any = null;
 
   constructor() {
     window.addEventListener('beforeinstallprompt', (e: any) => {
@@ -37,5 +37,7 @@ export class InstallPromptService {
     this.showBanner.set(false);
   }
 
-  hide() { this.showBanner.set(false); }
+  hide() {
+    this.showBanner.set(false);
+  }
 }

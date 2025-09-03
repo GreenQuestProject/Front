@@ -1,5 +1,5 @@
-import { TestBed } from '@angular/core/testing';
-import { NotificationPermissionService, NotificationPermissionState } from './notification-permission.service';
+import {TestBed} from '@angular/core/testing';
+import {NotificationPermissionService, NotificationPermissionState} from './notification-permission.service';
 
 describe('NotificationPermissionService', () => {
   let service: NotificationPermissionService;

@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {InstallPromptService} from '../services/install-prompt.service';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
 
 @Component({

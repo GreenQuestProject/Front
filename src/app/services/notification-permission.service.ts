@@ -1,4 +1,5 @@
 import {Injectable, signal} from '@angular/core';
+
 export type NotificationPermissionState = 'default' | 'granted' | 'denied';
 
 @Injectable({
@@ -6,9 +7,10 @@ export type NotificationPermissionState = 'default' | 'granted' | 'denied';
 })
 export class NotificationPermissionService {
 
-  constructor() { }
-
   permission = signal<NotificationPermissionState>(Notification.permission as NotificationPermissionState);
+
+  constructor() {
+  }
 
   async request(): Promise<NotificationPermissionState> {
     if (!('Notification' in window)) return 'denied';

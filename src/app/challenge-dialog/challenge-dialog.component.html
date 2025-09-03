@@ -1,6 +1,6 @@
-<h2 mat-dialog-title class="title">{{ data.name }}</h2>
+<h2 class="title" mat-dialog-title>{{ data.name }}</h2>
 
-<div mat-dialog-content class="content">
+<div class="content" mat-dialog-content>
   <mat-chip-set class="chips">
     <mat-chip>{{ data.category | translateCategory }}</mat-chip>
     <mat-chip>Difficulté: {{ starLine(data.difficulty!) }}</mat-chip>
@@ -22,21 +22,21 @@
 </div>
 
 <div mat-dialog-actions>
-  <button mat-button (click)="close()">Fermer</button>
+  <button (click)="close()" mat-button>Fermer</button>
   <button
-    class="start"
-    mat-raised-button
-    color="warn"
-    title="Commencer le défi"
     (click)="startFromDialog($event)"
     [disabled]="data.isInUserProgression || isStarting"
+    class="start"
+    color="warn"
+    mat-raised-button
     matTooltip="{{
       data.isInUserProgression
         ? 'Déjà en cours'
         : (data.isRepeatable ? 'Recommencer le défi' : 'Commencer le défi')
     }}"
+    matTooltipPosition="above"
 
-    matTooltipPosition="above">
+    title="Commencer le défi">
     <mat-icon>add</mat-icon>
   </button>
 </div>

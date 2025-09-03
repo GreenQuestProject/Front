@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
-import { AnalyticsService } from './analytics.service';
-import { environment } from '../../environments/environment';
-import { OverviewResponse, FunnelRow, CohortRow } from '../interfaces/analytics';
+import {AnalyticsService} from './analytics.service';
+import {environment} from '../../environments/environment';
+import {CohortRow, FunnelRow, OverviewResponse} from '../interfaces/analytics';
 import {provideHttpClient} from '@angular/common/http';
 
 describe('AnalyticsService', () => {
@@ -29,7 +29,7 @@ describe('AnalyticsService', () => {
 
   it('getOverviewPublic() should call GET /overview', () => {
     const mockResponse: OverviewResponse = {
-      weekly: [{ x: '2025-W01', y: 10 }],
+      weekly: [{x: '2025-W01', y: 10}],
     } as any;
 
     service.getOverviewPublic().subscribe(res => {
@@ -43,8 +43,8 @@ describe('AnalyticsService', () => {
 
   it('getFunnel() without params → GET /funnel sans query', () => {
     const mockRows: FunnelRow[] = [
-      { step: 'signup', count: 100 },
-      { step: 'first_challenge', count: 50 },
+      {step: 'signup', count: 100},
+      {step: 'first_challenge', count: 50},
     ] as any;
 
     service.getFunnel().subscribe(res => {
@@ -58,7 +58,7 @@ describe('AnalyticsService', () => {
   });
 
   it('getFunnel() avec from/to → ajoute les query params', () => {
-    const mockRows: FunnelRow[] = [{ step: 'signup', count: 5 }] as any;
+    const mockRows: FunnelRow[] = [{step: 'signup', count: 5}] as any;
     service.getFunnel('2025-01-01', '2025-01-31').subscribe(res => {
       expect(res).toEqual(mockRows);
     });
@@ -73,8 +73,8 @@ describe('AnalyticsService', () => {
   it('getCohorts() sans params → GET /cohorts', () => {
     const mockResp = {
       cohorts: [
-        { signup_week: '2025-W01', retention: 0.8 } as CohortRow,
-        { signup_week: '2025-W02', retention: 0.6 } as CohortRow,
+        {signup_week: '2025-W01', retention: 0.8} as CohortRow,
+        {signup_week: '2025-W02', retention: 0.6} as CohortRow,
       ],
     };
 
@@ -90,7 +90,7 @@ describe('AnalyticsService', () => {
   it('getCohorts() avec from/to → ajoute les query params', () => {
     const mockResp = {
       cohorts: [
-        { signup_week: '2025-W03', retention: 0.7 } as CohortRow,
+        {signup_week: '2025-W03', retention: 0.7} as CohortRow,
       ],
     };
 

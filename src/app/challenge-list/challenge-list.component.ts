@@ -7,18 +7,15 @@ import {ChallengeService} from '../services/challenge.service';
 import {NgForOf, NgIf} from '@angular/common';
 import {MatButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {
-  MatChipListbox,
-  MatChipOption, MatChipsModule
-} from '@angular/material/chips';
+import {MatChipListbox, MatChipOption, MatChipsModule} from '@angular/material/chips';
 import {FormsModule} from '@angular/forms';
 import {TranslateCategoryPipe} from '../pipes/translate-category.pipe';
 import {ProgressionService} from '../services/progression.service';
 import {ChallengeCategory} from '../interfaces/challenge-category';
 import {switchMap} from 'rxjs';
 import {tap} from 'rxjs/operators';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ChallengeDialogComponent } from '../challenge-dialog/challenge-dialog.component';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {ChallengeDialogComponent} from '../challenge-dialog/challenge-dialog.component';
 
 @Component({
   selector: 'app-challenge-list',
@@ -72,7 +69,8 @@ export class ChallengeListComponent implements OnInit {
       error: err => {
         this.isLoading = false;
         console.error(err);
-        if (err.status === 401) this.router.navigateByUrl('/login').then(_ => {});
+        if (err.status === 401) this.router.navigateByUrl('/login').then(_ => {
+        });
       }
     });
   }
@@ -122,8 +120,9 @@ export class ChallengeListComponent implements OnInit {
       next: (full) => {
 
         const dataForDialog = {
-                        ...full,
-                        isInUserProgression: light?.isInUserProgression ?? full.isInUserProgression };
+          ...full,
+          isInUserProgression: light?.isInUserProgression ?? full.isInUserProgression
+        };
         const ref = this.dialog.open(ChallengeDialogComponent, {
           data: dataForDialog,
           width: '560px',
@@ -133,7 +132,7 @@ export class ChallengeListComponent implements OnInit {
         ref.afterClosed().subscribe(res => {
           if (res?.action === 'started' && res.id) {
             this.challenges = this.challenges.map(c =>
-              c.id === res.id ? { ...c, isInUserProgression: true } : c
+              c.id === res.id ? {...c, isInUserProgression: true} : c
             );
           }
         });

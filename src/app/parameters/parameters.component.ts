@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {NavBarComponent} from '../nav-bar/nav-bar.component';
 import {NotificationsSettingsComponent} from '../notifications-settings/notifications-settings.component';
 

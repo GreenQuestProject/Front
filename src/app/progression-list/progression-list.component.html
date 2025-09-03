@@ -4,10 +4,10 @@
   <h1>Liste de progression de défis</h1>
 
   <mat-chip-listbox
-    [(ngModel)]="selectedCategories"
     (ngModelChange)="applyFilters()"
-    multiple
-    aria-label="Catégories">
+    [(ngModel)]="selectedCategories"
+    aria-label="Catégories"
+    multiple>
 
     <mat-chip-option
       *ngFor="let category of categories"
@@ -17,10 +17,10 @@
   </mat-chip-listbox>
 
   <mat-chip-listbox
-    [(ngModel)]="selectedStatus"
     (ngModelChange)="applyFilters()"
-    multiple
-    aria-label="Status">
+    [(ngModel)]="selectedStatus"
+    aria-label="Status"
+    multiple>
 
     <mat-chip-option
       *ngFor="let state of status"
@@ -50,26 +50,28 @@
         </div>
       </mat-card-content>
       <mat-card-actions *ngIf="progression.status !== 'completed' && progression.status !== 'failed'">
-        <button mat-raised-button color="primary" (click)="validate(progression.id)"
+        <button (click)="validate(progression.id)" color="primary" mat-raised-button
                 matTooltip="Valider le défi"
                 matTooltipPosition="above">
           <mat-icon>check</mat-icon>
         </button>
-        <button mat-raised-button color="warn" (click)="remove(progression.id)"
+        <button (click)="remove(progression.id)" color="warn" mat-raised-button
                 matTooltip="Abandonner le défi"
                 matTooltipPosition="above">
           <mat-icon>close</mat-icon>
         </button>
 
         <span class="spacer"></span>
-        <button mat-raised-button (click)="openReminderDialog(progression)" matTooltip="Planifier un rappel" [disabled]="progression.reminderId">
+        <button (click)="openReminderDialog(progression)" [disabled]="progression.reminderId" mat-raised-button
+                matTooltip="Planifier un rappel">
           <mat-icon>alarm_add</mat-icon>
         </button>
-        <button mat-raised-button (click)="snoozeReminder(progression)" [disabled]="!progression.reminderId"
+        <button (click)="snoozeReminder(progression)" [disabled]="!progression.reminderId" mat-raised-button
                 matTooltip="Décaler de 10 minutes">
           <mat-icon>schedule</mat-icon>
         </button>
-        <button mat-raised-button color="accent" (click)="completeReminder(progression)" [disabled]="!progression.reminderId"
+        <button (click)="completeReminder(progression)" [disabled]="!progression.reminderId" color="accent"
+                mat-raised-button
                 matTooltip="Marquer le rappel comme fait">
           <mat-icon>done_all</mat-icon>
         </button>

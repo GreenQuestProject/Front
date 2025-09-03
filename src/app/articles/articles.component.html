@@ -8,20 +8,20 @@
     <mat-spinner></mat-spinner>
   </div>
   <div *ngIf="!loading && articles.length > 0" class="content">
-    <mat-card class="" *ngFor="let article of articles" appearance="raised">
+    <mat-card *ngFor="let article of articles" appearance="raised" class="">
       <mat-card-header>
         <div class="header-content">
-          <a class="image-wrapper" [href]="article.link" target="_blank" rel="noopener">
-            <img *ngIf="article.image_url"
-                 [src]="article.image_url"
+          <a [href]="article.link" class="image-wrapper" rel="noopener" target="_blank">
+            <img (error)="onImgError($event)"
+                 *ngIf="article.image_url"
                  [alt]="article.title"
-                 (error)="onImgError($event)" />
+                 [src]="article.image_url"/>
             <div *ngIf="!article.image_url" class="placeholder">
               <mat-icon>image</mat-icon>
             </div>
           </a>
           <div class="title-wrapper">
-            <a [href]="article.link" target="_blank" rel="noopener">
+            <a [href]="article.link" rel="noopener" target="_blank">
               <h3>{{ article.title }}</h3>
             </a>
           </div>
@@ -43,11 +43,11 @@
           </mat-chip-set>
         </div>
 
-        <div class="description" [innerHTML]="article.description | cleanArticleHtml"></div>
+        <div [innerHTML]="article.description | cleanArticleHtml" class="description"></div>
 
         <mat-card-actions>
-          <a mat-stroked-button color="primary"
-             [href]="article.link" target="_blank" rel="noopener">
+          <a [href]="article.link" color="primary"
+             mat-stroked-button rel="noopener" target="_blank">
             Lire la suite
             <mat-icon>open_in_new</mat-icon>
           </a>
@@ -57,17 +57,16 @@
     </mat-card>
   </div>
   <div *ngIf="!loading && articles.length == 0">
-      <p>Aucun article disponible.</p>
+    <p>Aucun article disponible.</p>
   </div>
 
 
-
 </div>
-<mat-paginator *ngIf="meta && !loading"
+<mat-paginator (page)="onMatPage($event)"
+               *ngIf="meta && !loading"
                [length]="meta.total"
                [pageIndex]="page - 1"
-               [pageSize]="perPage"
                [pageSizeOptions]="[10, 20, 40, 60, 100]"
-               [showFirstLastButtons]="true"
-               (page)="onMatPage($event)">
+               [pageSize]="perPage"
+               [showFirstLastButtons]="true">
 </mat-paginator>

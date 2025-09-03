@@ -1,14 +1,14 @@
 <div class="container">
   <div class="icon">
-    <img src="favicon.ico" alt="green quest icon">
+    <img alt="green quest icon" src="favicon.ico">
   </div>
   <div class="form">
     <h1 tabindex="0">Inscription</h1>
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <form (ngSubmit)="onSubmit()" [formGroup]="registerForm" autocomplete="off">
       <div>
         <mat-form-field appearance="fill">
           <mat-label>Email</mat-label>
-          <input matInput formControlName="email" type="email" required autocomplete="off"/>
+          <input autocomplete="off" formControlName="email" matInput required type="email"/>
           <mat-error *ngIf="registerForm.controls['email'].hasError('email')">
             Format invalide.
           </mat-error>
@@ -20,7 +20,7 @@
       <div>
         <mat-form-field appearance="fill">
           <mat-label>Pseudo</mat-label>
-          <input matInput formControlName="username" required autocomplete="off"/>
+          <input autocomplete="off" formControlName="username" matInput required/>
           <mat-error *ngIf="registerForm.controls['username'].hasError('required')">
             Le pseudo est requis.
           </mat-error>
@@ -29,14 +29,14 @@
       <div>
         <mat-form-field appearance="fill">
           <mat-label>Mot de passe</mat-label>
-          <input matInput type="password" formControlName="password" required autocomplete="off"/>
+          <input autocomplete="off" formControlName="password" matInput required type="password"/>
           <mat-error *ngIf="registerForm.controls['password'].hasError('required')">
             Le pot de passe est requis.
           </mat-error>
         </mat-form-field>
       </div>
       <div>
-        <button mat-raised-button color="success" type="submit" [disabled]="registerForm.invalid">Inscription</button>
+        <button [disabled]="registerForm.invalid" color="success" mat-raised-button type="submit">Inscription</button>
       </div>
     </form>
     <div class="error-message-container">
@@ -47,7 +47,7 @@
     <div class="connexion-link">
       <p tabindex="0">Déjà inscrit ?</p>
       <div tabindex="0">
-        <a title="S'inscrire" [routerLink]="['/login']">
+        <a [routerLink]="['/login']" title="S'inscrire">
           Se connecter
         </a>
       </div>

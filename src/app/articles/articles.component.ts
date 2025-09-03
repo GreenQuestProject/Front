@@ -1,16 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule, DatePipe, ViewportScroller} from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import {MatCardModule} from '@angular/material/card';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatPaginatorModule, PageEvent} from '@angular/material/paginator';
 
-import { NavBarComponent } from '../nav-bar/nav-bar.component';
-import { ArticlesService } from '../services/articles.service';
-import { Article } from '../interfaces/article';
-import { EcoNewsMeta } from '../interfaces/eco-news';
+import {NavBarComponent} from '../nav-bar/nav-bar.component';
+import {ArticlesService} from '../services/articles.service';
+import {Article} from '../interfaces/article';
+import {EcoNewsMeta} from '../interfaces/eco-news';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {CleanArticleHtmlPipe} from '../pipes/clean-article-html.pipe';
 
@@ -32,7 +32,8 @@ export class ArticlesComponent implements OnInit {
   page = 1;
   perPage = 10;
 
-  constructor(private articlesService: ArticlesService, private viewport: ViewportScroller) {}
+  constructor(private articlesService: ArticlesService, private viewport: ViewportScroller) {
+  }
 
   ngOnInit(): void {
     this.fetch();

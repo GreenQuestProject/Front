@@ -1,13 +1,13 @@
-import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
-import { of, Subject, throwError } from 'rxjs';
+import {TestBed} from '@angular/core/testing';
+import {provideRouter, Router} from '@angular/router';
+import {of, Subject, throwError} from 'rxjs';
 
-import { ArticlesComponent } from './articles.component';
-import { ArticlesService } from '../services/articles.service';
-import { AuthService } from '../services/auth.service';
-import { Article } from '../interfaces/article';
-import { EcoNewsMeta } from '../interfaces/eco-news';
-import { ViewportScroller } from '@angular/common';
+import {ArticlesComponent} from './articles.component';
+import {ArticlesService} from '../services/articles.service';
+import {AuthService} from '../services/auth.service';
+import {Article} from '../interfaces/article';
+import {EcoNewsMeta} from '../interfaces/eco-news';
+import {ViewportScroller} from '@angular/common';
 
 describe('ArticlesComponent (DOM + logic)', () => {
   let fixture: any;
@@ -41,8 +41,8 @@ describe('ArticlesComponent (DOM + logic)', () => {
     } as unknown as Article
   ];
 
-  const META_P1: EcoNewsMeta = { page: 1, per_page: 10, total: 42 } as EcoNewsMeta;
-  const META_P2: EcoNewsMeta = { page: 2, per_page: 20, total: 42 } as EcoNewsMeta;
+  const META_P1: EcoNewsMeta = {page: 1, per_page: 10, total: 42} as EcoNewsMeta;
+  const META_P2: EcoNewsMeta = {page: 2, per_page: 20, total: 42} as EcoNewsMeta;
 
   beforeEach(async () => {
     articlesSpy = jasmine.createSpyObj<ArticlesService>('ArticlesService', ['getEcoNews']);
@@ -52,9 +52,9 @@ describe('ArticlesComponent (DOM + logic)', () => {
     await TestBed.configureTestingModule({
       imports: [ArticlesComponent],
       providers: [
-        { provide: ArticlesService, useValue: articlesSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ViewportScroller, useValue: viewportSpy },
+        {provide: ArticlesService, useValue: articlesSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ViewportScroller, useValue: viewportSpy},
         provideRouter([]),
       ],
     }).compileComponents();
@@ -76,13 +76,13 @@ describe('ArticlesComponent (DOM + logic)', () => {
   const paginator = () => element.querySelector('mat-paginator');
 
   it('devrait créer le composant', () => {
-    articlesSpy.getEcoNews.and.returnValue(of({ data: [], meta: META_P1 }));
+    articlesSpy.getEcoNews.and.returnValue(of({data: [], meta: META_P1}));
     render();
     expect(component).toBeTruthy();
   });
 
   it('ngOnInit: appelle fetch, remplit articles+meta et cache le spinner (DOM vérifié)', () => {
-    articlesSpy.getEcoNews.and.returnValue(of({ data: ARTICLES_FIXTURE, meta: META_P1 }));
+    articlesSpy.getEcoNews.and.returnValue(of({data: ARTICLES_FIXTURE, meta: META_P1}));
     render();
 
     expect(component.articles).toEqual(ARTICLES_FIXTURE);
@@ -108,7 +108,7 @@ describe('ArticlesComponent (DOM + logic)', () => {
     render();
     expect(spinner()).not.toBeNull();
 
-    pending$.next({ data: [], meta: META_P1 });
+    pending$.next({data: [], meta: META_P1});
     pending$.complete();
     fixture.detectChanges();
 
@@ -117,7 +117,7 @@ describe('ArticlesComponent (DOM + logic)', () => {
   });
 
   it('état vide: affiche "Aucun article disponible."', () => {
-    articlesSpy.getEcoNews.and.returnValue(of({ data: [], meta: META_P1 }));
+    articlesSpy.getEcoNews.and.returnValue(of({data: [], meta: META_P1}));
     render();
 
     const empty = element.querySelector('.container p');
@@ -125,20 +125,20 @@ describe('ArticlesComponent (DOM + logic)', () => {
   });
 
   it('pagination: met à jour page/perPage, relance fetch et scroll en haut', () => {
-    articlesSpy.getEcoNews.and.returnValue(of({ data: ARTICLES_FIXTURE, meta: META_P1 }));
+    articlesSpy.getEcoNews.and.returnValue(of({data: ARTICLES_FIXTURE, meta: META_P1}));
     render();
 
     const pending2$ = new Subject<{ data: Article[]; meta: EcoNewsMeta }>();
     articlesSpy.getEcoNews.and.returnValue(pending2$.asObservable());
 
-    component.onMatPage({ pageIndex: 1, pageSize: 20, length: 42 } as any);
+    component.onMatPage({pageIndex: 1, pageSize: 20, length: 42} as any);
     fixture.detectChanges();
 
     expect(component.page).toBe(2);
     expect(component.perPage).toBe(20);
     expect(viewportSpy.scrollToPosition).toHaveBeenCalledWith([0, 0]);
 
-    pending2$.next({ data: [ARTICLES_FIXTURE[0]], meta: META_P2 });
+    pending2$.next({data: [ARTICLES_FIXTURE[0]], meta: META_P2});
     pending2$.complete();
     fixture.detectChanges();
 
@@ -152,13 +152,13 @@ describe('ArticlesComponent (DOM + logic)', () => {
   it('onImgError: applique une image de fallback et la classe', () => {
     const img = document.createElement('img');
     img.src = 'https://ko';
-    component.onImgError({ target: img } as unknown as Event);
+    component.onImgError({target: img} as unknown as Event);
     expect(img.src).toContain('assets/placeholder-news.png');
     expect(img.classList.contains('img-fallback')).toBeTrue();
   });
 
   it('fetch: passe les bons paramètres (page/per_page + overrides)', () => {
-    articlesSpy.getEcoNews.and.returnValue(of({ data: [], meta: META_P1 }));
+    articlesSpy.getEcoNews.and.returnValue(of({data: [], meta: META_P1}));
     render();
 
     const firstArgs = (articlesSpy.getEcoNews as jasmine.Spy).calls.mostRecent().args[0] as Partial<EcoNewsMeta>;
@@ -168,8 +168,8 @@ describe('ArticlesComponent (DOM + logic)', () => {
     component.page = 3;
     component.perPage = 40;
     articlesSpy.getEcoNews.calls.reset();
-    articlesSpy.getEcoNews.and.returnValue(of({ data: [], meta: META_P2 }));
-    component.fetch({ page: 5 });
+    articlesSpy.getEcoNews.and.returnValue(of({data: [], meta: META_P2}));
+    component.fetch({page: 5});
     fixture.detectChanges();
 
     const lastArgs = (articlesSpy.getEcoNews as jasmine.Spy).calls.mostRecent().args[0] as Partial<EcoNewsMeta>;
