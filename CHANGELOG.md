@@ -182,4 +182,14 @@ _A regrouper dans la prochaine version._
 
 - Tag : `v0.0.10`
 
+## [1.0.0] - 2025-09-03
+### Ajouté
+- Notifications push
+- Analytics + gammification
+- Rappels
+- Articles éco
+
+### Traçabilité
+- Tag : `v1.0.0`
+
 ---
