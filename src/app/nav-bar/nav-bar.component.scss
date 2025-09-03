@@ -49,9 +49,9 @@ a{
 }
 .btn-content {
   display: flex;
-  gap: 1rem; /* espacement entre les boutons */
-  justify-content: center; /* centre horizontalement */
-  align-items: center; /* centre verticalement */
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
 }
 
 button {
@@ -62,7 +62,7 @@ button {
 }
 
 button > mat-icon {
-  font-size: 25px; /* agrandit l'icône */
+  font-size: 25px;
   display: flex;
   align-items: center;
   justify-content: center;

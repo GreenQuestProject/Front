@@ -21,14 +21,14 @@ export interface OverviewCategory { key: string; done: number; }
 
 export interface OverviewResponse {
   completed: number;
-  completionRate: number; // 0..1
+  completionRate: number;
   medianHours: number;
   weekly: OverviewWeeklyPoint[];
   categories: OverviewCategory[];
 }
 
 export interface FunnelRow {
-  week: string; // ISO week label e.g. 2025-W35
+  week: string;
   viewed: number;
   started: number;
   done: number;
@@ -37,5 +37,5 @@ export interface FunnelRow {
 
 export interface CohortRow {
   signup_week: string;
-  [key: string]: string | number; // w0, w1, ...
+  [key: string]: string | number;
 }

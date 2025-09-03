@@ -11,15 +11,13 @@ describe('HomeComponent', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;
 
   beforeEach(() => {
-    // Création d'un mock d'AuthService
     authServiceSpy = jasmine.createSpyObj<AuthService>('AuthService', ['getCurrentUser']);
 
-    // Configuration du module de test
     TestBed.configureTestingModule({
-      imports: [HomeComponent, NavBarComponent],  // Utiliser "imports" pour les composants standalone
+      imports: [HomeComponent, NavBarComponent],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: {} } } }  // Mock d'ActivatedRoute
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: {} } } }
       ]
     }).compileComponents();
 
@@ -32,14 +30,11 @@ describe('HomeComponent', () => {
   });
 
   it('should set username to current user\'s username on init', () => {
-    // Simuler un utilisateur avec username et password
     const mockUser = { username: 'testUser', password: 'testPassword' };
     authServiceSpy.getCurrentUser.and.returnValue(of(mockUser));
 
-    // Déclencher la logique du composant (ngOnInit)
     component.ngOnInit();
 
-    // Vérifier que le username est correctement défini
     expect(component.username).toBe('testUser');
   });
 });

@@ -21,7 +21,7 @@ describe('PushService', () => {
     messages$ = new Subject<any>();
     clicks$ = new Subject<any>();
     subscription$ = new ReplaySubject<PushSubscription | null>(1);
-    subscription$.next(null); // valeur par défaut
+    subscription$.next(null);
     swPushMock = jasmine.createSpyObj<SwPush>('SwPush', ['requestSubscription']);
 
     Object.defineProperty(swPushMock, 'isEnabled', { get: () => opts?.swEnabled ?? true });
@@ -61,7 +61,7 @@ describe('PushService', () => {
   });
 
   it('restore(): si JSON invalide → notifications = []', () => {
-    configureDefaultTestBed({ storage: '{"oops":' }); // JSON cassé
+    configureDefaultTestBed({ storage: '{"oops":' });
     expect(service.notifications()).toEqual([]);
   });
 

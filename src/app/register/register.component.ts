@@ -38,7 +38,6 @@ export class RegisterComponent {
     });
   }
 
-  // Soumettre le formulaire
   onSubmit(): void {
     this.isLoading = true;
     if (this.registerForm.valid) {
@@ -55,7 +54,6 @@ export class RegisterComponent {
 
           const violations = (error.error?.violations ?? []) as {propertyPath: string; title: string}[];
 
-          // Un seul message (le premier) :
           this.errorMessage = violations[0]?.title
             || (error.error?.detail ?? 'Une erreur inattendue s\'est produite. Veuillez réessayer ultérieurement.');
 

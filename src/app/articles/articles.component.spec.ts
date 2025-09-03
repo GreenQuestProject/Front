@@ -125,15 +125,12 @@ describe('ArticlesComponent (DOM + logic)', () => {
   });
 
   it('pagination: met à jour page/perPage, relance fetch et scroll en haut', () => {
-    // 1er rendu
     articlesSpy.getEcoNews.and.returnValue(of({ data: ARTICLES_FIXTURE, meta: META_P1 }));
     render();
 
-    // prépare 2e réponse
     const pending2$ = new Subject<{ data: Article[]; meta: EcoNewsMeta }>();
     articlesSpy.getEcoNews.and.returnValue(pending2$.asObservable());
 
-    // simulate MatPaginator (pageIndex base 0)
     component.onMatPage({ pageIndex: 1, pageSize: 20, length: 42 } as any);
     fixture.detectChanges();
 
@@ -184,7 +181,7 @@ describe('ArticlesComponent (DOM + logic)', () => {
     articlesSpy.getEcoNews.and.returnValue(throwError(() => new Error('network')));
     render();
 
-    expect(consoleErrorSpy).toHaveBeenCalled(); // retire cette expect si tu ne logges pas d'erreur
+    expect(consoleErrorSpy).toHaveBeenCalled();
     expect(component.loading).toBeFalse();
   });
 });

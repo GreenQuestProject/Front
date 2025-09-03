@@ -46,7 +46,7 @@ describe('ProgressionListComponent', () => {
       'getProgressions',
       'updateStatus',
     ]);
-    progressionSpy.getProgressions.and.returnValue(of([])); // défaut
+    progressionSpy.getProgressions.and.returnValue(of([]));
 
     authSpy = jasmine.createSpyObj<AuthService>('AuthService', [
       'getCurrentUser',
@@ -370,7 +370,7 @@ describe('ProgressionListComponent', () => {
   });
 
   it('openReminderDialog: ferme sans résultat → ne crée pas de rappel', async () => {
-    const afterClosed$ = of(undefined); // simulate closing with no payload
+    const afterClosed$ = of(undefined);
     const openSpy = spyOn(MatDialog.prototype, 'open').and.returnValue({
       afterClosed: () => afterClosed$,
     } as any);

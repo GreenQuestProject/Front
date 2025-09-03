@@ -9,11 +9,9 @@ describe('PushBridgeService', () => {
   let remindersSpy: jasmine.SpyObj<RemindersService>;
   let routerSpy: jasmine.SpyObj<Router>;
 
-  // Faux container Service Worker avec capture du callback "message"
   let addEventListenerSpy: jasmine.Spy;
   let swMessageHandler: ((ev: MessageEvent) => void) | null;
 
-  // Sauvegarde/restauration du SW éventuel
   let originalSW: any;
 
   beforeEach(() => {
@@ -33,7 +31,6 @@ describe('PushBridgeService', () => {
       ],
     });
 
-    // Par défaut, on définit un faux serviceWorker pour les tests
     originalSW = (navigator as any).serviceWorker;
     swMessageHandler = null;
 
@@ -46,22 +43,19 @@ describe('PushBridgeService', () => {
       }
     );
 
-    // On rend la propriété configurable pour pouvoir la nettoyer après
     Object.defineProperty(window.navigator, 'serviceWorker', {
       value: fakeSW,
       configurable: true,
       writable: false,
     });
 
-    service = TestBed.inject(PushBridgeService); // déclenche le ctor et l’abonnement
+    service = TestBed.inject(PushBridgeService);
   });
 
   afterEach(() => {
-    // Nettoyage : retire la propriété serviceWorker
     try {
       delete (window.navigator as any).serviceWorker;
     } catch {
-      // si non supprimable, on la remplace par l’original (souvent undefined)
       Object.defineProperty(window.navigator, 'serviceWorker', {
         value: originalSW,
         configurable: true,
@@ -83,7 +77,6 @@ describe('PushBridgeService', () => {
 
     swMessageHandler!({ data: { type: 'OTHER' } } as any);
 
-    // aucune action
     expect(remindersSpy.complete).not.toHaveBeenCalled();
     expect(remindersSpy.snooze).not.toHaveBeenCalled();
     expect(routerSpy.navigateByUrl).not.toHaveBeenCalled();
@@ -94,7 +87,6 @@ describe('PushBridgeService', () => {
 
     swMessageHandler!({ data: { type: 'REMINDER_ACTION', action: 'done', reminderId: 7 } } as any);
 
-    // laisser la micro-tâche de l’async handler s’exécuter
     await Promise.resolve();
 
     expect(remindersSpy.complete).toHaveBeenCalledOnceWith(7);
@@ -130,17 +122,13 @@ describe('PushBridgeService', () => {
 
     await Promise.resolve();
 
-    expect(errSpy).toHaveBeenCalled(); // message + erreur
+    expect(errSpy).toHaveBeenCalled();
   });
 
   it("si 'serviceWorker' n'est pas présent → n'ajoute pas d'écouteur", () => {
-    // Nettoie et reconstruit sans service worker
     delete (window.navigator as any).serviceWorker;
 
-    // Ré-instancie un service frais (sans SW dans navigator)
     const svc = TestBed.inject(PushBridgeService);
-    // Comme notre beforeEach a déjà créé une instance, on ne peut pas facilement checker l'appel.
-    // On vérifie au moins que l’exécution ne jette pas et qu’aucun handler n’a été capturé.
     expect(svc).toBeTruthy();
   });
 });

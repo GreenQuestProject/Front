@@ -97,7 +97,7 @@ describe('NotificationsSettingsComponent', () => {
 
   it('toggle(true): permission denied → snackbar, enabled=false, pas de POST ni enablePush',
     async () => {
-    httpSpy.get.and.returnValue(of({ newChallenge: false })); // init
+    httpSpy.get.and.returnValue(of({ newChallenge: false }));
     detect();
 
     const snack = fixture.debugElement.injector.get(MatSnackBar);

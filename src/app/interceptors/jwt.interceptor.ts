@@ -41,7 +41,6 @@ export const jwtInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: H
           return authService.refreshToken().pipe(
             switchMap(res => {
               isRefreshing = false;
-              // Le token est déjà set dans refreshToken(), on récupère juste la nouvelle valeur
               refreshTokenSubject.next(res.token);
 
               const clonedRequest = req.clone({

@@ -41,7 +41,6 @@ describe('RegisterComponent (DOM)', () => {
       providers: [{ provide: AuthService, useValue: authServiceSpy }],
     });
 
-    // 1) "required"
     instance.registerForm.markAllAsTouched();
     instance.registerForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
     fixture.detectChanges();
@@ -55,7 +54,6 @@ describe('RegisterComponent (DOM)', () => {
     expect(errors.some(t => t.includes('Le pseudo est requis.'))).toBeTrue();
     expect(errors.some(t => t.includes('Le pot de passe est requis.'))).toBeTrue();
 
-    // 2) email invalide
     const emailCtrl = instance.registerForm.controls['email'];
     emailCtrl.setValue('not-an-email');
     emailCtrl.markAsDirty();

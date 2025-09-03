@@ -21,11 +21,6 @@ export const routes: Routes = [
     path: 'accueil',
     component: HomeComponent,
     canActivate: [childAuthGuard],
-    children: [
-      //{ path: 'défis', component: ChallengeListComponent },
-     // { path: 'settings', component: SettingsComponent },
-     // { path: 'profile', component: ProfileComponent },
-    ]
   },
   {
     path: 'défis',

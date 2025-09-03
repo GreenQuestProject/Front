@@ -19,11 +19,9 @@ describe('CleanArticleHtmlPipe', () => {
     sanitizer = TestBed.inject(DomSanitizer);
   });
 
-  /** util: applique le pipe et renvoie le HTML string “dé-sanitizé” pour assertions */
   const out = (input: string | null | undefined): string =>
     sanitizer.sanitize(SecurityContext.HTML, pipe.transform(input) as SafeHtml) ?? '';
 
-  /** util: renvoie un container DOM pour requêter des éléments */
   const dom = (html: string) => {
     const d = document.createElement('div');
     d.innerHTML = html;
@@ -42,7 +40,6 @@ describe('CleanArticleHtmlPipe', () => {
     expect(d.querySelector('script')).toBeNull();
     expect(d.querySelector('iframe')).toBeNull();
     expect(d.querySelector('style')).toBeNull();
-    // contenu utile conservé (mais p est aplati en span au §7)
     expect(d.textContent?.trim()).toBe('ok');
   });
 
@@ -50,7 +47,6 @@ describe('CleanArticleHtmlPipe', () => {
     const html = out('<p onclick="x()" onmouseover="y()">Hello</p>');
     expect(html).not.toContain('onclick');
     expect(html).not.toContain('onmouseover');
-    // §7 aplatit <p> en <span>
     const d = dom(html);
     expect(d.querySelector('p')).toBeNull();
     expect((d.querySelector('span')?.textContent || '').trim()).toBe('Hello');
@@ -60,7 +56,7 @@ describe('CleanArticleHtmlPipe', () => {
     const html = out('<a href="javascript:alert(1)">bad</a><a href="data:text/plain">bad2</a>');
     const d = dom(html);
     expect(d.querySelector('a')).toBeNull();
-    expect(d.textContent?.trim()).toBe(''); // tous les liens supprimés (pas d’autre contenu)
+    expect(d.textContent?.trim()).toBe('');
   });
 
   it('liens: média-only → garde le média, enlève le lien', () => {
@@ -77,8 +73,6 @@ describe('CleanArticleHtmlPipe', () => {
     const html = out('Hello <a href="https://ex">world</a> - next');
     const d = dom(html);
     expect(d.querySelector('a')).toBeNull();
-    // Le texte “world” n’est pas conservé (le lien texte est supprimé)
-    // on vérifie qu’il ne reste plus “world”
     expect((d.textContent || '')).not.toContain('world');
   });
 
@@ -93,11 +87,8 @@ describe('CleanArticleHtmlPipe', () => {
   `);
     const d = dom(html);
 
-    // Seule l'image http(s) reste
     const imgs = Array.from(d.querySelectorAll('img')).map(i => i.getAttribute('src'));
     expect(imgs).toEqual(['https://ok/img.png']);
-
-    // Les balises non-whitelistées sont retirées
     expect(d.querySelector('source')).toBeNull();
     expect(d.querySelector('video')).toBeNull();
     expect(d.querySelector('audio')).toBeNull();
@@ -107,18 +98,14 @@ describe('CleanArticleHtmlPipe', () => {
   it('whitelist: enlève les balises non autorisées mais garde le contenu', () => {
     const html = out('<div><h3>Titre</h3><blockquote>quote</blockquote><em>ok</em></div>');
     const d = dom(html);
-    // balises non autorisées doivent être retirées
     expect(d.querySelector('div')).toBeNull();
     expect(d.querySelector('h1,h2,h3,blockquote')).toBeNull();
-    // <em> autorisé (puis §7 aplatit certains blocs seulement : em reste)
     expect(d.querySelector('em')?.textContent?.trim()).toBe('ok');
-    // le texte “Titre” doit rester (aplatit)
     expect(d.textContent || '').toContain('Titre');
   });
 
   describe('images: styles responsives et attributs', () => {
     const setInnerWidth = (w: number) => {
-      // innerWidth est readonly → on la reconfigure pour le test
       Object.defineProperty(window, 'innerWidth', { value: w, configurable: true });
     };
 
@@ -128,10 +115,8 @@ describe('CleanArticleHtmlPipe', () => {
       const d = dom(html);
       const img = d.querySelector('img') as HTMLImageElement;
       expect(img).not.toBeNull();
-      // width/height supprimés
       expect(img.hasAttribute('width')).toBeFalse();
       expect(img.hasAttribute('height')).toBeFalse();
-      // style inline appliqué
       const style = (img.getAttribute('style') || '').replace(/\s+/g, ' ');
       expect(style).toContain('max-width: 100%');
       expect(style).toContain('height: auto');
@@ -139,7 +124,6 @@ describe('CleanArticleHtmlPipe', () => {
       expect(style).toContain('border-radius: 10px');
       expect(style).toContain('object-fit: cover');
       expect(style).toContain('max-height: 220px');
-      // attrs perf
       expect(img.getAttribute('loading')).toBe('lazy');
       expect(img.getAttribute('decoding')).toBe('async');
     });

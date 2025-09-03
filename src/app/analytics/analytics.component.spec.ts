@@ -35,7 +35,7 @@ describe('AnalyticsComponent (DOM + logic)', () => {
 
   const LEADERBOARD_FIXTURE: LeaderboardItem[] = [
     { username: 'alice', xp_total: 15000 } as any,
-    { username: 'me',    xp_total: 12345 } as any, // ← “me” pour tester userRank
+    { username: 'me',    xp_total: 12345 } as any,
     { username: 'bob',   xp_total: 9000 }  as any,
   ];
 
@@ -55,10 +55,10 @@ describe('AnalyticsComponent (DOM + logic)', () => {
     analyticsSpy = jasmine.createSpyObj<AnalyticsService>('AnalyticsService', [
       'getOverviewPublic',
     ]);
-    authSpy = jasmine.createSpyObj<AuthService>('AuthService', ['logout']); // pour la NavBar
+    authSpy = jasmine.createSpyObj<AuthService>('AuthService', ['logout']);
 
     await TestBed.configureTestingModule({
-      imports: [AnalyticsComponent], // composant standalone
+      imports: [AnalyticsComponent],
       providers: [
         { provide: GamificationService, useValue: gamificationSpy },
         { provide: AnalyticsService, useValue: analyticsSpy },
@@ -100,36 +100,32 @@ describe('AnalyticsComponent (DOM + logic)', () => {
 
     render();
 
-    // Signals
     expect(component.loading()).toBeFalse();
     expect(component.error()).toBeNull();
     expect(component.profile()).toEqual(PROFILE_FIXTURE);
     expect(component.leaderboard()).toEqual(LEADERBOARD_FIXTURE);
     expect(component.overview()).toEqual(OVERVIEW_FIXTURE);
 
-    // chart data construite
     expect(component.lineData.labels).toEqual(OVERVIEW_FIXTURE.weekly.map(w => w.x));
     const ds = component.lineData.datasets?.[0] as any;
     expect(ds.label).toContain('Communauté — défis terminés');
     expect(ds.data).toEqual(OVERVIEW_FIXTURE.weekly.map(w => w.y));
 
-    // DOM
-    expect(spinner()).toBeNull();          // plus de spinner
-    expect(kpiCards().length).toBe(4);     // 4 KPIs
-    expect(impactCards().length).toBe(4);  // 4 impact cards
+    expect(spinner()).toBeNull();
+    expect(kpiCards().length).toBe(4);
+    expect(impactCards().length).toBe(4);
     expect(badgesListItems().length).toBe(PROFILE_FIXTURE.badges.length);
     expect(leaderboardRows().length).toBe(LEADERBOARD_FIXTURE.length);
-    expect(chartCanvas()).not.toBeNull();  // canvas présent
+    expect(chartCanvas()).not.toBeNull();
   });
 
   it('computed userRank: renvoie le rang de "me" dans le leaderboard', () => {
-    gamificationSpy.getProfile.and.returnValue(of(PROFILE_FIXTURE)); // profile non-null requis
+    gamificationSpy.getProfile.and.returnValue(of(PROFILE_FIXTURE));
     gamificationSpy.getLeaderboard.and.returnValue(of({ items: LEADERBOARD_FIXTURE } as any));
     analyticsSpy.getOverviewPublic.and.returnValue(of(OVERVIEW_FIXTURE));
 
     render();
 
-    // “me” est en index 1 → rang 2
     expect(component.userRank()).toBe(2);
   });
 
@@ -145,7 +141,6 @@ describe('AnalyticsComponent (DOM + logic)', () => {
   });
 
   it('gestion erreur: set error message; loading reste true (complete non appelé) → spinner visible', () => {
-    // forkJoin émettra une erreur → complete() ne se déclenche pas
     gamificationSpy.getProfile.and.returnValue(throwError(() => ({ error: { message: 'Oops' } })));
     gamificationSpy.getLeaderboard.and.returnValue(of({ items: [] } as any));
     analyticsSpy.getOverviewPublic.and.returnValue(of(OVERVIEW_FIXTURE));
@@ -153,8 +148,6 @@ describe('AnalyticsComponent (DOM + logic)', () => {
     render();
 
     expect(component.error()).toBe('Oops');
-    // Dans ce composant, loading est remis à false SEULEMENT dans complete()
-    // donc après erreur, il reste true.
     expect(component.loading()).toBeTrue();
     expect(spinner()).not.toBeNull();
   });
@@ -168,16 +161,14 @@ describe('AnalyticsComponent (DOM + logic)', () => {
     gamificationSpy.getLeaderboard.and.returnValue(pendingLb$.asObservable());
     analyticsSpy.getOverviewPublic.and.returnValue(pendingOverview$.asObservable());
 
-    render(); // lance ngOnInit → loading=true
+    render();
     expect(component.loading()).toBeTrue();
     expect(spinner()).not.toBeNull();
 
-    // On émet les valeurs
     pendingProfile$.next(PROFILE_FIXTURE);
     pendingLb$.next({ items: LEADERBOARD_FIXTURE });
     pendingOverview$.next(OVERVIEW_FIXTURE);
 
-    // On complète les streams → forkJoin.complete() est appelé → loading false
     pendingProfile$.complete();
     pendingLb$.complete();
     pendingOverview$.complete();

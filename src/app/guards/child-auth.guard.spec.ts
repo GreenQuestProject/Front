@@ -27,15 +27,11 @@ describe('childAuthGuard', () => {
   });
 
   it('should allow access when user is logged in', (done) => {
-    // Simule que l'utilisateur est connecté
     authServiceSpy.isLoggedIn.and.returnValue(of(true));
     authServiceSpy.initializeAuth.and.returnValue(of(null));
-
-    // Exécution dans un contexte d'injection valide
     TestBed.runInInjectionContext(() => {
       const result = childAuthGuard(route, state);
 
-      // Assure-toi que le résultat est un observable et s'abonne
       if (result instanceof Observable) {
         result.subscribe(r => {
           expect(r).toBeTrue();
@@ -43,7 +39,6 @@ describe('childAuthGuard', () => {
           done();
         });
       } else {
-        // Si le résultat est une valeur booléenne synchrone
         expect(result).toBeTrue();
         expect(routerSpy.navigate).not.toHaveBeenCalled();
         done();
@@ -52,15 +47,11 @@ describe('childAuthGuard', () => {
   });
 
   it('should deny access and redirect to login when user is not logged in', (done) => {
-    // Simule que l'utilisateur n'est pas connecté
     authServiceSpy.isLoggedIn.and.returnValue(of(false));
     authServiceSpy.initializeAuth.and.returnValue(of(null));
 
-    // Exécution dans un contexte d'injection valide
     TestBed.runInInjectionContext(() => {
       const result = childAuthGuard(route, state);
-
-      // Assure-toi que le résultat est un observable et s'abonne
       if (result instanceof Observable) {
         result.subscribe(r => {
           expect(r).toBeFalse();
@@ -68,7 +59,6 @@ describe('childAuthGuard', () => {
           done();
         });
       } else {
-        // Si le résultat est une valeur booléenne synchrone
         expect(result).toBeFalse();
         expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
         done();

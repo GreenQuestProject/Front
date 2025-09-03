@@ -10,7 +10,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
-registerLocaleData(localeFr);  // <---- important
+registerLocaleData(localeFr);
 import { LOCALE_ID } from '@angular/core';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 

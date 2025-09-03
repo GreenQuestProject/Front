@@ -29,7 +29,7 @@ describe('AuthService', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideRouter([]),                    // ← remplace RouterTestingModule
+        provideRouter([]),
         { provide: TokenService, useValue: tokenSpy },
         AuthService,
       ],
@@ -54,10 +54,8 @@ describe('AuthService', () => {
     const loginResp = { token: 'ACCESS', refresh_token: 'REFRESH', user: {} as any };
     const meResp: User = { id: 1, username: 'k', role: 'admin' } as any;
 
-    // loadUserFromToken doit voir un access token
     tokenSpy.getAccessToken.and.returnValue('ACCESS');
 
-    // Observe currentUser pour confirmer la mise à jour après /user/me
     const sub = service.getCurrentUser().subscribe(u => {
       if (u) {
         expect(u).toEqual(meResp);
@@ -66,22 +64,18 @@ describe('AuthService', () => {
       }
     });
 
-    // Appel login : avec l’implémentation actuelle, l’Observable émet null
     service.login(creds.username, creds.password).subscribe(value => {
       expect(value).toBeNull();
     });
 
-    // 1) POST /login
     const post = httpMock.expectOne(`${apiUrl}/login`);
     expect(post.request.method).toBe('POST');
     expect(post.request.body).toEqual({ username: 'k', password: 'p' });
     post.flush(loginResp);
 
-    // Tokens stockés
     expect(tokenSpy.setAccessToken).toHaveBeenCalledWith('ACCESS');
     expect(tokenSpy.setRefreshToken).toHaveBeenCalledWith('REFRESH');
 
-    // 2) GET /user/me (déclenché par loadUserFromToken())
     const getMe = httpMock.expectOne(`${apiUrl}/user/me`);
     expect(getMe.request.method).toBe('GET');
     expect(getMe.request.headers.get('Authorization')).toBe('Bearer ACCESS');
@@ -128,7 +122,6 @@ describe('AuthService', () => {
       service.initializeAuth().subscribe(user => {
         expect(user).toBeNull();
       });
-      // Pas d'appel réseau attendu
     });
   });
 
@@ -187,8 +180,8 @@ describe('AuthService', () => {
       const req = httpMock.expectOne(`${apiUrl}/user/me`);
       req.flush({ message: 'nope' }, { status: 401, statusText: 'Unauthorized' });
 
-      expect(tokenSpy.clearTokens).toHaveBeenCalled();          // via logout()
-      expect(router.navigate).toHaveBeenCalledWith(['/login']); // via logout()
+      expect(tokenSpy.clearTokens).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledWith(['/login']);
     });
 
     it('sans access token → renvoie null, pas d’appel réseau', () => {

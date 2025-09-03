@@ -26,7 +26,6 @@ describe('ChallengeService', () => {
   });
 
   afterEach(() => {
-    // Vérifie qu’il ne reste aucune requête en attente
     httpMock.verify();
   });
 
@@ -48,7 +47,6 @@ describe('ChallengeService', () => {
       r.url === `${apiUrl}/challenge`
     );
 
-    // pas de paramètre "category"
     expect(req.request.params.has('category')).toBeFalse();
 
     req.flush(mockResponse);

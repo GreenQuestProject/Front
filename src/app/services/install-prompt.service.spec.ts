@@ -14,7 +14,6 @@ describe('InstallPromptService', () => {
         matches: val && query === '(display-mode: standalone)',
         media: query,
         addListener: () => {},
-        //removeListener: () => {},
         onchange: null,
         addEventListener: () => {},
         removeEventListener: () => {},

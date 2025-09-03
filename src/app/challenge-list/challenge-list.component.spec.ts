@@ -38,7 +38,7 @@ describe('ChallengeListComponent (DOM + logic)', () => {
     authSpy = jasmine.createSpyObj<AuthService>('AuthService', ['logout']);
 
     await TestBed.configureTestingModule({
-      imports: [ChallengeListComponent], // standalone component
+      imports: [ChallengeListComponent],
       providers: [
         { provide: ChallengeService, useValue: challengeSpy },
         { provide: ProgressionService, useValue: progressionSpy },

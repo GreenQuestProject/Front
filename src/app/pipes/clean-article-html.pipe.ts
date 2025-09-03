@@ -34,7 +34,7 @@ export class CleanArticleHtmlPipe implements PipeTransform {
       if (mediaOnly) {
         const frag = document.createDocumentFragment();
         while (a.firstChild) frag.appendChild(a.firstChild);
-        a.replaceWith(frag); // garde l’image mais plus de lien
+        a.replaceWith(frag);
       } else {
         const prev = a.previousSibling, next = a.nextSibling;
         if (isSepText(prev)) prev?.parentNode?.removeChild(prev);
@@ -67,14 +67,11 @@ export class CleanArticleHtmlPipe implements PipeTransform {
       s.display = 'block';
       s.borderRadius = '10px';
       s.objectFit = 'cover';
-
-      // taille par défaut (desktop/tablette)
       s.maxHeight = '220px';
 
-      // si on est sur un mobile (< 640px par ex.)
       if (window.innerWidth <= 640) {
-        s.maxHeight = '100px';   // réduis la hauteur
-        s.borderRadius = '6px';  // coins plus petits si tu veux
+        s.maxHeight = '100px';
+        s.borderRadius = '6px';
       }
 
       img.setAttribute('loading','lazy');
@@ -82,7 +79,7 @@ export class CleanArticleHtmlPipe implements PipeTransform {
     });
 
     root.querySelectorAll('p, div, h1,h2,h3,h4,h5,h6, blockquote, figure').forEach(el => {
-      if (el.tagName === 'FIGURE') return; // on garde figure si tu l'utilises
+      if (el.tagName === 'FIGURE') return;
       const span = document.createElement('span');
       span.innerHTML = (el as HTMLElement).innerHTML;
       el.replaceWith(span);

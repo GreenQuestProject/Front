@@ -14,7 +14,6 @@ describe('RemindersService', () => {
   beforeEach(() => {
     httpSpy = jasmine.createSpyObj<HttpClient>('HttpClient', ['post']);
 
-    // Fixe un apiUrl de test
     environment.apiUrl = 'https://api.example';
 
     spyOn(Intl.DateTimeFormat.prototype, 'resolvedOptions')
@@ -30,9 +29,7 @@ describe('RemindersService', () => {
   });
 
   afterEach(() => {
-    // restore globals
     environment.apiUrl = originalApiUrl;
-    // rétablit la méthode d'origine pour ne pas polluer d'autres specs
     (Intl.DateTimeFormat.prototype as any).resolvedOptions = originalResolvedOptions;
   });
 

@@ -22,7 +22,7 @@ describe('InstallPromptComponent', () => {
     svc = new InstallPromptServiceStub();
 
     await TestBed.configureTestingModule({
-      imports: [InstallPromptComponent], // composant standalone
+      imports: [InstallPromptComponent],
       providers: [{ provide: InstallPromptService, useValue: svc }],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();

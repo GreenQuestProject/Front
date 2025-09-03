@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { RemindersService } from '../services/reminders.service';
+import { RemindersService } from './reminders.service';
 import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +17,7 @@ export class PushBridgeService {
           if (msg.action === 'done' && msg.reminderId)   await this.reminders.complete(msg.reminderId);
           if (msg.action === 'snooze' && msg.reminderId) await this.reminders.snooze(msg.reminderId);
           if (msg.url) this.router.navigateByUrl(msg.url);
-          if (msg.action === 'reload') location.reload(); // pour la MAJ PWA
+          if (msg.action === 'reload') location.reload();
         } catch (e) {
           console.error('Push action failed', e);
         }

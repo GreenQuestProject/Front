@@ -65,19 +65,6 @@ export class AuthService {
 
   loadUserFromToken(): Observable<User | null> {
     const accessToken = this.tokenService.getAccessToken();
-    //const refreshToken = this.tokenService.getRefreshToken();
-
-    /*if (!accessToken && refreshToken) {
-      return this.refreshToken().pipe(
-        switchMap(() => this.loadUserFromToken()),
-        catchError(() => {
-          this.logout();
-          return of(null);
-        })
-      );
-    }*/
-
-
     if (accessToken) {
       return this.http.get<User>(`${this.apiUrl}/user/me`, {
         headers: {

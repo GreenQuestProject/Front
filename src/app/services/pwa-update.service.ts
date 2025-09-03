@@ -14,7 +14,6 @@ export class PwaUpdateService {
       if (event.type === 'VERSION_READY') this.promptUser();
     });
 
-    // optionnel : vérifier régulièrement
     setInterval(() => this.swUpdate.checkForUpdate(), 60 * 60 * 1000);
   }
 

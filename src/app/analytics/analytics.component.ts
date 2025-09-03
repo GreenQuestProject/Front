@@ -21,7 +21,6 @@ export class AnalyticsComponent implements OnInit {
   private gamification = inject(GamificationService);
   private analytics = inject(AnalyticsService);
 
-// signals for state
   loading = signal(true);
   error = signal<string | null>(null);
 
@@ -33,7 +32,7 @@ export class AnalyticsComponent implements OnInit {
     const lb = this.leaderboard();
     const me = this.profile();
     if (!lb || !me) return null;
-    const usernameGuess = 'me'; // Replace with actual username if available in auth context.
+    const usernameGuess = 'me';
     const idx = lb.findIndex(x => x.username === usernameGuess);
     return idx >= 0 ? idx + 1 : null;
   });
@@ -43,8 +42,8 @@ export class AnalyticsComponent implements OnInit {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
-      x: { title: { display: true, text: 'ISO Weeks' } },
-      y: { title: { display: true, text: 'Challenges completed' }, beginAtZero: true }
+      x: { title: { display: true, text: 'Semaines ISO' } },
+      y: { title: { display: true, text: 'Défis complétés' }, beginAtZero: true }
     },
     plugins: {
       legend: { display: true, position: 'bottom' },

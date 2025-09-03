@@ -51,7 +51,7 @@ describe('ReminderDialogComponent', () => {
 
     annulerBtn.click();
 
-    expect(refSpy.close).toHaveBeenCalledWith(); // aucune donnée
+    expect(refSpy.close).toHaveBeenCalledWith();
   });
 
   it('click "Planifier": envoie { when, recurrence } et ferme le dialog', async () => {
@@ -62,7 +62,6 @@ describe('ReminderDialogComponent', () => {
       ],
     });
 
-    // Renseigne manuellement le modèle (plus simple que d’ouvrir les overlays Material en test)
     instance.when = '2025-08-28T10:00';
     instance.recurrence = 'WEEKLY' as any;
     fixture.detectChanges();
@@ -88,11 +87,9 @@ describe('ReminderDialogComponent', () => {
       ],
     });
 
-    // close()
     instance.close();
     expect(refSpy.close).toHaveBeenCalledWith();
 
-    // save()
     (refSpy.close as jasmine.Spy).calls.reset();
     instance.when = '2025-12-31T23:59';
     instance.recurrence = 'DAILY' as any;

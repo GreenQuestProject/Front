@@ -8,7 +8,6 @@ describe('AppComponent', () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
       providers: [
-        // Stubs minimalistes : on évite d’instancier les vrais services
         { provide: PwaUpdateService, useValue: {} },
         { provide: PushBridgeService, useValue: {} },
       ],

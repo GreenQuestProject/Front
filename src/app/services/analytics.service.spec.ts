@@ -20,7 +20,7 @@ describe('AnalyticsService', () => {
   });
 
   afterEach(() => {
-    httpMock.verify(); // s'assure qu'il n'y a pas de requêtes pendantes
+    httpMock.verify();
   });
 
   it('should be created', () => {

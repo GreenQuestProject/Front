@@ -58,24 +58,21 @@ describe('PwaUpdateService', () => {
     expect(snackBarSpy.open).not.toHaveBeenCalled();
   });
 
-  it('isEnabled=true : planifie checkForUpdate() horaire et ouvre un snackbar sur VERSION_READY (sans recharger la page)', async () => {
+  it('isEnabled=true : planifie checkForUpdate() horaire et ouvre un snackbar sur VERSION_READY (sans recharger la page)',
+    async () => {
     const service = setup(true);
 
-    // 1h
     expect(setIntervalSpy).toHaveBeenCalled();
     const [, delay] = setIntervalSpy.calls.mostRecent().args;
     expect(delay).toBe(60 * 60 * 1000);
 
-    // tick → checkForUpdate()
     expect(swUpdateMock.checkForUpdate).not.toHaveBeenCalled();
     (intervalHandler as Function)();
     expect(swUpdateMock.checkForUpdate).toHaveBeenCalled();
 
-    // snackbar ref factice
     const onAction$ = new Subject<void>();
     snackBarSpy.open.and.returnValue({ onAction: () => onAction$.asObservable() } as any);
 
-    // event prêt
     versionUpdates$.next({ type: 'VERSION_READY', currentVersion: {} as any, latestVersion: {} as any });
 
     expect(snackBarSpy.open).toHaveBeenCalledWith(
@@ -86,13 +83,11 @@ describe('PwaUpdateService', () => {
 
     const aarSpy = spyOn<any>(service as any, 'activateAndReload').and.stub();
 
-    // clic utilisateur
     onAction$.next();
     onAction$.complete();
-    await Promise.resolve(); // micro-task
+    await Promise.resolve();
 
-    expect(aarSpy).toHaveBeenCalled();        // le clic déclenche bien le flux de mise à jour
-    // on n’assert PAS reload() ici pour éviter tout souci d’environnement
+    expect(aarSpy).toHaveBeenCalled();
   });
 
   it('ignore les événements ≠ VERSION_READY', () => {

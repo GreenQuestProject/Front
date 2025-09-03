@@ -4,13 +4,11 @@ import { TokenService } from './token.service';
 describe('TokenService', () => {
   let service: TokenService;
 
-  // Petit store en mémoire pour simuler localStorage
   let store: Record<string, string>;
 
   beforeEach(() => {
     store = {};
 
-    // On mocke les méthodes de localStorage AVANT la création du service
     spyOn(window.localStorage, 'getItem').and.callFake((key: string): string | null => {
       return Object.prototype.hasOwnProperty.call(store, key) ? store[key] : null;
     });
@@ -30,7 +28,6 @@ describe('TokenService', () => {
   });
 
   it('charge les tokens depuis localStorage au constructeur', () => {
-    // Seed avant l’injection du service
     store['accessToken'] = 'A1';
     store['refreshToken'] = 'R1';
 
@@ -38,13 +35,11 @@ describe('TokenService', () => {
     expect(service.getAccessToken()).toBe('A1');
     expect(service.getRefreshToken()).toBe('R1');
 
-    // getItem appelé pour chaque token
     expect(window.localStorage.getItem).toHaveBeenCalledWith('accessToken');
     expect(window.localStorage.getItem).toHaveBeenCalledWith('refreshToken');
   });
 
   it('getters retournent null si rien en storage au démarrage', () => {
-    // Pas de seed
     service = TestBed.inject(TokenService);
     expect(service.getAccessToken()).toBeNull();
     expect(service.getRefreshToken()).toBeNull();
@@ -57,7 +52,6 @@ describe('TokenService', () => {
     expect(service.getAccessToken()).toBe('NEW_A');
     expect(window.localStorage.setItem).toHaveBeenCalledWith('accessToken', 'NEW_A');
 
-    // overwrite
     service.setAccessToken('NEW_A2');
     expect(service.getAccessToken()).toBe('NEW_A2');
     expect(window.localStorage.setItem).toHaveBeenCalledWith('accessToken', 'NEW_A2');
@@ -70,7 +64,6 @@ describe('TokenService', () => {
     expect(service.getRefreshToken()).toBe('NEW_R');
     expect(window.localStorage.setItem).toHaveBeenCalledWith('refreshToken', 'NEW_R');
 
-    // overwrite
     service.setRefreshToken('NEW_R2');
     expect(service.getRefreshToken()).toBe('NEW_R2');
     expect(window.localStorage.setItem).toHaveBeenCalledWith('refreshToken', 'NEW_R2');

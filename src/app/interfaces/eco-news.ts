@@ -4,12 +4,12 @@ export type SortField = 'date' | 'title' | 'source';
 export type SortOrder = 'asc' | 'desc';
 
 export interface EcoNewsQuery {
-  page?: number;          // défaut 1
-  per_page?: number;      // défaut 20 (max 100)
+  page?: number;
+  per_page?: number;
   q?: string;
-  sort?: SortField;       // défaut 'date'
-  order?: SortOrder;      // défaut 'desc'
-  sources?: string[];     // ex: ['reporterre.net','actu-environnement.com']
+  sort?: SortField;
+  order?: SortOrder;
+  sources?: string[];
 }
 
 export interface EcoNewsMeta {

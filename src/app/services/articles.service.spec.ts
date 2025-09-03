@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import { HttpClient } from '@angular/common/http';
 
 import { ArticlesService } from './articles.service';
@@ -14,13 +14,12 @@ describe('ArticlesService (HTTP)', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      // On fournit le service via une factory pour injecter une apiUrl de test
       providers: [
         {
           provide: ArticlesService,
           useFactory: (http: HttpClient) => {
             const s = new ArticlesService(http);
-            (s as any).apiUrl = TEST_API_URL; // override de la propriété privée
+            (s as any).apiUrl = TEST_API_URL;
             return s;
           },
           deps: [HttpClient],
@@ -47,7 +46,7 @@ describe('ArticlesService (HTTP)', () => {
     service.getEcoNews().subscribe((res) => (actualResponse = res));
 
     const req = httpMock.expectOne((r) => r.method === 'GET' && r.url === expectedUrl);
-    expect(req.request.params.keys().length).toBe(0); // aucun paramètre
+    expect(req.request.params.keys().length).toBe(0);
 
     const mockBody: EcoNewsResponse = {
       data: [],
@@ -65,8 +64,8 @@ describe('ArticlesService (HTTP)', () => {
       page: 3,
       per_page: 40,
       q: 'biodiversité',
-      sort: 'date' as SortField,   // <-- remplacé 'published_at'
-      order: 'desc' as SortOrder,  // <-- valide
+      sort: 'date' as SortField,
+      order: 'desc' as SortOrder,
       sources: ['lemonde', 'guardian', 'nyt'],
     };
 
@@ -74,7 +73,6 @@ describe('ArticlesService (HTTP)', () => {
 
     const req = httpMock.expectOne((r) => r.method === 'GET' && r.url === expectedUrl);
 
-    // Vérifie chaque paramètre encodé en string
     expect(req.request.params.get('page')).toBe('3');
     expect(req.request.params.get('per_page')).toBe('40');
     expect(req.request.params.get('q')).toBe('biodiversité');
@@ -88,7 +86,6 @@ describe('ArticlesService (HTTP)', () => {
   it('getEcoNews(): ignore les valeurs null/undefined (ne passe pas le param)', () => {
     const expectedUrl = `${TEST_API_URL}/eco-news`;
 
-    // On met volontairement null/undefined
     const query: EcoNewsQuery = {
       page: undefined,
       per_page: undefined,
@@ -103,9 +100,8 @@ describe('ArticlesService (HTTP)', () => {
 
     const req = httpMock.expectOne((r) => r.method === 'GET' && r.url === expectedUrl);
 
-    // Aucun de ces params ne doit apparaître
     const keys = req.request.params.keys();
-    expect(keys).toEqual([]); // vide
+    expect(keys).toEqual([]);
 
     req.flush({ data: [], meta: { page: 1, per_page: 10, total: 0 } as any });
   });
