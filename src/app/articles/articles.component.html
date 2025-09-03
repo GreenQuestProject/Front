@@ -1,0 +1,72 @@
+<app-nav-bar></app-nav-bar>
+
+<div class="container">
+
+  <h1>Articles</h1>
+
+  <div *ngIf="loading" class="">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div *ngIf="!loading && articles.length > 0" class="content">
+    <mat-card *ngFor="let article of articles" appearance="raised" class="">
+      <mat-card-header>
+        <div class="header-content">
+          <a [href]="article.link" class="image-wrapper" rel="noopener" target="_blank">
+            <img (error)="onImgError($event)"
+                 *ngIf="article.image_url"
+                 [alt]="article.title"
+                 [src]="article.image_url"/>
+            <div *ngIf="!article.image_url" class="placeholder">
+              <mat-icon>image</mat-icon>
+            </div>
+          </a>
+          <div class="title-wrapper">
+            <a [href]="article.link" rel="noopener" target="_blank">
+              <h3>{{ article.title }}</h3>
+            </a>
+          </div>
+        </div>
+      </mat-card-header>
+
+
+      <mat-card-content>
+        <div class="info">
+          <mat-chip-set>
+            <mat-chip appearance="outlined" color="primary">
+              <mat-icon>public</mat-icon>
+              {{ article.source }}
+            </mat-chip>
+            <mat-chip appearance="outlined">
+              <mat-icon>calendar_today</mat-icon>
+              {{ article.published_at | date:'mediumDate' }}
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+
+        <div [innerHTML]="article.description | cleanArticleHtml" class="description"></div>
+
+        <mat-card-actions>
+          <a [href]="article.link" color="primary"
+             mat-stroked-button rel="noopener" target="_blank">
+            Lire la suite
+            <mat-icon>open_in_new</mat-icon>
+          </a>
+        </mat-card-actions>
+
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div *ngIf="!loading && articles.length == 0">
+    <p>Aucun article disponible.</p>
+  </div>
+
+
+</div>
+<mat-paginator (page)="onMatPage($event)"
+               *ngIf="meta && !loading"
+               [length]="meta.total"
+               [pageIndex]="page - 1"
+               [pageSizeOptions]="[10, 20, 40, 60, 100]"
+               [pageSize]="perPage"
+               [showFirstLastButtons]="true">
+</mat-paginator>

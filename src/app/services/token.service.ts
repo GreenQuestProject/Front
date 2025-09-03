@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class TokenService {
   private accessToken: string | null = localStorage.getItem('accessToken');
   private refreshToken: string | null = localStorage.getItem('refreshToken');

@@ -1,4 +1,4 @@
-a{
+a {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -6,21 +6,21 @@ a{
   justify-content: space-evenly;
   gap: 30px 30px;
   font-size: 22px;
-  color: white!important;
+  color: white !important;
 }
 
-.container{
+.container {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 10px 10px;
   padding: 10px 0 10px 10px;
-  margin : 10px 10px 10px 10px;
+  margin: 10px 10px 10px 10px;
   border-radius: 50px;
 }
 
-.logo-content{
+.logo-content {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -30,7 +30,7 @@ a{
   padding-right: 10px;
 }
 
-.content{
+.content {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -38,7 +38,7 @@ a{
   background-color: rgba(49, 87, 44, 0.75);
   gap: 10px 10px;
   padding: 10px 10px 10px 10px;
-  margin : 10px 10px 10px 10px;
+  margin: 10px 10px 10px 10px;
   border-radius: 50px;
 }
 
@@ -47,11 +47,12 @@ a{
   height: 50px;
   opacity: 0;
 }
+
 .btn-content {
   display: flex;
-  gap: 1rem; /* espacement entre les boutons */
-  justify-content: center; /* centre horizontalement */
-  align-items: center; /* centre verticalement */
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
 }
 
 button {
@@ -62,7 +63,7 @@ button {
 }
 
 button > mat-icon {
-  font-size: 25px; /* agrandit l'icône */
+  font-size: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,7 +71,7 @@ button > mat-icon {
   height: 100%;
 }
 
-.icon{
+.icon {
   width: 104px;
   height: 104px;
   display: flex;
@@ -84,7 +85,7 @@ button > mat-icon {
   display: block;
 }
 
-.link-home{
+.link-home {
   width: 104px;
   height: 104px;
 }

@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-import { LoginComponent } from './login.component';
-import { AuthService } from '../services/auth.service';
-import { provideRouter, Router } from '@angular/router';
-import { Subject, throwError } from 'rxjs';
+import {TestBed} from '@angular/core/testing';
+import {LoginComponent} from './login.component';
+import {AuthService} from '../services/auth.service';
+import {provideRouter, Router} from '@angular/router';
+import {Subject, throwError} from 'rxjs';
 
 describe('LoginComponent (DOM)', () => {
   let fixture: any;
@@ -24,7 +24,7 @@ describe('LoginComponent (DOM)', () => {
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
       providers: [
-        { provide: AuthService, useValue: authSpy },
+        {provide: AuthService, useValue: authSpy},
         provideRouter([]),
       ],
     }).compileComponents();
@@ -64,7 +64,7 @@ describe('LoginComponent (DOM)', () => {
   });
 
   it('rend le bouton submit activé quand le formulaire est valide', () => {
-    component.loginForm.setValue({ username: 'k', password: 'p@ss' });
+    component.loginForm.setValue({username: 'k', password: 'p@ss'});
     fixture.detectChanges();
 
     expect(component.loginForm.valid).toBeTrue();
@@ -84,7 +84,7 @@ describe('LoginComponent (DOM)', () => {
   });
 
   it('onSubmit succès: spinner pendant l’appel, puis navigation /défis', () => {
-    component.loginForm.setValue({ username: 'k', password: 'p@ss' });
+    component.loginForm.setValue({username: 'k', password: 'p@ss'});
 
     const pending$ = new Subject<any>();
     authSpy.login.and.returnValue(pending$.asObservable());
@@ -93,7 +93,7 @@ describe('LoginComponent (DOM)', () => {
     fixture.detectChanges();
     expect(getSpinner()).not.toBeNull();
 
-    pending$.next({ ok: true });
+    pending$.next({ok: true});
     pending$.complete();
     fixture.detectChanges();
 
@@ -104,8 +104,8 @@ describe('LoginComponent (DOM)', () => {
   });
 
   it('onSubmit erreur 401: affiche "Identifiants invalides.", pas de navigation', () => {
-    component.loginForm.setValue({ username: 'k', password: 'wrong' });
-    authSpy.login.and.returnValue(throwError(() => ({ status: 401 })));
+    component.loginForm.setValue({username: 'k', password: 'wrong'});
+    authSpy.login.and.returnValue(throwError(() => ({status: 401})));
 
     component.onSubmit();
     fixture.detectChanges();
@@ -117,8 +117,8 @@ describe('LoginComponent (DOM)', () => {
   });
 
   it('onSubmit autre erreur: message générique + console.error', () => {
-    component.loginForm.setValue({ username: 'k', password: 'p@ss' });
-    authSpy.login.and.returnValue(throwError(() => ({ status: 500 })));
+    component.loginForm.setValue({username: 'k', password: 'p@ss'});
+    authSpy.login.and.returnValue(throwError(() => ({status: 500})));
 
     component.onSubmit();
     fixture.detectChanges();

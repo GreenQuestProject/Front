@@ -1,42 +1,44 @@
-import { ProgressionListComponent } from './progression-list.component';
-import { ProgressionService } from '../services/progression.service';
-import { AuthService } from '../services/auth.service';
-import { of, throwError } from 'rxjs';
+import {ProgressionListComponent} from './progression-list.component';
+import {ProgressionService} from '../services/progression.service';
+import {AuthService} from '../services/auth.service';
+import {of, throwError} from 'rxjs';
 import {
-  PROGRESSIONS_FIXTURE,
   cloneProgressions,
-  stubGetProgressionsSeq,
   makePending,
+  PROGRESSIONS_FIXTURE,
+  stubGetProgressionsSeq,
   TEXTS,
 } from '../../testing/progression-helpers';
-import { renderStandalone } from '../../testing/test-helpers';
-import { Progression } from '../interfaces/progression';
+import {renderStandalone} from '../../testing/test-helpers';
+import {Progression} from '../interfaces/progression';
 import {ChallengeService} from '../services/challenge.service';
-
+import {RemindersService} from '../services/reminders.service';
+import {MatDialog} from '@angular/material/dialog';
 
 
 describe('ProgressionListComponent', () => {
   const CATEGORIES_FIXTURE = [
-    { name: 'ECOLOGY', value: 'ecology' },
-    { name: 'HEALTH',  value: 'health'  },
+    {name: 'ECOLOGY', value: 'ecology'},
+    {name: 'HEALTH', value: 'health'},
   ];
 
   const STATUSES_FIXTURE = [
-    { name: 'PENDING',     value: 'pending'     },
-    { name: 'IN_PROGRESS', value: 'in_progress' },
-    { name: 'FAILED',      value: 'failed'      },
+    {name: 'PENDING', value: 'pending'},
+    {name: 'IN_PROGRESS', value: 'in_progress'},
+    {name: 'FAILED', value: 'failed'},
   ];
 
   let progressionSpy: jasmine.SpyObj<ProgressionService>;
   let challengeSpy: jasmine.SpyObj<ChallengeService>;
   let authSpy: jasmine.SpyObj<AuthService>;
+  let remindersSpy: jasmine.SpyObj<RemindersService>;
+  let dialogSpy: jasmine.SpyObj<MatDialog>;
 
   beforeEach(() => {
     challengeSpy = jasmine.createSpyObj<ChallengeService>('ChallengeService', [
       'getChallengeCategories',
       'getChallengeStatus',
     ]);
-
     challengeSpy.getChallengeCategories.and.returnValue(of(CATEGORIES_FIXTURE));
     challengeSpy.getChallengeStatus.and.returnValue(of(STATUSES_FIXTURE));
 
@@ -44,7 +46,6 @@ describe('ProgressionListComponent', () => {
       'getProgressions',
       'updateStatus',
     ]);
-    // Stub par défaut (sécurité)
     progressionSpy.getProgressions.and.returnValue(of([]));
 
     authSpy = jasmine.createSpyObj<AuthService>('AuthService', [
@@ -58,17 +59,29 @@ describe('ProgressionListComponent', () => {
     authSpy.isLoggedIn.and.returnValue(of(false));
     authSpy.isAdmin.and.returnValue(of(false));
     authSpy.initializeAuth.and.returnValue(of(null));
+
+    remindersSpy = jasmine.createSpyObj<RemindersService>('RemindersService', [
+      'snooze',
+      'complete',
+      'createByProgression',
+    ]);
+    remindersSpy.snooze.and.resolveTo({});
+    remindersSpy.complete.and.resolveTo({});
+    remindersSpy.createByProgression.and.resolveTo({id: 123});
+
+    dialogSpy = jasmine.createSpyObj<MatDialog>('MatDialog', ['open']);
   });
 
   it('devrait créer le composant', async () => {
     const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
     const filtered = initial.filter(p => p.status !== 'failed');
 
-    const { instance } = await renderStandalone(ProgressionListComponent, {
+    const {instance} = await renderStandalone(ProgressionListComponent, {
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy}
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(filtered));
@@ -82,11 +95,12 @@ describe('ProgressionListComponent', () => {
     const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
     const filtered = initial.filter(p => p.status !== 'failed');
 
-    const { instance, element } = await renderStandalone(ProgressionListComponent, {
+    const {instance, element} = await renderStandalone(ProgressionListComponent, {
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(filtered));
@@ -106,11 +120,12 @@ describe('ProgressionListComponent', () => {
   });
 
   it('applyFilters: si filtres vides → progressions=[], message not found', async () => {
-    const { instance } = await renderStandalone(ProgressionListComponent, {
+    const {instance} = await renderStandalone(ProgressionListComponent, {
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of([]), of([]));
@@ -131,11 +146,12 @@ describe('ProgressionListComponent', () => {
   });
 
   it('applyFilters: isLoading passe à true le temps de la requête puis à false', async () => {
-    const { instance } = await renderStandalone(ProgressionListComponent, {
+    const {instance} = await renderStandalone(ProgressionListComponent, {
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of([]), of([]));
@@ -152,7 +168,7 @@ describe('ProgressionListComponent', () => {
 
     expect(instance.isLoading).toBeTrue();
 
-    pending.next([{ id: 99, name: 'X', category: 'ecology', status: 'pending', description: '' } as Progression]);
+    pending.next([{id: 99, name: 'X', category: 'ecology', status: 'pending', description: ''} as Progression]);
     pending.complete();
 
     expect(instance.isLoading).toBeFalse();
@@ -162,20 +178,21 @@ describe('ProgressionListComponent', () => {
   it('validate(): updateStatus("completed"), met à jour localement + refreshFilters refait un fetch', async () => {
     const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
 
-    const { instance } = await renderStandalone(ProgressionListComponent, {
+    const {instance} = await renderStandalone(ProgressionListComponent, {
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
       },
     });
 
-    progressionSpy.updateStatus.and.returnValue(of({ updated: true }));
+    progressionSpy.updateStatus.and.returnValue(of({updated: true}));
 
-    const afterValidate = initial.map(p => p.id === 1 ? { ...p, status: 'completed' } : p);
+    const afterValidate = initial.map(p => p.id === 1 ? {...p, status: 'completed'} : p);
     (progressionSpy.getProgressions as any).and.returnValue(of(afterValidate));
 
     instance.validate(1);
@@ -189,20 +206,21 @@ describe('ProgressionListComponent', () => {
   it('remove(): updateStatus("failed"), met à jour localement + refreshFilters refait un fetch', async () => {
     const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
 
-    const { instance } = await renderStandalone(ProgressionListComponent, {
+    const {instance} = await renderStandalone(ProgressionListComponent, {
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
       },
     });
 
-    progressionSpy.updateStatus.and.returnValue(of({ updated: true }));
+    progressionSpy.updateStatus.and.returnValue(of({updated: true}));
 
-    const afterRemove = initial.map(p => p.id === 1 ? { ...p, status: 'failed' } : p);
+    const afterRemove = initial.map(p => p.id === 1 ? {...p, status: 'failed'} : p);
     (progressionSpy.getProgressions as any).and.returnValue(of(afterRemove));
 
     instance.remove(1);
@@ -214,16 +232,17 @@ describe('ProgressionListComponent', () => {
   });
 
   it('ngOnInit: 401 → redirige /login et log l’erreur', async () => {
-    const { navigateByUrlSpy, consoleErrorSpy } = await renderStandalone(ProgressionListComponent, {
+    const {navigateByUrlSpy, consoleErrorSpy} = await renderStandalone(ProgressionListComponent, {
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
       ],
       beforeDetectChanges: () => {
         (progressionSpy.getProgressions as any).calls.reset();
         (progressionSpy.getProgressions as any).and.returnValue(
-          throwError(() => ({ status: 401, message: 'Unauthorized' }))
+          throwError(() => ({status: 401, message: 'Unauthorized'}))
         );
       },
     });
@@ -233,13 +252,15 @@ describe('ProgressionListComponent', () => {
   });
 
   it('getStatusColor: renvoie les bonnes couleurs (sans ngOnInit)', async () => {
-    const { instance } = await renderStandalone(ProgressionListComponent, {
+    const {instance} = await renderStandalone(ProgressionListComponent, {
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
       ],
-      beforeDetectChanges: () => {/* rien: on ne déclenche pas de logique réseau ici */},
+      beforeDetectChanges: () => {
+      },
     });
 
     expect(instance.getStatusColor('pending')).toBe('#FFA500');
@@ -250,11 +271,12 @@ describe('ProgressionListComponent', () => {
   });
 
   it('DOM: affiche le message notFound quand aucune progression', async () => {
-    const { instance, fixture, element } = await renderStandalone(ProgressionListComponent, {
+    const {instance, fixture, element} = await renderStandalone(ProgressionListComponent, {
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of([]), of([]));
@@ -274,23 +296,21 @@ describe('ProgressionListComponent', () => {
   it("applyFilters: en cas d'erreur, log l'erreur et repasse isLoading à false", async () => {
     const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
 
-    const { instance, consoleErrorSpy } = await renderStandalone(ProgressionListComponent, {
+    const {instance, consoleErrorSpy} = await renderStandalone(ProgressionListComponent, {
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
       ],
       beforeDetectChanges: () => {
-        // ngOnInit (1er fetch) + applyFilters initial (2e fetch) → on s'en fiche du contenu
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
       },
     });
 
-    // Filtres non vides pour déclencher l'appel
     instance.selectedCategories = ['ecology'];
     instance.selectedStatus = ['pending'];
 
-    // Prochain getProgressions() → erreur
     (progressionSpy.getProgressions as any).calls.reset();
     (progressionSpy.getProgressions as any).and.returnValue(
       throwError(() => new Error('network down'))
@@ -298,55 +318,239 @@ describe('ProgressionListComponent', () => {
 
     instance.applyFilters();
 
-    expect(instance.isLoading).toBeFalse();         // remis à false dans le bloc error
-    expect(consoleErrorSpy).toHaveBeenCalled();     // console.error(error)
+    expect(instance.isLoading).toBeFalse();
+    expect(consoleErrorSpy).toHaveBeenCalled();
   });
 
   it("validate(): en cas d'erreur sur updateStatus, log l'erreur et ne modifie pas la liste", async () => {
     const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
 
-    const { instance, consoleErrorSpy } = await renderStandalone(ProgressionListComponent, {
+    const {instance, consoleErrorSpy} = await renderStandalone(ProgressionListComponent, {
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
       ],
       beforeDetectChanges: () => {
-        // ngOnInit + applyFilters initial pour avoir des données
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
       },
     });
 
-    const snapshot = instance.progressions.map(p => ({ ...p }));
+    const snapshot = instance.progressions.map(p => ({...p}));
     progressionSpy.updateStatus.and.returnValue(throwError(() => new Error('update failed')));
 
     instance.validate(initial[0].id!);
 
     expect(consoleErrorSpy).toHaveBeenCalled();
-    // pas de changement local si erreur
     expect(instance.progressions).toEqual(snapshot);
   });
 
   it("remove(): en cas d'erreur sur updateStatus, log l'erreur et ne modifie pas la liste", async () => {
     const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
 
-    const { instance, consoleErrorSpy } = await renderStandalone(ProgressionListComponent, {
+    const {instance, consoleErrorSpy} = await renderStandalone(ProgressionListComponent, {
       providers: [
-        { provide: ProgressionService, useValue: progressionSpy },
-        { provide: AuthService, useValue: authSpy },
-        { provide: ChallengeService,   useValue: challengeSpy }
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
       ],
       beforeDetectChanges: () => {
         stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(initial));
       },
     });
 
-    const snapshot = instance.progressions.map(p => ({ ...p }));
+    const snapshot = instance.progressions.map(p => ({...p}));
     progressionSpy.updateStatus.and.returnValue(throwError(() => new Error('update failed')));
 
     instance.remove(initial[0].id!);
 
     expect(consoleErrorSpy).toHaveBeenCalled();
     expect(instance.progressions).toEqual(snapshot);
+  });
+
+  it('openReminderDialog: ferme sans résultat → ne crée pas de rappel', async () => {
+    const afterClosed$ = of(undefined);
+    const openSpy = spyOn(MatDialog.prototype, 'open').and.returnValue({
+      afterClosed: () => afterClosed$,
+    } as any);
+
+    const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
+    const filtered = initial;
+
+    const {instance} = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
+      ],
+      beforeDetectChanges: () => {
+        stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(filtered));
+      },
+    });
+
+    const prog = {...filtered[0]} as Progression;
+    await instance.openReminderDialog(prog);
+
+    expect(openSpy).toHaveBeenCalled();
+    expect(remindersSpy.createByProgression).not.toHaveBeenCalled();
+    expect((prog as any).reminderId).toBeUndefined();
+  });
+
+  it('openReminderDialog: crée un rappel, met à jour les champs locaux', async () => {
+    const payload = {when: new Date('2025-08-28T10:00:00Z'), recurrence: 'WEEKLY'};
+    const afterClosed$ = of(payload);
+    spyOn(MatDialog.prototype, 'open').and.returnValue({
+      afterClosed: () => afterClosed$,
+    } as any);
+    remindersSpy.createByProgression.and.resolveTo({id: 456});
+
+    const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
+    const filtered = initial;
+
+    const {instance} = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
+      ],
+      beforeDetectChanges: () => {
+        stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(filtered));
+      },
+    });
+
+    const prog = {...filtered[0], id: filtered[0].id!} as Progression;
+    await instance.openReminderDialog(prog);
+
+    const whenIso = new Date(payload.when).toISOString();
+    expect(remindersSpy.createByProgression).toHaveBeenCalledWith(prog.id!, whenIso, 'WEEKLY');
+    expect((prog as any).reminderId).toBe(456);
+    expect((prog as any).nextReminderUtc).toBe(whenIso);
+    expect((prog as any).recurrence).toBe('WEEKLY');
+  });
+
+  it('snoozeReminder: appelle le service et décale nextReminderUtc de +10 min', async () => {
+    const {instance} = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy}
+      ],
+      beforeDetectChanges: () => {
+      },
+    });
+
+    const base = '2025-08-28T10:00:00.000Z';
+    const prog = {id: 1, name: 'A', category: 'ecology', status: 'pending', description: ''} as Progression;
+    (prog as any).reminderId = 999;
+    (prog as any).nextReminderUtc = base;
+
+    await instance.snoozeReminder(prog);
+
+    expect(remindersSpy.snooze).toHaveBeenCalledWith(999);
+    const after = new Date((prog as any).nextReminderUtc).getTime();
+    const expected = new Date(base).getTime() + 10 * 60 * 1000;
+    expect(after).toBe(expected);
+  });
+
+  it('completeReminder: appelle le service et nettoie les champs locaux', async () => {
+    const {instance} = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy}
+      ],
+      beforeDetectChanges: () => {
+      },
+    });
+
+    const prog = {id: 2, name: 'B', category: 'health', status: 'pending', description: ''} as Progression;
+    (prog as any).reminderId = 321;
+    (prog as any).nextReminderUtc = '2025-08-28T10:05:00.000Z';
+
+    await instance.completeReminder(prog);
+
+    expect(remindersSpy.complete).toHaveBeenCalledWith(321);
+    expect((prog as any).reminderId).toBeNull();
+    expect((prog as any).nextReminderUtc).toBeNull();
+  });
+
+  it('openReminderDialog: échec createByProgression → alert et pas de mise à jour locale', async () => {
+    const payload = {when: new Date('2025-08-28T11:00:00Z'), recurrence: 'NONE'};
+    spyOn(MatDialog.prototype, 'open').and.returnValue({
+      afterClosed: () => of(payload),
+    } as any);
+    remindersSpy.createByProgression.and.rejectWith({error: {error: 'Boom'}});
+    const alertSpy = spyOn(window, 'alert');
+
+    const initial = cloneProgressions(PROGRESSIONS_FIXTURE);
+    const filtered = initial;
+
+    const {instance} = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
+      ],
+      beforeDetectChanges: () => {
+        stubGetProgressionsSeq(progressionSpy.getProgressions as any, of(initial), of(filtered));
+      },
+    });
+
+    const prog = {...filtered[0], id: filtered[0].id!} as Progression;
+    await instance.openReminderDialog(prog);
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect((prog as any).reminderId).toBeUndefined();
+    expect((prog as any).nextReminderUtc).toBeUndefined();
+  });
+
+  it('snoozeReminder: en cas d\'erreur → affiche un alert', async () => {
+    const {instance} = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
+      ],
+    });
+
+    const prog = {id: 1, name: 'X', category: 'ecology', status: 'pending', description: ''} as Progression;
+    (prog as any).reminderId = 111;
+    (prog as any).nextReminderUtc = '2025-08-28T10:00:00Z';
+
+    remindersSpy.snooze.and.rejectWith(new Error('fail snooze'));
+    const alertSpy = spyOn(window, 'alert');
+
+    await instance.snoozeReminder(prog);
+
+    expect(alertSpy).toHaveBeenCalledWith('Échec du snooze');
+  });
+
+  it('completeReminder: en cas d\'erreur → affiche un alert', async () => {
+    const {instance} = await renderStandalone(ProgressionListComponent, {
+      providers: [
+        {provide: ProgressionService, useValue: progressionSpy},
+        {provide: AuthService, useValue: authSpy},
+        {provide: ChallengeService, useValue: challengeSpy},
+        {provide: RemindersService, useValue: remindersSpy},
+      ],
+    });
+
+    const prog = {id: 2, name: 'Y', category: 'health', status: 'pending', description: ''} as Progression;
+    (prog as any).reminderId = 222;
+
+    remindersSpy.complete.and.rejectWith(new Error('fail complete'));
+    const alertSpy = spyOn(window, 'alert');
+
+    await instance.completeReminder(prog);
+
+    expect(alertSpy).toHaveBeenCalledWith('Échec de la complétion du rappel');
   });
 });

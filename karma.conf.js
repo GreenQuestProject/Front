@@ -13,11 +13,11 @@ module.exports = function (config) {
       require('@angular-devkit/build-angular/plugins/karma'),
     ],
     coverageReporter: {
-      dir: path.join(__dirname, './coverage'),  // <-- lcov à la racine
+      dir: path.join(__dirname, './coverage'),
       reporters: [
-        { type: 'html', subdir: '.' },          // rapport HTML
-        { type: 'lcovonly', subdir: '.' },      // <-- génère coverage/lcov.info
-        { type: 'text-summary' }
+        {type: 'html', subdir: '.'},
+        {type: 'lcovonly', subdir: '.'},
+        {type: 'text-summary'}
       ]
     }
   });

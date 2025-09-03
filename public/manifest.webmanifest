@@ -1,7 +1,7 @@
 {
   "name": "GreenQuest",
   "short_name": "GreenQuest",
-  "theme_color": "#1976d2",
+  "theme_color": "#F1F0EA",
   "background_color": "#fafafa",
   "display": "standalone",
   "scope": "./",

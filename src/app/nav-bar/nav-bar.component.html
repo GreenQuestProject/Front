@@ -1,29 +1,26 @@
 <div class="container">
   <div class="content">
-    <div tabindex="0" class="icon">
-      <!--<a mat-button color="warn" title="Accueil" [routerLink]="['/défis']" class="link-home">-->
-        <img src="favicon.ico" alt="green quest icon">
-      <!--</a>-->
+    <div class="icon" tabindex="0">
+      <img alt="green quest icon" src="favicon.ico">
     </div>
     <mat-divider class="custom-divider" vertical></mat-divider>
     <div class="btn-content">
-      <button mat-raised-button color="warn" title="Tous les défis" [routerLink]="['/défis']">
+      <button [routerLink]="['/défis']" color="warn" mat-raised-button title="Tous les défis">
         <mat-icon>list</mat-icon>
       </button>
-      <button mat-raised-button color="warn" title="Mes défis" [routerLink]="['/progression']">
+      <button [routerLink]="['/progression']" color="warn" mat-raised-button title="Mes défis">
         <mat-icon>checklist</mat-icon>
       </button>
-      <!---
-      <button mat-raised-button color="warn" title="Progression" [routerLink]="['/progression']">
+      <button [routerLink]="['/paramètres']" color="warn" mat-raised-button title="Paramètres">
+        <mat-icon>settings</mat-icon>
+      </button>
+      <button [routerLink]="['/articles']" color="warn" mat-raised-button title="Articles">
+        <mat-icon>feed</mat-icon>
+      </button>
+      <button [routerLink]="['/statistiques']" color="warn" mat-raised-button title="Statistiques">
         <mat-icon>bar_chart</mat-icon>
       </button>
-      <button mat-raised-button color="warn" title="En savoir plus" [routerLink]="['/apprendre']">
-        <mat-icon>school</mat-icon>
-      </button>
-      <button mat-raised-button color="warn" title="Profil" [routerLink]="['/profil']">
-        <mat-icon>person</mat-icon>
-      </button>-->
-      <button mat-raised-button color="warn" title="Se déconnecter" (click)="logout()">
+      <button (click)="logout()" color="warn" mat-raised-button title="Se déconnecter">
         <mat-icon>logout</mat-icon>
       </button>
     </div>

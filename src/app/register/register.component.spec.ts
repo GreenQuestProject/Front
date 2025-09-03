@@ -1,9 +1,9 @@
-import { RegisterComponent } from './register.component';
-import { AuthService } from '../services/auth.service';
-import { User } from '../interfaces/user';
-import { Subject, throwError } from 'rxjs';
-import { renderStandalone } from '../../testing/test-helpers';
-import { TEXTS } from '../../testing/progression-helpers';
+import {RegisterComponent} from './register.component';
+import {AuthService} from '../services/auth.service';
+import {User} from '../interfaces/user';
+import {Subject, throwError} from 'rxjs';
+import {renderStandalone} from '../../testing/test-helpers';
+import {TEXTS} from '../../testing/progression-helpers';
 
 describe('RegisterComponent (DOM)', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;
@@ -19,15 +19,15 @@ describe('RegisterComponent (DOM)', () => {
   });
 
   it('devrait créer le composant', async () => {
-    const { instance } = await renderStandalone(RegisterComponent, {
-      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+    const {instance} = await renderStandalone(RegisterComponent, {
+      providers: [{provide: AuthService, useValue: authServiceSpy}],
     });
     expect(instance).toBeTruthy();
   });
 
   it('état initial: bouton disabled, pas de message global, pas de spinner', async () => {
-    const { instance, element } = await renderStandalone(RegisterComponent, {
-      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+    const {instance, element} = await renderStandalone(RegisterComponent, {
+      providers: [{provide: AuthService, useValue: authServiceSpy}],
     });
     const submitBtn = getSubmitButton(element);
     expect(instance.registerForm.valid).toBeFalse();
@@ -37,13 +37,12 @@ describe('RegisterComponent (DOM)', () => {
   });
 
   it('affiche les erreurs quand les champs sont touchés/invalides (Material MDC)', async () => {
-    const { instance, fixture, element } = await renderStandalone(RegisterComponent, {
-      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+    const {instance, fixture, element} = await renderStandalone(RegisterComponent, {
+      providers: [{provide: AuthService, useValue: authServiceSpy}],
     });
 
-    // 1) "required"
     instance.registerForm.markAllAsTouched();
-    instance.registerForm.updateValueAndValidity({ onlySelf: false, emitEvent: true });
+    instance.registerForm.updateValueAndValidity({onlySelf: false, emitEvent: true});
     fixture.detectChanges();
 
     const errorTexts = () =>
@@ -55,7 +54,6 @@ describe('RegisterComponent (DOM)', () => {
     expect(errors.some(t => t.includes('Le pseudo est requis.'))).toBeTrue();
     expect(errors.some(t => t.includes('Le pot de passe est requis.'))).toBeTrue();
 
-    // 2) email invalide
     const emailCtrl = instance.registerForm.controls['email'];
     emailCtrl.setValue('not-an-email');
     emailCtrl.markAsDirty();
@@ -68,8 +66,8 @@ describe('RegisterComponent (DOM)', () => {
   });
 
   it('rend le bouton submit activé quand le formulaire est valide', async () => {
-    const { instance, fixture, element } = await renderStandalone(RegisterComponent, {
-      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+    const {instance, fixture, element} = await renderStandalone(RegisterComponent, {
+      providers: [{provide: AuthService, useValue: authServiceSpy}],
     });
 
     instance.registerForm.setValue({
@@ -85,9 +83,9 @@ describe('RegisterComponent (DOM)', () => {
   });
 
   it('onSubmit invalide: message global, pas d’appel API, pas de nav', async () => {
-    const { instance, fixture, element, navigateByUrlSpy } =
+    const {instance, fixture, element, navigateByUrlSpy} =
       await renderStandalone(RegisterComponent, {
-        providers: [{ provide: AuthService, useValue: authServiceSpy }],
+        providers: [{provide: AuthService, useValue: authServiceSpy}],
       });
 
     instance.onSubmit();
@@ -102,9 +100,9 @@ describe('RegisterComponent (DOM)', () => {
   });
 
   it('onSubmit succès: spinner pendant l’appel, puis navigation /login', async () => {
-    const { instance, fixture, element, navigateByUrlSpy, consoleErrorSpy } =
+    const {instance, fixture, element, navigateByUrlSpy, consoleErrorSpy} =
       await renderStandalone(RegisterComponent, {
-        providers: [{ provide: AuthService, useValue: authServiceSpy }],
+        providers: [{provide: AuthService, useValue: authServiceSpy}],
       });
 
     instance.registerForm.setValue({
@@ -120,7 +118,7 @@ describe('RegisterComponent (DOM)', () => {
     fixture.detectChanges();
     expect(getSpinner(element)).not.toBeNull();
 
-    pending$.next({ id: 1, username: 'karina', email: 'karina@example.com' } as any);
+    pending$.next({id: 1, username: 'karina', email: 'karina@example.com'} as any);
     pending$.complete();
     fixture.detectChanges();
 
@@ -131,9 +129,9 @@ describe('RegisterComponent (DOM)', () => {
   });
 
   it('onSubmit erreur API: message global, pas de nav, log console', async () => {
-    const { instance, fixture, element, navigateByUrlSpy, consoleErrorSpy } =
+    const {instance, fixture, element, navigateByUrlSpy, consoleErrorSpy} =
       await renderStandalone(RegisterComponent, {
-        providers: [{ provide: AuthService, useValue: authServiceSpy }],
+        providers: [{provide: AuthService, useValue: authServiceSpy}],
       });
 
     instance.registerForm.setValue({
@@ -157,8 +155,8 @@ describe('RegisterComponent (DOM)', () => {
   });
 
   it('lien "Se connecter" pointe vers /login', async () => {
-    const { element } = await renderStandalone(RegisterComponent, {
-      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+    const {element} = await renderStandalone(RegisterComponent, {
+      providers: [{provide: AuthService, useValue: authServiceSpy}],
     });
     const link = element.querySelector('a[title="S\'inscrire"]') as HTMLAnchorElement;
     expect(link).toBeTruthy();
@@ -167,8 +165,8 @@ describe('RegisterComponent (DOM)', () => {
   });
 
   it('le titre "Inscription" et les champs existent', async () => {
-    const { element } = await renderStandalone(RegisterComponent, {
-      providers: [{ provide: AuthService, useValue: authServiceSpy }],
+    const {element} = await renderStandalone(RegisterComponent, {
+      providers: [{provide: AuthService, useValue: authServiceSpy}],
     });
     const title = element.querySelector('h1');
     expect(title?.textContent?.trim()).toBe('Inscription');

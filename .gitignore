@@ -171,3 +171,11 @@ testem.log
 .DS_Store
 Thumbs.db
 /.vscode/
+/commits.csv
+/.lighthouseci/lhr-1755683377352.html
+/.lighthouseci/lhr-1755683377352.json
+/.lighthouseci/lhr-1755683409083.html
+/.lighthouseci/lhr-1755683409083.json
+/.lighthouseci/lhr-1755683434496.html
+/.lighthouseci/lhr-1755683434496.json
+/ssl/

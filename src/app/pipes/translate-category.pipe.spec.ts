@@ -1,4 +1,4 @@
-import { TranslateCategoryPipe } from './translate-category.pipe';
+import {TranslateCategoryPipe} from './translate-category.pipe';
 
 describe('TranslateCategoryPipe', () => {
   it('create an instance', () => {

@@ -1,21 +1,23 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
-import {BehaviorSubject, catchError, map, Observable, of, switchMap, throwError} from 'rxjs';
+import {BehaviorSubject, catchError, map, Observable, of, throwError} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {User} from '../interfaces/user';
 import {TokenService} from './token.service';
-import { environment } from '../../environments/environment';
-@Injectable({ providedIn: 'root' })
+import {environment} from '../../environments/environment';
+
+@Injectable({providedIn: 'root'})
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   private apiUrl: string = environment.apiUrl
 
-  constructor(private http: HttpClient, private router: Router, private tokenService: TokenService) {}
+  constructor(private http: HttpClient, private router: Router, private tokenService: TokenService) {
+  }
 
   login(username: string, password: string): Observable<User> {
-    const user = {username:username, password: password};
-    return this.http.post<{ token: string; refresh_token: string; user: User }>(this.apiUrl+'/login', user).pipe(
+    const user = {username: username, password: password};
+    return this.http.post<{ token: string; refresh_token: string; user: User }>(this.apiUrl + '/login', user).pipe(
       tap(res => {
         this.tokenService.setAccessToken(res.token);
         this.tokenService.setRefreshToken(res.refresh_token);
@@ -51,11 +53,14 @@ export class AuthService {
     }
   }
 
-  refreshToken(): Observable<{ token: string, refresh_token: string  }> {
+  refreshToken(): Observable<{ token: string, refresh_token: string }> {
     const refreshToken = this.tokenService.getRefreshToken();
     if (!refreshToken) return throwError(() => new Error('No refresh token'));
 
-    return this.http.post<{ token: string, refresh_token: string }>(`${this.apiUrl}/token/refresh`, { "refresh_token":refreshToken }).pipe(
+    return this.http.post<{
+      token: string,
+      refresh_token: string
+    }>(`${this.apiUrl}/token/refresh`, {"refresh_token": refreshToken}).pipe(
       tap(res => {
         this.tokenService.setAccessToken(res.token);
         this.tokenService.setRefreshToken(res.refresh_token);
@@ -65,19 +70,6 @@ export class AuthService {
 
   loadUserFromToken(): Observable<User | null> {
     const accessToken = this.tokenService.getAccessToken();
-    //const refreshToken = this.tokenService.getRefreshToken();
-
-    /*if (!accessToken && refreshToken) {
-      return this.refreshToken().pipe(
-        switchMap(() => this.loadUserFromToken()),
-        catchError(() => {
-          this.logout();
-          return of(null);
-        })
-      );
-    }*/
-
-
     if (accessToken) {
       return this.http.get<User>(`${this.apiUrl}/user/me`, {
         headers: {
@@ -112,7 +104,7 @@ export class AuthService {
   }
 
   register(user: User): Observable<User> {
-    return this.http.post<User>(this.apiUrl+'/register', user);
+    return this.http.post<User>(this.apiUrl + '/register', user);
   }
 
 }

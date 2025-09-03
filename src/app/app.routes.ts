@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import {Routes} from '@angular/router';
 import {LoginComponent} from './login/login.component';
 import {HomeComponent} from './home/home.component';
 import {childAuthGuard} from './guards/child-auth.guard';
@@ -6,6 +6,9 @@ import {RegisterComponent} from './register/register.component';
 import {loginRedirectGuard} from './guards/login-redirect.guard';
 import {ChallengeListComponent} from './challenge-list/challenge-list.component';
 import {ProgressionListComponent} from './progression-list/progression-list.component';
+import {ParametersComponent} from './parameters/parameters.component';
+import {ArticlesComponent} from './articles/articles.component';
+import {AnalyticsComponent} from './analytics/analytics.component';
 
 export const routes: Routes = [
   {
@@ -18,11 +21,6 @@ export const routes: Routes = [
     path: 'accueil',
     component: HomeComponent,
     canActivate: [childAuthGuard],
-    children: [
-      //{ path: 'défis', component: ChallengeListComponent },
-     // { path: 'settings', component: SettingsComponent },
-     // { path: 'profile', component: ProfileComponent },
-    ]
   },
   {
     path: 'défis',
@@ -37,4 +35,7 @@ export const routes: Routes = [
   {
     path: '', redirectTo: '/défis', pathMatch: 'full'
   },
+  {path: 'paramètres', component: ParametersComponent, canActivate: [childAuthGuard]},
+  {path: 'articles', component: ArticlesComponent, canActivate: [childAuthGuard]},
+  {path: 'statistiques', component: AnalyticsComponent, canActivate: [childAuthGuard]},
 ];

@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { adminAuthGuard } from './admin-auth.guard';
-import { AuthService } from '../services/auth.service';
-import {of, firstValueFrom, Observable} from 'rxjs';
+import {TestBed} from '@angular/core/testing';
+import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from '@angular/router';
+import {adminAuthGuard} from './admin-auth.guard';
+import {AuthService} from '../services/auth.service';
+import {firstValueFrom, Observable, of} from 'rxjs';
 
 describe('adminAuthGuard', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;
@@ -16,8 +16,8 @@ describe('adminAuthGuard', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: AuthService, useValue: authServiceSpy },
-        { provide: Router, useValue: routerSpy }
+        {provide: AuthService, useValue: authServiceSpy},
+        {provide: Router, useValue: routerSpy}
       ]
     });
   });

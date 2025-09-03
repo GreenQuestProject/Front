@@ -1,13 +1,8 @@
-import { inject } from '@angular/core';
-import {
-  HttpInterceptorFn,
-  HttpRequest,
-  HttpHandlerFn,
-  HttpErrorResponse
-} from '@angular/common/http';
-import { TokenService } from '../services/token.service';
-import { AuthService } from '../services/auth.service';
-import { catchError, filter, switchMap, take, throwError, BehaviorSubject } from 'rxjs';
+import {inject} from '@angular/core';
+import {HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest} from '@angular/common/http';
+import {TokenService} from '../services/token.service';
+import {AuthService} from '../services/auth.service';
+import {BehaviorSubject, catchError, filter, switchMap, take, throwError} from 'rxjs';
 
 let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
@@ -41,7 +36,6 @@ export const jwtInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: H
           return authService.refreshToken().pipe(
             switchMap(res => {
               isRefreshing = false;
-              // Le token est déjà set dans refreshToken(), on récupère juste la nouvelle valeur
               refreshTokenSubject.next(res.token);
 
               const clonedRequest = req.clone({

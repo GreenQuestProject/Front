@@ -1,10 +1,10 @@
-import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import {TestBed} from '@angular/core/testing';
+import {provideHttpClient} from '@angular/common/http';
+import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
 
-import { ProgressionService } from './progression.service';
-import { environment } from '../../environments/environment';
-import { Progression } from '../interfaces/progression';
+import {ProgressionService} from './progression.service';
+import {environment} from '../../environments/environment';
+import {Progression} from '../interfaces/progression';
 
 describe('ProgressionService', () => {
   let service: ProgressionService;
@@ -33,7 +33,7 @@ describe('ProgressionService', () => {
   describe('getProgressions', () => {
     it('GET sans paramètres quand categories/status sont undefined', () => {
       const mock: Progression[] = [
-        { id: 1, status: 'in_progress', challengeId: 10 } as unknown as Progression,
+        {id: 1, status: 'in_progress', challengeId: 10} as unknown as Progression,
       ];
 
       service.getProgressions().subscribe(res => {
@@ -71,7 +71,7 @@ describe('ProgressionService', () => {
 
     it('GET avec categories + status', () => {
       const mock: Progression[] = [
-        { id: 2, status: 'done', challengeId: 11 } as unknown as Progression,
+        {id: 2, status: 'done', challengeId: 11} as unknown as Progression,
       ];
       service.getProgressions(['waste'], ['done']).subscribe(res => {
         expect(res).toEqual(mock);
@@ -104,7 +104,7 @@ describe('ProgressionService', () => {
       });
 
       const req = httpMock.expectOne(baseUrl);
-      req.flush({ message: 'boom' }, { status: 500, statusText: 'Server Error' });
+      req.flush({message: 'boom'}, {status: 500, statusText: 'Server Error'});
     });
   });
 
@@ -113,13 +113,13 @@ describe('ProgressionService', () => {
       const challengeId = 42;
 
       service.startChallenge(challengeId).subscribe(res => {
-        expect(res).toEqual({ ok: true });
+        expect(res).toEqual({ok: true});
       });
 
       const req = httpMock.expectOne(`${baseUrl}/start/${challengeId}`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({});
-      req.flush({ ok: true });
+      req.flush({ok: true});
     });
   });
 
@@ -128,13 +128,13 @@ describe('ProgressionService', () => {
       const challengeId = 7;
 
       service.removeChallenge(challengeId).subscribe(res => {
-        expect(res).toEqual({ deleted: true });
+        expect(res).toEqual({deleted: true});
       });
 
       const req = httpMock.expectOne(`${baseUrl}/remove/${challengeId}`);
       expect(req.request.method).toBe('DELETE');
       expect(req.request.body).toBeNull();
-      req.flush({ deleted: true });
+      req.flush({deleted: true});
     });
   });
 
@@ -143,13 +143,13 @@ describe('ProgressionService', () => {
       const challengeId = 9;
 
       service.validateChallenge(challengeId).subscribe(res => {
-        expect(res).toEqual({ validated: true });
+        expect(res).toEqual({validated: true});
       });
 
       const req = httpMock.expectOne(`${baseUrl}/validate/${challengeId}`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({});
-      req.flush({ validated: true });
+      req.flush({validated: true});
     });
   });
 
@@ -159,13 +159,13 @@ describe('ProgressionService', () => {
       const status = 'paused';
 
       service.updateStatus(progressionId, status).subscribe(res => {
-        expect(res).toEqual({ updated: true });
+        expect(res).toEqual({updated: true});
       });
 
       const req = httpMock.expectOne(`${baseUrl}/status/${progressionId}`);
       expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual({ status });
-      req.flush({ updated: true });
+      expect(req.request.body).toEqual({status});
+      req.flush({updated: true});
     });
 
     it('propagation erreur HTTP sur updateStatus', () => {
@@ -181,7 +181,7 @@ describe('ProgressionService', () => {
       });
 
       const req = httpMock.expectOne(`${baseUrl}/status/${progressionId}`);
-      req.flush({ message: 'invalid status' }, { status: 400, statusText: 'Bad Request' });
+      req.flush({message: 'invalid status'}, {status: 400, statusText: 'Bad Request'});
     });
   });
 });
