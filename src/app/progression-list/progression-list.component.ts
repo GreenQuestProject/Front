@@ -96,10 +96,21 @@ export class ProgressionListComponent implements OnInit {
     });
   }
 
+  onCategoriesChange(next: string[]) {
+    this.selectedCategories = next;
+    this.applyFilters();
+  }
+
+  onStatusChange(next: string[]) {
+    this.selectedStatus = next;
+    this.applyFilters();
+  }
+
   applyFilters() {
-    const categories = this.selectedCategories;
-    const status = this.selectedStatus;
-    if (categories.length === 0 || status.length === 0) {
+    const categories = this.selectedCategories ?? [];
+    const status = this.selectedStatus ?? [];
+
+    if (!categories.length || !status.length) {
       this.progressions = [];
       this.notFoundMessage = "Aucune progression trouvée. Essayez de modifier vos filtres.";
       return;
@@ -107,17 +118,18 @@ export class ProgressionListComponent implements OnInit {
 
     this.isLoading = true;
     this.progressionService.getProgressions(categories, status).subscribe({
-      next: (data) => {
+      next: data => {
         this.progressions = data;
         this.isLoading = false;
-        this.notFoundMessage = "Aucune progression trouvée. Essayez de modifier vos filtres."
+        this.notFoundMessage = "Aucune progression trouvée. Essayez de modifier vos filtres.";
       },
-      error: (error) => {
-        console.error(error);
+      error: err => {
+        console.error(err);
         this.isLoading = false;
       }
     });
   }
+
 
   getStatusColor(status: string): string {
     switch (status) {

@@ -91,9 +91,12 @@ export class ChallengeListComponent implements OnInit {
   }
 
 
-  onCategorySelectionChange() {
-    if (this.selectedCategories.length === 0) {
+  onCategorySelectionChange(next: string[]) {
+    this.selectedCategories = next;
+
+    if (!this.selectedCategories.length) {
       this.challenges = [];
+      this.notFoundMessage = "Aucun défi trouvé. Essayez de modifier vos filtres.";
       return;
     }
 
@@ -102,8 +105,7 @@ export class ChallengeListComponent implements OnInit {
       next: (data) => {
         this.challenges = data;
         this.isLoading = false;
-        this.notFoundMessage = "Aucun défi trouvé. Essayez de modifier vos filtres.";
-      },
+        },
       error: (error) => {
         console.error(error);
         this.isLoading = false;
