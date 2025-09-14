@@ -4,7 +4,7 @@
   <h1>Liste de défis</h1>
 
   <mat-chip-listbox
-    (ngModelChange)="onCategorySelectionChange()"
+    (ngModelChange)="onCategorySelectionChange($event)"
     [(ngModel)]="selectedCategories"
     aria-label="Catégories"
     multiple>

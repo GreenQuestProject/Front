@@ -4,30 +4,25 @@
   <h1>Liste de progression de défis</h1>
 
   <mat-chip-listbox
-    (ngModelChange)="applyFilters()"
+    multiple
     [(ngModel)]="selectedCategories"
-    aria-label="Catégories"
-    multiple>
-
-    <mat-chip-option
-      *ngFor="let category of categories"
-      [value]="category.value">
-      {{ category.value | translateCategory}}
+    (ngModelChange)="onCategoriesChange($event)"
+    aria-label="Catégories">
+    <mat-chip-option *ngFor="let category of categories" [value]="category.value">
+      {{ category.value | translateCategory }}
     </mat-chip-option>
   </mat-chip-listbox>
 
   <mat-chip-listbox
-    (ngModelChange)="applyFilters()"
+    multiple
     [(ngModel)]="selectedStatus"
-    aria-label="Status"
-    multiple>
-
-    <mat-chip-option
-      *ngFor="let state of status"
-      [value]="state.value">
-      {{ state.value | translateStatus}}
+    (ngModelChange)="onStatusChange($event)"
+    aria-label="Status">
+    <mat-chip-option *ngFor="let state of status" [value]="state.value">
+      {{ state.value | translateStatus }}
     </mat-chip-option>
   </mat-chip-listbox>
+
 
   <div *ngIf="progressions.length > 0; else noProgressions" class="content">
     <mat-card *ngFor="let progression of progressions" appearance="raised">

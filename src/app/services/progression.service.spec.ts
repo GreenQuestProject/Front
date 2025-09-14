@@ -52,7 +52,7 @@ describe('ProgressionService', () => {
       });
 
       const req = httpMock.expectOne(r => r.method === 'GET' && r.url === baseUrl);
-      expect(req.request.params.get('category')).toBe('energy,water');
+      expect(req.request.params.get('type')).toBe('energy,water');
       expect(req.request.params.has('status')).toBeFalse();
       req.flush(mock);
     });
@@ -65,7 +65,7 @@ describe('ProgressionService', () => {
 
       const req = httpMock.expectOne(r => r.method === 'GET' && r.url === baseUrl);
       expect(req.request.params.get('status')).toBe('in_progress,done');
-      expect(req.request.params.has('category')).toBeFalse();
+      expect(req.request.params.has('type')).toBeFalse();
       req.flush(mock);
     });
 
@@ -78,7 +78,7 @@ describe('ProgressionService', () => {
       });
 
       const req = httpMock.expectOne(r => r.method === 'GET' && r.url === baseUrl);
-      expect(req.request.params.get('category')).toBe('waste');
+      expect(req.request.params.get('type')).toBe('waste');
       expect(req.request.params.get('status')).toBe('done');
       req.flush(mock);
     });

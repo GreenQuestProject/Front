@@ -152,7 +152,7 @@ describe('ChallengeListComponent (DOM + logic)', () => {
     render();
 
     component.selectedCategories = [];
-    component.onCategorySelectionChange();
+    component.onCategorySelectionChange([]);
     fixture.detectChanges();
 
     expect(component.challenges).toEqual([]);
@@ -171,7 +171,7 @@ describe('ChallengeListComponent (DOM + logic)', () => {
     challengeSpy.getChallenges.and.returnValue(pending$.asObservable());
 
     component.selectedCategories = ['ecology'];
-    component.onCategorySelectionChange();
+    component.onCategorySelectionChange(['ecology']);
     expect(component.isLoading).toBeTrue();
 
     pending$.next(CHALLENGES_FIXTURE.filter(c => c.category === 'ecology'));
@@ -193,7 +193,7 @@ describe('ChallengeListComponent (DOM + logic)', () => {
 
     challengeSpy.getChallenges.and.returnValue(throwError(() => new Error('network')));
     component.selectedCategories = ['ecology'];
-    component.onCategorySelectionChange();
+    component.onCategorySelectionChange(['ecology']);
 
     expect(consoleErrorSpy).toHaveBeenCalled();
     expect(component.isLoading).toBeFalse();

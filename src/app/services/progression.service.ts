@@ -16,7 +16,7 @@ export class ProgressionService {
   getProgressions(categories?: string[], status?: string[]): Observable<Progression[]> {
     let params = new HttpParams();
     if (categories && categories.length > 0) {
-      params = params.set('category', categories.join(','));
+      params = params.set('type', categories.join(','));
     }
     if (status && status.length > 0) {
       params = params.set('status', status.join(','));
